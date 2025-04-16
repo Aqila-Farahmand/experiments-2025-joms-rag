@@ -1,0 +1,17 @@
+[project]
+name = "experiments-2025-joms-rag"
+version = "2"
+description = ""
+authors = [
+    {name = "Aqila Farahmand",email = "aqila.farahmand@unibo.it"}
+]
+license = {text = "Apache"}
+readme = "README.md"
+requires-python = "n"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
