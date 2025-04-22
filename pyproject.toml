@@ -12,7 +12,16 @@ dependencies = [
     "notebook (>=7.4.0,<8.0.0)",
     "ipykernel (>=6.29.5,<7.0.0)",
     "ipywidgets (>=8.1.6,<9.0.0)",
-    "spacy    (>= 3.7.0)"
+    "spacy    (>= 3.7.0)",
+    "nltk (>=3.9.1,<4.0.0)",
+    "google (>=3.0.0,<4.0.0)",
+    "openai (>=1.75.0,<2.0.0)",
+    "llama-index (>=0.12.32,<0.13.0)",
+    "llama-index-llms-google-genai (>=0.1.7,<0.2.0)",
+    "langchain-community (>=0.3.21,<0.4.0)",
+    "langchain (>=0.3.23,<0.4.0)",
+    "chromadb (>=1.0.6,<2.0.0)",
+    "uuid (>=1.30,<2.0)"
 ]
 
 
