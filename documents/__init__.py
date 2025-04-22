@@ -16,7 +16,7 @@ def read_csv(file_name: str = "data.csv") -> pd.DataFrame:
 
 
 # From pandas to list of string (concatenate all columns)
-def from_pandas_to_list(df: pd.DataFrame, separator: str = '\n') -> list:
+def from_pandas_to_list(df: pd.DataFrame, separator: str = '\n') -> list[str]:
     """
     Convert a pandas dataframe to a list of strings
     :param df: pandas dataframe
