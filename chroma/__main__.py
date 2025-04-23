@@ -3,16 +3,18 @@ import os
 import uuid
 from pathlib import Path
 from typing import Set, List
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from chromadb import PersistentClient
 from chroma import PATH as CHROMA_PATH
 from documents import PATH as DOCUMENTS_PATH, read_csv, from_pandas_to_list
+import time
 
 # — DEFAULT CONFIGURATION —
 DEFAULT_CHUNK_SIZES: Set[int] = {128, 256, 512, 1024}
 DEFAULT_OVERLAP_RATIOS: Set[float] = {0.1, 0.2, 0.3, 0.4, 0.5}
 API_KEY: str = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=API_KEY)
+client = genai.Client(api_key=API_KEY)
 
 
 def chunk_text(text: str, chunk_size: int, overlap_ratio: float) -> List[str]:
@@ -35,20 +37,21 @@ def chunk_text(text: str, chunk_size: int, overlap_ratio: float) -> List[str]:
     return chunks
 
 
-def embed_text(text: str, model_name: str) -> List[float]:
+def embed_text(text: list[str], model_name: str) -> List[List[float]]:
     """
     Call Gemini embedding API via genai.embed_content.
     """
-    response = genai.embed_content(
+    response = client.models.embed_content(
         model=model_name,
-        content=text,
-        task_type="retrieval_document"
+        contents=text,
+        config=types.EmbedContentConfig(task_type="QUESTION_ANSWERING")
     )
-    return response["embedding"]
+    embeddings = [embedding.values for embedding in response.embeddings]
+    return embeddings
 
 
 def main(
-    model_name: str = "models/embedding-001",
+    model_name: str = "models/text-embedding-004",
     document: Path = DOCUMENTS_PATH / "data-generated.csv",
     chunk_sizes: Set[int] = DEFAULT_CHUNK_SIZES,
     overlap_ratios: Set[float] = DEFAULT_OVERLAP_RATIOS,
@@ -74,25 +77,62 @@ def main(
             collection = client.get_or_create_collection(name=db_name)
 
             print(f"Indexing with chunk_size={chunk_size}, overlap={overlap}")
+
+            # Pre-process all documents to get chunks
+            all_doc_chunks = []
             for doc_id, text in enumerate(docs):
-                print(f"Processing document {doc_id + 1}/{len(docs)}")
+                print(f"Pre-processing document {doc_id + 1}/{len(docs)}")
                 chunks = chunk_text(text, chunk_size, overlap)
+                # Store tuple of (doc_id, chunk_position, chunk_text)
                 for pos, chunk in enumerate(chunks):
-                    try:
-                        embedding = embed_text(chunk, model_name)
-                        collection.add(
-                            documents=[chunk],
-                            embeddings=[embedding],
-                            ids=[str(uuid.uuid4())],
-                            metadatas=[{
-                                "doc_id": doc_id,
-                                "chunk_size": chunk_size,
-                                "overlap": overlap,
-                                "position": pos
-                            }]
-                        )
-                    except Exception as e:
-                        print(f"[Error] doc={doc_id}, cs={chunk_size}, ov={overlap}: {e}")
+                    all_doc_chunks.append((doc_id, pos, chunk))
+
+            # Process all chunks in batches across all documents
+            batch_size = 100
+            total_chunks = len(all_doc_chunks)
+            print(f"Total chunks across all documents: {total_chunks}")
+
+            for i in range(0, total_chunks, batch_size):
+                start_index = i
+                end_index = min(i + batch_size, total_chunks)
+                current_batch = all_doc_chunks[start_index:end_index]
+
+                print(
+                    f"Processing batch {i // batch_size + 1} of {(total_chunks - 1) // batch_size + 1}, chunks {start_index}-{end_index - 1}")
+
+                # Extract chunk texts for embedding
+                chunk_texts = [item[2] for item in current_batch]
+
+                try:
+                    # Get embeddings for the entire batch at once
+                    embedding_batch = embed_text(chunk_texts, model_name)
+
+                    # Prepare batch data for collection
+                    documents = []
+                    embeddings = []
+                    ids = []
+                    metadatas = []
+
+                    for j, (doc_id, pos, chunk) in enumerate(current_batch):
+                        documents.append(chunk)
+                        embeddings.append(embedding_batch[j])
+                        ids.append(str(uuid.uuid4()))
+                        metadatas.append({
+                            "doc_id": doc_id,
+                            "chunk_size": chunk_size,
+                            "overlap": overlap,
+                            "position": pos
+                        })
+
+                    # Add the entire batch to the collection at once
+                    collection.add(
+                        documents=documents,
+                        embeddings=embeddings,
+                        ids=ids,
+                        metadatas=metadatas
+                    )
+                except Exception as e:
+                    print(f"[Error] batch {i // batch_size + 1}, cs={chunk_size}, ov={overlap}: {e}")
 
     print("✅ All embeddings have been created and saved.")
 
