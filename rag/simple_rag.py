@@ -56,16 +56,3 @@ def generate_simple_rag(
     )
 
     return query_engine
-
-embedding = GoogleGenAIEmbedding()
-llm = GoogleGenAI(model_name="models/gemini-2.0-flash")
-query = generate_simple_rag(
-    csv_path=str(DOCUMENTS_PATH / "data-generated.csv"),
-    chunk_size=512,
-    overlap_ratio=0.5,
-    embedding_model=embedding,
-    llm=llm,
-    k=3
-)
-
-print(query.query("How to handle hypertension?"))
