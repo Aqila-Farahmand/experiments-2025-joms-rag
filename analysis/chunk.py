@@ -5,14 +5,16 @@ from typing import List, Tuple, Dict
 import chromadb
 import fire
 import pandas as pd
+from llama_cloud import GeminiEmbedding
 from llama_index.core import VectorStoreIndex
 from llama_index.core.evaluation import FaithfulnessEvaluator, RelevancyEvaluator
 from llama_index.core.schema import Document
 from llama_index.llms.google_genai import GoogleGenAI
+from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.vector_stores.chroma import ChromaVectorStore
 
 from analysis import PATH as ANALYSIS_PATH
-from chroma import PATH as BASE_DB_PATH, GeminiEmbedding
+from chroma import PATH as BASE_DB_PATH
 from documents import PATH as DOCUMENTS_PATH
 
 # Evaluation parameters
@@ -76,7 +78,7 @@ def main(
 
     # 2. Configure embedding
     # llm = Ollama(model="llama3.1", request_timeout=120.0)
-    embedding = GeminiEmbedding(model="models/text-embedding-004")
+    embedding = GoogleGenAIEmbedding(model_name="models/text-embedding-004")
 
     results: List[Dict[str, float]] = []
 

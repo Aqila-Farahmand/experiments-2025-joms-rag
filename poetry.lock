@@ -2637,6 +2637,22 @@ typing-inspect = ">=0.8.0"
 wrapt = "*"
 
 [[package]]
+name = "llama-index-embeddings-google-genai"
+version = "0.1.0"
+description = "llama-index embeddings google genai integration"
+optional = false
+python-versions = "<4.0,>=3.9"
+groups = ["main"]
+files = [
+    {file = "llama_index_embeddings_google_genai-0.1.0-py3-none-any.whl", hash = "sha256:fd18f303d77e7f3eec4667094dc3f3aedca1784f194b3c8af6ec0f4684fd3f81"},
+    {file = "llama_index_embeddings_google_genai-0.1.0.tar.gz", hash = "sha256:3f176bb3eabdf11b778329720ff8daccf4ceb960a27934b4dcae2d4f8e9cc58a"},
+]
+
+[package.dependencies]
+google-genai = ">=1.4.0"
+llama-index-core = ">=0.12.0,<0.13.0"
+
+[[package]]
 name = "llama-index-embeddings-openai"
 version = "0.3.1"
 description = "llama-index embeddings openai integration"
@@ -6921,4 +6937,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "8c5cc30b8c37f1319e86df397a4aa8b9088f04e8c441459dada5fbc22351bb36"
+content-hash = "6ffff043cb9799a949947ecb37478eb2036fde8ef33cbe76855843afb50cc37d"
