@@ -13,14 +13,24 @@ from llama_index.core.schema import Document
 from documents import PATH as DOCUMENTS_PATH
 from chroma import PATH as BASE_DB_PATH, GeminiEmbedding
 from analysis import PATH as ANALYSIS_PATH
+from llama_index.llms.google_genai import GoogleGenAI
+import google.generativeai as genai
 
 # Evaluation parameters
-CHUNK_SIZES    = [128, 256, 512, 1024]
+CHUNK_SIZES = [128, 256, 512, 1024]
 OVERLAP_RATIOS = [0.1, 0.2, 0.3, 0.4, 0.5]
 
-# Initialize evaluators
-faithfulness_evaluator = FaithfulnessEvaluator()
-relevancy_evaluator    = RelevancyEvaluator()
+# Set up Google Gemini API Key and configure genai
+api_key = os.environ['GOOGLE_API_KEY']
+genai.configure(api_key=api_key)
+
+
+# Choose the LLM for chunk size and overlap evaluation
+# llm = Ollama(model="llama3.1", request_timeout=120.0)
+llm = GoogleGenAI(model_name="models/gemini-1.5-pro-latest")
+
+faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
+relevancy_evaluator = RelevancyEvaluator(llm=llm)
 
 
 def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, float]:
@@ -32,16 +42,16 @@ def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, 
     for q in questions:
         start = time.time()
         resp = query_engine.query(q)
-        total_time  += time.time() - start
+        total_time += time.time() - start
         total_faith += float(faithfulness_evaluator.evaluate_response(response=resp).passing)
-        total_rel   += float(relevancy_evaluator.evaluate_response(query=q, response=resp).passing)
+        total_rel += float(relevancy_evaluator.evaluate_response(query=q, response=resp).passing)
     return total_time / n, total_faith / n, total_rel / n
 
 
 def main(
-    csv_path: str     = str(DOCUMENTS_PATH / "data.csv"),
+    csv_path: str = str(DOCUMENTS_PATH / "data.csv"),
     question_col: str = "Sentence",
-    answer_col: str   = "Response",
+    answer_col: str = "Response",
     db_base_path: str = str(BASE_DB_PATH),
 ) -> None:
     """
@@ -56,9 +66,8 @@ def main(
         for i, txt in enumerate(df[answer_col].astype(str).tolist())
     ]
 
-    # 2. Configure LLM and embedding
-    llm       = Ollama(model="llama3.1", request_timeout=120.0)
-    # embedding = OpenAIEmbedding(api_key=os.getenv("OPENAI_API_KEY"))
+    # 2. Configure embedding
+    # llm = Ollama(model="llama3.1", request_timeout=120.0)
     embedding = GeminiEmbedding(model="models/embedding-001")
 
     results: List[Dict[str, float]] = []
@@ -66,11 +75,11 @@ def main(
     # 3. Loop over chunk sizes and overlap ratios
     for cs in CHUNK_SIZES:
         for ov in OVERLAP_RATIOS:
-            suffix    = f"gemini_chunk_size_{cs}_overlapping_{int(ov * 100)}"
+            suffix = f"gemini_chunk_size_{cs}_overlapping_{int(ov * 100)}"
             db_folder = Path(db_base_path) / suffix
 
             # 4. Initialize persistent ChromaDB client & collection
-            client     = chromadb.PersistentClient(path=str(db_folder))
+            client = chromadb.PersistentClient(path=str(db_folder))
             collection = client.get_or_create_collection(name=suffix)
 
             # 5. Build ChromaVectorStore from existing collection & embeddings

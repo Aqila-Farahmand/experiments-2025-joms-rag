@@ -3,6 +3,8 @@ from pathlib import Path
 import google.generativeai as genai
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from typing import List, Any
+import os
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 PATH = Path(__file__).parent
 

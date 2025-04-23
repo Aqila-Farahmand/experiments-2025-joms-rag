@@ -46,7 +46,7 @@ relevancy_gemini = RelevancyEvaluator(llm=gemini_llm)
 print("Successfully set up evaluators using Gemini.")
 
 
-def generate_gemini_embedding(self, input: Documents) -> Embeddings:
+def generate_gemini_embedding(self, input: documents):
     title = "Custom query"
     response = client.models.embed_content(
         model="models/embedding-001",  # TODO: change this
