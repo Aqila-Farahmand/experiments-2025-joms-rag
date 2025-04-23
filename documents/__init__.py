@@ -4,8 +4,8 @@ import pandas as pd
 PATH = Path(__file__).parent
 
 
-# Data.csv to pandas dataframe
-def read_csv(file_name: str = "data.csv") -> pd.DataFrame:
+# data-generated.csv to pandas dataframe
+def read_csv(file_name: str = "data-generated.csv") -> pd.DataFrame:
     """
     Read a csv file and return a pandas dataframe
     :param file_name: name of the csv file

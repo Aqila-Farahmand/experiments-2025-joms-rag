@@ -49,7 +49,7 @@ def embed_text(text: str, model_name: str) -> List[float]:
 
 def main(
     model_name: str = "models/embedding-001",
-    document: Path = DOCUMENTS_PATH / "data.csv",
+    document: Path = DOCUMENTS_PATH / "data-generated.csv",
     chunk_sizes: Set[int] = DEFAULT_CHUNK_SIZES,
     overlap_ratios: Set[float] = DEFAULT_OVERLAP_RATIOS,
     base_path: Path = CHROMA_PATH

@@ -49,7 +49,7 @@ def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, 
 
 
 def main(
-    csv_path: str = str(DOCUMENTS_PATH / "data.csv"),
+    csv_path: str = str(DOCUMENTS_PATH / "data-generated.csv"),
     question_col: str = "Sentence",
     answer_col: str = "Response",
     db_base_path: str = str(BASE_DB_PATH),
