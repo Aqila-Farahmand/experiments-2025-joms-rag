@@ -1,6 +1,6 @@
 Metric,Score
 Faithfulness,0.8
-Correctness,1.8
-Semantic Similarity,0.822094802158437
-Relevancy,0.6
-G-Eval,0.38
+Correctness,1.6
+Semantic Similarity,0.8005354020155082
+Relevancy,1.0
+G-Eval,0.36

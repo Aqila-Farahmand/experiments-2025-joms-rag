@@ -7,7 +7,7 @@ from llama_index.llms.google_genai import GoogleGenAI
 from simple_rag import generate_simple_rag
 from documents import PATH as DATA_PATH
 from results.cache import PATH as CACHE_PATH
-
+from vector_rerank_retriever import generate_vector_rerank_rag
 # llama index eval
 from llama_index.core.evaluation import RelevancyEvaluator
 from llama_index.core.evaluation import CorrectnessEvaluator
@@ -45,17 +45,18 @@ faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
 correctness_evaluator = CorrectnessEvaluator(llm=llm)
 semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embedding)
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
-rag = generate_simple_rag(
+rag = generate_vector_rerank_rag(
     csv_path=str(DATA_PATH / "data-generated.csv"),
-    chunk_size=512,
+    chunk_size=256,
     overlap_ratio=0.5,
     embedding_model=embedding,
     llm=llm,
     k=3
 )
-
-dataset_under_test = test[:5] ## remove for the full dataset
-replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"]] # consider to add caching
+# remove for the full dataset
+dataset_under_test = test[:5]
+# consider to add caching
+replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"]]
 
 # Evaluate all metrics
 total_faithfulness = 0
@@ -120,4 +121,4 @@ results = pd.DataFrame({
 
 print(results)
 # Save results to CSV
-results.to_csv(CACHE_PATH / "rag_evaluation_results.csv", index=False)
+results.to_csv(CACHE_PATH / "rerank_results.csv", index=False)
