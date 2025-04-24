@@ -48,14 +48,14 @@ faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
 correctness_evaluator = CorrectnessEvaluator(llm=llm)
 semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embedding)
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
-rag = generate_hybrid_rag(
+rag = generate_simple_rag(
     csv_path=str(DATA_PATH / "data-generated.csv"),
     chunk_size=256,
     overlap_ratio=0.5,
     embedding_model=embedding,
     llm=llm,
     k=3,
-    alpha=0.5
+    #alpha=0.5
 )
 # remove for the full dataset
 dataset_under_test = test[:5]
@@ -125,4 +125,4 @@ results = pd.DataFrame({
 
 print(results)
 # Save results to CSV
-results.to_csv(CACHE_PATH / "hybrid_retriever_results.csv", index=False)
+results.to_csv(CACHE_PATH / "base_retriever_results.csv", index=False)
