@@ -1,18 +1,19 @@
 import pandas as pd
 import os
-
 from deepeval import evaluate
 from deepeval.test_case import LLMTestCaseParams, LLMTestCase
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
 from simple_rag import generate_simple_rag
 from documents import PATH as DATA_PATH
-## llama index eval
+from results.cache import PATH as CACHE_PATH
+
+# llama index eval
 from llama_index.core.evaluation import RelevancyEvaluator
 from llama_index.core.evaluation import CorrectnessEvaluator
 from llama_index.core.evaluation import SemanticSimilarityEvaluator
 from llama_index.core.evaluation import FaithfulnessEvaluator
-## deepeval
+# deepeval
 from deepeval.models import GeminiModel
 from deepeval.metrics import GEval
 
@@ -118,4 +119,5 @@ results = pd.DataFrame({
 })
 
 print(results)
-
+# Save results to CSV
+results.to_csv(CACHE_PATH / "rag_evaluation_results.csv", index=False)
