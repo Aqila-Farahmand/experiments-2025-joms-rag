@@ -40,7 +40,7 @@ def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, 
     """
     total_time = total_faith = total_rel = 0.0
     total_pass_time = 0.0
-    n = 10
+    n = len(questions)
     print(f"Evaluating {n} queries...")
     for q in questions[:n]:
         print(".", end="", flush=True)
