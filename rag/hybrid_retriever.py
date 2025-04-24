@@ -9,6 +9,7 @@ from documents import PATH as DOCUMENTS_PATH
 from chroma.__main__ import generate_chroma_db
 from documents import from_pandas_to_list
 
+
 def generate_hybrid_rag(
     csv_path: str,
     chunk_size: int,

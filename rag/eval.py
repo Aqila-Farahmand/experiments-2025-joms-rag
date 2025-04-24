@@ -47,7 +47,7 @@ semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embeddin
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
 rag = generate_vector_rerank_rag(
     csv_path=str(DATA_PATH / "data-generated.csv"),
-    chunk_size=512,
+    chunk_size=256,
     overlap_ratio=0.5,
     embedding_model=embedding,
     llm=llm,

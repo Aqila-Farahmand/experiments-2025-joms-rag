@@ -58,28 +58,3 @@ def generate_multi_step_rag(
 
     return multi_step_engine
 
-# # Example usage
-# if __name__ == "__main__":
-#     csv_path = str(DOCUMENTS_PATH / "data-generated.csv")
-#     chunk_size = 512
-#     overlap_ratio = 0.5
-#     embedding_model = GoogleGenAIEmbedding()
-#     llm = GoogleGenAI(model="models/gemini-2.0-flash-lite")
-#     k = 3
-
-#     rag = generate_multi_step_rag(
-#         csv_path=csv_path,
-#         chunk_size=chunk_size,
-#         overlap_ratio=overlap_ratio,
-#         embedding_model=embedding_model,
-#         llm=llm,
-#         k=k
-#     )
-#     # Example query
-#     query = "What is the capital of France?"
-#     response = rag.query(query)
-#     print(response)
-#     # Example query with multi-step reasoning
-#     multi_step_query = "Explain the significance of the capital of France in European history."
-#     multi_step_response = rag.query(multi_step_query)
-#     print(multi_step_response)
