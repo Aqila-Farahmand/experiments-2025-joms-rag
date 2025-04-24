@@ -24,8 +24,17 @@ def generate_2d_graph(data: pd.DataFrame) -> None:
 
     coords = data.groupby(["avg_faithfulness", "avg_relevancy"])
 
+    group_number = 0
+    group_cmap = [
+        "#000000",  # black
+        "#9467bd",  # violet
+        "#8c564b",  # brown
+        "#1f77b4",  # blue
+    ]
+
     for (x, y), group in coords:
         n = len(group)
+
         if n == 1:
             row = group.iloc[0]
             color = cmap(norm(row["avg_time"]))
@@ -33,11 +42,10 @@ def generate_2d_graph(data: pd.DataFrame) -> None:
             ax.annotate(f"({int(row['chunk_size'])}, {int(row['overlap'] * 100)})", (x, y), fontsize=8, ha='center',
                         va='bottom')
         else:
-            ax.scatter(x, y, color='darkgray', s=50, zorder=1)
-
-            angles = np.linspace(11/12 * np.pi, 19/12 * np.pi, n, endpoint=False)
-            # radius depends on the number of points in the group in a non-linear way
-            radius = 0.01 * np.log(n)
+            group_color = group_cmap[group_number % len(group_cmap)]
+            group_number += 1
+            angles = np.linspace(11 / 12 * np.pi, 19 / 12 * np.pi, n, endpoint=False)
+            radius = 0.006 * group_number
 
             for angle, (_, row) in zip(angles, group.iterrows()):
                 dx = radius * np.cos(angle)
@@ -46,9 +54,11 @@ def generate_2d_graph(data: pd.DataFrame) -> None:
 
                 color = cmap(norm(row["avg_time"]))
                 ax.scatter(x_new, y_new, color=color, s=100, zorder=2)
-                ax.plot([x, x_new], [y, y_new], color='gray', linestyle='--', linewidth=0.8, zorder=1)
-                ax.annotate(f"({int(row['chunk_size'])}, {int(row['overlap'] * 100)})", (x_new, y_new), fontsize=8,
+                ax.plot([x, x_new], [y, y_new], color=group_color, linestyle='--', linewidth=0.8, zorder=1)
+                ax.annotate(f"({int(row['chunk_size'])}, {int(row['overlap'] * 100)})", (x_new, y_new-0.001), fontsize=8,
                             ha='center', va='bottom')
+
+            ax.scatter(x, y, color=group_color, s=50, zorder=1, marker='X')
 
     ax.set_xlabel("Average Faithfulness")
     ax.set_ylabel("Average Relevancy")
