@@ -46,13 +46,13 @@ def generate_hybrid_rag(
     )
 
     # Initialize Chroma PersistentClient to create the Chroma vector store
-    db = chromadb.PersistentClient(path="./chroma")  # Ensure this path exists
+    db = chromadb.PersistentClient(path="./chroma")
     chroma_collection = db.get_or_create_collection("dense_vectors")
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 
     # Create SimpleDocumentStore to use with BM25Retriever
     docstore = SimpleDocumentStore()
-    docstore.add_documents(nodes)  # Adding Node objects to docstore
+    docstore.add_documents(nodes)
 
     # Create the vector store index (for dense retrieval)
     index = VectorStoreIndex.from_vector_store(
@@ -62,7 +62,7 @@ def generate_hybrid_rag(
 
     # Create retrievers for BM25 and vector-based retrieval
     bm25_retriever = BM25Retriever.from_defaults(
-        docstore=docstore, similarity_top_k=k  # Use the docstore here
+        docstore=docstore, similarity_top_k=k
     )
     vector_retriever = index.as_retriever(similarity_top_k=k)
 
@@ -73,7 +73,7 @@ def generate_hybrid_rag(
             bm25_retriever,    # BM25 keyword-based retriever
         ],
         num_queries=1,
-        use_async=True,  # Enable async queries for faster performance if needed
+        use_async=True,
     )
 
     # Final query engine setup
