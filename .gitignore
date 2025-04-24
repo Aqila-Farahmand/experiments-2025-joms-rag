@@ -1,3 +1,6 @@
+figures/*.eps
+figures/*.png
+
 .idea/
 .DS_Store
 .venv/
