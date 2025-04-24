@@ -4,10 +4,13 @@ from deepeval import evaluate
 from deepeval.test_case import LLMTestCaseParams, LLMTestCase
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
-from simple_rag import generate_simple_rag
 from documents import PATH as DATA_PATH
 from results.cache import PATH as CACHE_PATH
+from simple_rag import generate_simple_rag
 from vector_rerank_retriever import generate_vector_rerank_rag
+from hybrid_retriever import generate_hybrid_rag
+from multi_step_retriever import generate_multi_step_rag
+
 # llama index eval
 from llama_index.core.evaluation import RelevancyEvaluator
 from llama_index.core.evaluation import CorrectnessEvaluator
@@ -45,13 +48,14 @@ faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
 correctness_evaluator = CorrectnessEvaluator(llm=llm)
 semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embedding)
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
-rag = generate_vector_rerank_rag(
+rag = generate_hybrid_rag(
     csv_path=str(DATA_PATH / "data-generated.csv"),
     chunk_size=256,
     overlap_ratio=0.5,
     embedding_model=embedding,
     llm=llm,
-    k=3
+    k=3,
+    alpha=0.5
 )
 # remove for the full dataset
 dataset_under_test = test[:5]
@@ -121,4 +125,4 @@ results = pd.DataFrame({
 
 print(results)
 # Save results to CSV
-results.to_csv(CACHE_PATH / "rerank_results.csv", index=False)
+results.to_csv(CACHE_PATH / "hybrid_retriever_results.csv", index=False)
