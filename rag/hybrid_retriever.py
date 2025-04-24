@@ -13,6 +13,8 @@ import chromadb
 import os
 from documents import from_pandas_to_list
 
+# to do: fix the bug in the bm25 retriever
+
 
 def generate_hybrid_rag(
     csv_path: str,
