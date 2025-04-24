@@ -1,0 +1,13 @@
+Average faithfulness: 0.80
+Average correctness: 1.60
+Average semantic similarity: 0.80
+Average relevancy: 1.00
+Average G-Eval: 0.36
+                Metric     Score
+0         Faithfulness  0.800000
+1          Correctness  1.600000
+2  Semantic Similarity  0.800535
+3            Relevancy  1.000000
+4               G-Eval  0.360000
+
+Process finished with exit code 0
