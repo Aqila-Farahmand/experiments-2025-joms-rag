@@ -1,29 +1,31 @@
-import pandas as pd
 import os
+
+import pandas as pd
 from deepeval import evaluate
+from deepeval.metrics import GEval
+# deepeval
+from deepeval.models import GeminiModel
 from deepeval.test_case import LLMTestCaseParams, LLMTestCase
+from llama_index.core import Response
+from llama_index.core.evaluation import CorrectnessEvaluator
+from llama_index.core.evaluation import FaithfulnessEvaluator
+# llama index eval
+from llama_index.core.evaluation import RelevancyEvaluator
+from llama_index.core.evaluation import SemanticSimilarityEvaluator
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
+
 from documents import PATH as DATA_PATH
 from results.cache import PATH as CACHE_PATH
 from simple_rag import generate_simple_rag
-from vector_rerank_retriever import generate_vector_rerank_rag
-from hybrid_retriever import generate_hybrid_rag
-from multi_step_retriever import generate_multi_step_rag
 
-# llama index eval
-from llama_index.core.evaluation import RelevancyEvaluator
-from llama_index.core.evaluation import CorrectnessEvaluator
-from llama_index.core.evaluation import SemanticSimilarityEvaluator
-from llama_index.core.evaluation import FaithfulnessEvaluator
-# deepeval
-from deepeval.models import GeminiModel
-from deepeval.metrics import GEval
-
-model = GeminiModel(
+judge_deep_eval = GeminiModel(
     model_name="gemini-2.0-flash",
     api_key=os.environ.get("GOOGLE_API_KEY"),
 )
+embedding = GoogleGenAIEmbedding()
+
+judge_llama_index = GoogleGenAI(model="models/gemini-2.0-flash-lite")
 
 medical_faithfulness = GEval(
     name="Medical Correctness",
@@ -35,25 +37,22 @@ medical_faithfulness = GEval(
         "Provide reasons for the faithfulness score, emphasizing the importance of clinical accuracy and patient safety."
     ],
     evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
-    model=model
+    model=judge_deep_eval
 )
+
+faithfulness_evaluator = FaithfulnessEvaluator(llm=judge_llama_index)
+correctness_evaluator = CorrectnessEvaluator(llm=judge_llama_index)
+semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embedding)
+relevancy_evaluator = RelevancyEvaluator(llm=judge_llama_index)
 
 test = pd.read_csv(DATA_PATH / "test.csv")
 
-judge = GoogleGenAI(model="models/gemini-2.0-flash")
-llm = GoogleGenAI(model="models/gemini-2.0-flash-lite")
-embedding = GoogleGenAIEmbedding()
-
-faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
-correctness_evaluator = CorrectnessEvaluator(llm=llm)
-semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embedding)
-relevancy_evaluator = RelevancyEvaluator(llm=llm)
 rag = generate_simple_rag(
     csv_path=str(DATA_PATH / "data-generated.csv"),
     chunk_size=256,
     overlap_ratio=0.5,
     embedding_model=embedding,
-    llm=llm,
+    llm=judge_llama_index,
     k=3,
     #alpha=0.5
 )
@@ -70,39 +69,61 @@ total_relevancy = 0
 total_g_eval = 0
 n = len(dataset_under_test)
 
-print(f"Evaluating {n} queries...")
-for i, question in enumerate(dataset_under_test["Sentence"]):
-    response = replies_rag[i]
-    reference = dataset_under_test["Response"].iloc[i]
-    print(".", end="", flush=True)
+def eval_responses(responses: list[Response], data_under_test) -> dict:
+    result = {
+        'correctness' : [],
+        'semantic_similarity' : [],
+        'g_eval' : []
+    }
+    for i, question in enumerate(data_under_test["Response"]):
+        response = responses[i]
+        reference = data_under_test["Response"].iloc[i]
+        print(".", end="", flush=True)
 
-    # Evaluate metrics (LLaMa Index)
-    faithfulness_score = float(faithfulness_evaluator.evaluate_response(response=response).score)
-    correctness_score = float(correctness_evaluator.evaluate_response(
-        query=question, response=response, reference=reference).score)
-    semantic_similarity_score = float(semantic_similarity_evaluator.evaluate_response(
-        query=question, response=response, reference=reference).score)
-    relevancy_score = float(relevancy_evaluator.evaluate_response(
-        query=question, response=response).score)
-    # DeepEval score
-    test_case = LLMTestCase(
-        input=question,
-        actual_output=response.response,
-        expected_output=reference
-    )
-    g_eval = evaluate(
-        test_cases=[test_case],
-        metrics=[medical_faithfulness],
-        show_indicator=False,
-        display=None,
-        print_results=False
-    )
-    # Accumulate scores
-    total_faithfulness += faithfulness_score
-    total_correctness += correctness_score
-    total_semantic_similarity += semantic_similarity_score
-    total_relevancy += relevancy_score
-    total_g_eval += g_eval.test_results[0].metrics_data[0].score
+        correctness_score = float(
+            correctness_evaluator.evaluate_response(query=question, response=response, reference=reference).score
+        )
+        semantic_similarity_score = float(
+            semantic_similarity_evaluator.evaluate_response(query=question, response=response, reference=reference).score
+        )
+        # DeepEval score
+        test_case = LLMTestCase(
+            input=question,
+            actual_output=response.response,
+            expected_output=reference
+        )
+        g_eval = evaluate(
+            test_cases=[test_case],
+            metrics=[medical_faithfulness],
+            show_indicator=False,
+            display=None,
+            print_results=False
+        )
+
+        result['correctness'].append(correctness_score)
+        result['semantic_similarity'].append(semantic_similarity_score)
+        result['g_eval'].append(g_eval.test_results[0].metrics_data[0].score)
+    return result
+
+def eval_rag(responses: list[Response], data_under_test):
+    result = eval_responses(responses=responses, data_under_test=data_under_test)
+    result['faithfulness'] = []
+    result['relevancy'] = []
+    for i, question in enumerate(data_under_test["Response"]):
+        response = responses[i]
+        reference = data_under_test["Response"].iloc[i]
+        print(".", end="", flush=True)
+
+        # Evaluate metrics (LLaMa Index)
+        faithfulness_score = float(
+            faithfulness_evaluator.evaluate_response(response=response).score
+        )
+
+        relevancy_score = float(
+            relevancy_evaluator.evaluate_response(query=question, response=response).score
+        )
+        result['faithfulness'].append(faithfulness_score)
+        result['relevancy'].append(relevancy_score)
 
 print("")
 print(f"Average faithfulness: {total_faithfulness / n:.2f}")

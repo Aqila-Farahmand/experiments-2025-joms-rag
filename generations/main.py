@@ -1,0 +1,73 @@
+# set of rag under test + model under test
+import json
+import os
+import pickle
+
+import pandas as pd
+from langchain_core.language_models import LLM
+
+from llama_index.core.base.embeddings.base import BaseEmbedding
+from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
+from llama_index.embeddings.ollama import OllamaEmbedding
+from llama_index.llms.google_genai import GoogleGenAI
+from llama_index.llms.ollama import Ollama
+
+from documents import PATH as DATA_PATH
+from generations import PATH as GENERATIONS_PATH
+from generations import RagUnderTest
+from generations.generate_replies import generate_replies_from_rag
+from rag.simple_rag import generate_simple_rag
+
+embedding = [
+    OllamaEmbedding(model_name="mxbai-embed-large"),
+    GoogleGenAIEmbedding()
+]
+llms = [
+    Ollama(model="qwen2.5:1.5b"),
+    GoogleGenAI()
+    # others
+]
+data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:5] # remove :5 for the full dataset
+base = DATA_PATH / "data-generated.csv"
+
+
+
+def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTest]:
+    # generate all the combination that we would like to test
+    rag = generate_simple_rag(
+        csv_path=base,
+        chunk_size=256,
+        overlap_ratio=0.5,
+        embedding_model=embedding,
+        llm=llm,
+        k=5
+    )
+    # do this for several rags
+    return [RagUnderTest(rag=rag, tag=f"simple_rag__{llm.model}__{embedding.model_name}")]
+
+def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> None:
+    # generate a response for the rag
+    responses = generate_replies_from_rag(rag_under_test.rag, data_under_test)
+    # check if the folder exists, if not create
+    if not os.path.exists(where):
+        os.makedirs(where)
+    # store "not raw" with json
+    with open(os.path.join(where, f"{rag_under_test.tag}.json"), "w") as f:
+        json.dump([response.response for response in responses], f, indent=2)
+    # store raw with pickle
+    with open(os.path.join(where, f"{rag_under_test.tag}.pkl"), "wb") as f:
+        pickle.dump(responses, f)
+
+
+
+for embedding_model in embedding:
+    for llm in llms:
+        print(f"Generating responses for {llm.model} with {embedding_model.model_name}")
+        # generate rags
+        rags = generate_rags_for_llm(llm, embedding_model)
+        # iterate over the rags
+        for rag in rags:
+            print(f"Generating responses for {rag.tag}")
+            # generate response and store
+            generate_response_and_store(GENERATIONS_PATH, rag)
+            print(f"Generated responses for {rag.tag} and stored in {DATA_PATH}")

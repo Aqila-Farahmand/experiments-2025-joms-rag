@@ -1,13 +1,12 @@
 import pandas as pd
 from llama_index.core import VectorStoreIndex
+from llama_index.core.base.base_query_engine import BaseQueryEngine
 from llama_index.core.base.embeddings.base import BaseEmbedding
-from llama_index.core.base.llms.base import BaseLLM
+from llama_index.core.llms import LLM
 from llama_index.core.query_engine import RetrieverQueryEngine
-from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
-from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.vector_stores.chroma import ChromaVectorStore
-from documents import PATH as DOCUMENTS_PATH
-from chroma.__main__ import generate_chroma_db
+
+from chroma import generate_chroma_db
 from documents import from_pandas_to_list
 
 
@@ -16,9 +15,9 @@ def generate_simple_rag(
         chunk_size: int,
         overlap_ratio: float,
         embedding_model: BaseEmbedding,
-        llm: BaseLLM,
+        llm: LLM,
         k: int
-):
+) -> BaseQueryEngine:
     """
     Generate a simple RAG (Retrieval-Augmented Generation) model using ChromaDB.
     """
@@ -33,7 +32,7 @@ def generate_simple_rag(
         overlap=overlap_ratio,
         embedding_lm=embedding_model,
         force_recreate=False,
-        db_name_base="simple"
+        db_name_base=f"simple_{embedding_model.model_name}"
     )
     # load a VectorStore:
     vector_store = ChromaVectorStore(chroma_collection=stored_data)

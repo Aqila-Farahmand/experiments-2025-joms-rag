@@ -1,12 +1,13 @@
 import pandas as pd
 from llama_index.core import VectorStoreIndex
-from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.core.base.base_query_engine import BaseQueryEngine
+from llama_index.core.base.embeddings.base import BaseEmbedding
+from llama_index.core.llms import LLM
 from llama_index.core.query_engine import MultiStepQueryEngine
-from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
-from llama_index.llms.google_genai import GoogleGenAI
-from documents import PATH as DOCUMENTS_PATH
-from chroma.__main__ import generate_chroma_db
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.vector_stores.chroma import ChromaVectorStore
+
+from chroma import generate_chroma_db
 from documents import from_pandas_to_list
 
 
@@ -14,10 +15,10 @@ def generate_multi_step_rag(
     csv_path: str,
     chunk_size: int,
     overlap_ratio: float,
-    embedding_model: GoogleGenAIEmbedding,
-    llm: GoogleGenAI,
+    embedding_model: BaseEmbedding,
+    llm: LLM,
     k: int
-):
+) -> BaseQueryEngine:
     # Load CSV data
     df = pd.read_csv(csv_path)
     documents = from_pandas_to_list(df)
@@ -29,7 +30,7 @@ def generate_multi_step_rag(
         overlap=overlap_ratio,
         embedding_lm=embedding_model,
         force_recreate=False,
-        db_name_base="multi_step"
+        db_name_base=f"multi_step_{embedding_model.model_name}"
     )
 
     # Load vector store

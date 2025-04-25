@@ -1,17 +1,19 @@
-from llama_index.core import VectorStoreIndex, StorageContext
-from llama_index.core.storage.docstore import SimpleDocumentStore
-from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.retrievers.bm25 import BM25Retriever
+import chromadb
+import pandas as pd
+from llama_index.core import VectorStoreIndex
+from llama_index.core.base.base_query_engine import BaseQueryEngine
+from llama_index.core.base.embeddings.base import BaseEmbedding
+from llama_index.core.llms import LLM
 from llama_index.core.query_engine import RetrieverQueryEngine
-from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
-from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.core.retrievers import QueryFusionRetriever
 from llama_index.core.schema import Node
-from chroma.__main__ import generate_chroma_db
-import pandas as pd
-import chromadb
-import os
+from llama_index.core.storage.docstore import SimpleDocumentStore
+from llama_index.retrievers.bm25 import BM25Retriever
+from llama_index.vector_stores.chroma import ChromaVectorStore
+
+from chroma import generate_chroma_db
 from documents import from_pandas_to_list
+
 
 # to do: fix the bug in the bm25 retriever
 
@@ -20,11 +22,11 @@ def generate_hybrid_rag(
     csv_path: str,
     chunk_size: int,
     overlap_ratio: float,
-    embedding_model: GoogleGenAIEmbedding,
-    llm: GoogleGenAI,
+    embedding_model: BaseEmbedding,
+    llm: LLM,
     k: int,
     alpha: float = 0.5  # Blending weight: 0.0 = only BM25, 1.0 = only vector
-):
+) -> BaseQueryEngine:
     """
     Generate a Hybrid RAG (Retrieval-Augmented Generation) model using
     both BM25 (keyword) and vector similarity search with LlamaIndex.
@@ -44,7 +46,7 @@ def generate_hybrid_rag(
         overlap=overlap_ratio,
         embedding_lm=embedding_model,
         force_recreate=False,
-        db_name_base="hybrid_rag"
+        db_name_base=f"hybrid_rag_{embedding_model.model_name}"
     )
 
     # Initialize Chroma PersistentClient to create the Chroma vector store
