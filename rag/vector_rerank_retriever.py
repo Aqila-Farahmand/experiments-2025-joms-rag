@@ -17,7 +17,8 @@ def generate_vector_rerank_rag(
     overlap_ratio: float,
     embedding_model: BaseEmbedding,
     llm: LLM,
-    k: int
+    k: int,
+    alpha: float
 ) -> BaseQueryEngine:
     # Load CSV data
     df = pd.read_csv(csv_path)

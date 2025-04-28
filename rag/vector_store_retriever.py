@@ -16,7 +16,8 @@ def generate_vector_store_rag(
         overlap_ratio: float,
         embedding_model: BaseEmbedding,
         llm: LLM,
-        k: int
+        k: int,
+        alpha: float,
 ) -> BaseQueryEngine:
     """
     Generate a simple RAG (Retrieval-Augmented Generation) model using ChromaDB.
