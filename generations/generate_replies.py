@@ -13,6 +13,7 @@ def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame
         # Print the response
     return result
 
+
 def generate_from_llm_with_prompt(
     llm: LLM,
     data_under_test: DataFrame,

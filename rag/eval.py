@@ -57,7 +57,7 @@ rag = generate_hybrid_rag(
     alpha=0.5
 )
 # remove for the full dataset
-dataset_under_test = test[:5]
+dataset_under_test = test
 # consider to add caching
 replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"]]
 
@@ -143,18 +143,8 @@ print(f"Average relevancy: {total_relevancy / n:.2f}")
 print(f"Average G-Eval: {total_g_eval / n:.2f}")
 
 # Create DataFrame with results
-results = pd.DataFrame({
-    'Metric': ['Faithfulness', 'Correctness', 'Semantic Similarity', 'Relevancy', "G-Eval"],
-    'Score': [
-        total_faithfulness / n,
-        total_correctness / n,
-        total_semantic_similarity / n,
-        total_relevancy / n,
-        total_g_eval / n
-    ]
-})
-
-print(results)
+results = pd.DataFrame(result)
+# print(results)
 # Save results to CSV
 results.to_csv(CACHE_PATH / "hybrid_retriever_results.csv", index=False)
 """

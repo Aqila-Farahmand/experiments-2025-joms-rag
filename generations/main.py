@@ -22,14 +22,14 @@ embedding = [
     OllamaEmbedding(model_name="mxbai-embed-large"),
     GoogleGenAIEmbedding()
 ]
+
 llms = [
     Ollama(model="qwen2.5:1.5b"),
     GoogleGenAI()
     # others
 ]
-data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:5] # remove :5 for the full dataset
+data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:5]  # remove :5 for the full dataset
 base = DATA_PATH / "data-generated.csv"
-
 
 
 def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTest]:
@@ -45,6 +45,7 @@ def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTe
     # do this for several rags
     return [RagUnderTest(rag=rag, tag=f"simple_rag__{llm.model}__{embedding.model_name}")]
 
+
 def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> None:
     # generate a response for the rag
     responses = generate_replies_from_rag(rag_under_test.rag, data_under_test)
@@ -59,7 +60,7 @@ def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> Non
         pickle.dump(responses, f)
 
 
-
+# iterate over the llms and embedding
 for embedding_model in embedding:
     for llm in llms:
         print(f"Generating responses for {llm.model} with {embedding_model.model_name}")
