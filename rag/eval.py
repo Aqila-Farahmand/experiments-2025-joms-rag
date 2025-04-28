@@ -126,7 +126,7 @@ def eval_rag(responses: list[Response], data_under_test, _result):
         results['faithfulness'].append(faithfulness_score)
         results['relevancy'].append(relevancy_score)
     return results
-"""
+
 result = eval_rag(responses=replies_rag, data_under_test=dataset_under_test, _result=result)
 total_faithfulness = sum(result['faithfulness'])
 total_correctness = sum(result['correctness'])
@@ -147,4 +147,3 @@ results = pd.DataFrame(result)
 # print(results)
 # Save results to CSV
 results.to_csv(CACHE_PATH / "hybrid_retriever_results.csv", index=False)
-"""
