@@ -16,13 +16,13 @@ from llama_index.llms.google_genai import GoogleGenAI
 # import paths and modules from root
 from documents import PATH as DATA_PATH
 from results.cache import PATH as CACHE_PATH
-from rag.simple_rag import generate_simple_rag
+from rag.vector_store_retriever import generate_vector_store_rag
 from rag.hybrid_retriever import generate_hybrid_rag
 from rag.vector_rerank_retriever import generate_vector_rerank_retriever
 
 
 RETRIEVES = {
-    "vector_store": generate_simple_rag,
+    "vector_store": generate_vector_store_rag,
     "vector_rerank": generate_vector_rerank_retriever,
     "hybrid": generate_hybrid_rag
 }
