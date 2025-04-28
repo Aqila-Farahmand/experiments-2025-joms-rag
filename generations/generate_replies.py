@@ -8,9 +8,9 @@ from pandas import DataFrame
 def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame) -> list[Response]:
     result = []
     for i, question in enumerate(data_under_test["Sentence"]):
-        # Generate a response using the chain
-        result.append(chain.query(question))
-        # Print the response
+        response = chain.query(question)
+        print(f"[{i}] Question: {question}\nResponse: {response.response}\n")
+        result.append(response)
     return result
 
 
@@ -21,8 +21,8 @@ def generate_from_llm_with_prompt(
 ) -> list[Response]:
     result = []
     for i, question in enumerate(data_under_test["Sentence"]):
-        # Generate a response using the chain
-        prompt_template.format(question=question)
-        result.append(Response(llm.complete(question).text))
-        # Print the response
+        formatted_prompt = prompt_template.format(question=question)
+        response_text = llm.complete(formatted_prompt).text
+        result.append(Response(response_text))
+        print(f"[{i}] Question: {question}\nFormatted Prompt: {formatted_prompt}\nResponse: {response_text}\n")
     return result

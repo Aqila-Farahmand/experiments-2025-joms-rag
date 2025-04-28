@@ -19,12 +19,12 @@ from generations.generate_replies import generate_replies_from_rag
 from rag.vector_store_retriever import generate_vector_store_rag
 
 embedding = [
-    OllamaEmbedding(model_name="mxbai-embed-large"),
+    OllamaEmbedding(model_name="mxbai-embed-large", base_url="http://clusters.almaai.unibo.it:11434/"),
     GoogleGenAIEmbedding()
 ]
 
 llms = [
-    Ollama(model="qwen2.5:1.5b"),
+    Ollama(model="qwen2.5:1.5b", base_url="http://clusters.almaai.unibo.it:11434/"),
     GoogleGenAI()
     # others
 ]
@@ -40,7 +40,7 @@ def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTe
         overlap_ratio=0.5,
         embedding_model=embedding,
         llm=llm,
-        k=5,
+        k=3,
         alpha=0.5
     )
     # do this for several rags
@@ -53,9 +53,9 @@ def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> Non
     pickle_path = os.path.join(where, f"{rag_under_test.tag}.pkl")
 
     # if already exists, skip
-    if os.path.exists(json_path) and os.path.exists(pickle_path):
-        print(f"Skipping {rag_under_test.tag}, already exists.")
-        return
+    # if os.path.exists(json_path) and os.path.exists(pickle_path):
+        # print(f"Skipping {rag_under_test.tag}, already exists.")
+        # return
 
     # otherwise, generate responses
     responses = generate_replies_from_rag(rag_under_test.rag, data_under_test)
