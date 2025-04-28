@@ -64,6 +64,8 @@ replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"
 # Evaluate all metrics
 n = len(dataset_under_test)
 
+# NOTE: "correctness" evaluator: It outputs a score between 1 and 5
+
 result = {
     'correctness': [],
     'semantic_similarity': [],
