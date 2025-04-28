@@ -10,6 +10,10 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 from chroma import generate_chroma_db
 from documents import from_pandas_to_list
 
+# Name the chroma embeddings
+_gemini_embedding = "gemini_chunk_size_256_overlapping_50"
+_nomadic_embedding = "nomadic_chunk_size_256_overlapping_50"
+
 
 def generate_vector_rerank_rag(
     csv_path: str,
@@ -20,22 +24,11 @@ def generate_vector_rerank_rag(
     k: int,
     alpha: float
 ) -> BaseQueryEngine:
-    # Load CSV data
-    df = pd.read_csv(csv_path)
-    documents = from_pandas_to_list(df)
 
-    # Generate Chroma DB
-    stored_data = generate_chroma_db(
-        documents,
-        chunk_size=chunk_size,
-        overlap=overlap_ratio,
-        embedding_lm=embedding_model,
-        force_recreate=False,
-        db_name_base=f"vector_rerank_{embedding_model.model_name}"
-    )
-
-    # Load vector store
-    vector_store = ChromaVectorStore(chroma_collection=stored_data)
+    # Initialize existing Chromadb and choose the embedding name
+    db = chromadb.PersistentClient(path=str(CHROMA_PATH))
+    chroma_collection = db.get_or_create_collection(_gemini_embedding)
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 
     # Create vector store index
     index = VectorStoreIndex.from_vector_store(

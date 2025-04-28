@@ -15,8 +15,9 @@ from chroma import generate_chroma_db
 from documents import from_pandas_to_list
 from chroma import PATH as CHROMA_PATH
 
-# path to the ChromaDB embedding
-embedding_db = CHROMA_PATH / "gemini_chunk_size_256_overlapping_50"
+# Name the chroma embeddings
+_gemini_embedding = "gemini_chunk_size_256_overlapping_50"
+_nomadic_embedding = "nomadic_chunk_size_256_overlapping_50"
 
 
 def generate_hybrid_rag(
@@ -45,9 +46,9 @@ def generate_hybrid_rag(
         if node_type == ObjectType.TEXT or node_type is None:
             text_nodes.append(node)
 
-    # Initialize Chroma PersistentClient to create the Chroma vector store
+    # Initialize Chromadb and choose the embedding name
     db = chromadb.PersistentClient(path=str(CHROMA_PATH))
-    chroma_collection = db.get_or_create_collection("gemini_chunk_size_256_overlapping_50")
+    chroma_collection = db.get_or_create_collection(_gemini_embedding)
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 
     # Create SimpleDocumentStore to use with BM25Retriever
