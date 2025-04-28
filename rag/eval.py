@@ -18,6 +18,14 @@ from documents import PATH as DATA_PATH
 from results.cache import PATH as CACHE_PATH
 from rag.simple_rag import generate_simple_rag
 from rag.hybrid_retriever import generate_hybrid_rag
+from rag.vector_rerank_retriever import generate_vector_rerank_retriever
+
+
+RETRIEVES = {
+    "vector_store": generate_simple_rag,
+    "vector_rerank": generate_vector_rerank_retriever,
+    "hybrid": generate_hybrid_rag
+}
 
 judge_deep_eval = GeminiModel(
     model_name="gemini-2.0-flash",
@@ -46,31 +54,6 @@ semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embeddin
 relevancy_evaluator = RelevancyEvaluator(llm=judge_llama_index)
 
 test = pd.read_csv(DATA_PATH / "test.csv")
-
-rag = generate_hybrid_rag(
-    csv_path=str(DATA_PATH / "data-generated.csv"),
-    chunk_size=256,
-    overlap_ratio=0.5,
-    embedding_model=embedding,
-    llm=judge_llama_index,
-    k=3,
-    alpha=0.5
-)
-# remove for the full dataset
-dataset_under_test = test
-# consider to add caching
-replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"]]
-
-# Evaluate all metrics
-n = len(dataset_under_test)
-
-# NOTE: "correctness" evaluator: It outputs a score between 1 and 5
-
-result = {
-    'correctness': [],
-    'semantic_similarity': [],
-    'g_eval': []
-}
 
 
 def eval_responses(responses: list[Response], data_under_test, _result: dict) -> dict:
@@ -127,23 +110,54 @@ def eval_rag(responses: list[Response], data_under_test, _result):
         results['relevancy'].append(relevancy_score)
     return results
 
-result = eval_rag(responses=replies_rag, data_under_test=dataset_under_test, _result=result)
-total_faithfulness = sum(result['faithfulness'])
-total_correctness = sum(result['correctness'])
-total_semantic_similarity = sum(result['semantic_similarity'])
-total_relevancy = sum(result['relevancy'])
-total_g_eval = sum(result['g_eval'])
 
+for retriever_name, retriever in RETRIEVES.items():
 
-print("")
-print(f"Average faithfulness: {total_faithfulness / n:.2f}")
-print(f"Average correctness: {total_correctness / n:.2f}")
-print(f"Average semantic similarity: {total_semantic_similarity / n:.2f}")
-print(f"Average relevancy: {total_relevancy / n:.2f}")
-print(f"Average G-Eval: {total_g_eval / n:.2f}")
+    if os.path.exists(CACHE_PATH / f"{retriever_name}_results.csv"):
+        print(f"Results for {retriever_name} already exist. Skipping...")
+        continue
 
-# Create DataFrame with results
-results = pd.DataFrame(result)
-# print(results)
-# Save results to CSV
-results.to_csv(CACHE_PATH / "hybrid_retriever_results.csv", index=False)
+    rag = retriever(
+        csv_path=str(DATA_PATH / "data-generated.csv"),
+        chunk_size=256,
+        overlap_ratio=0.5,
+        embedding_model=embedding,
+        llm=judge_llama_index,
+        k=3,
+        alpha=0.5
+    )
+    # remove for the full dataset
+    dataset_under_test = test
+    # consider to add caching
+    replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"]]
+
+    # Evaluate all metrics
+    n = len(dataset_under_test)
+
+    # NOTE: "correctness" evaluator: It outputs a score between 1 and 5
+
+    result = {
+        'correctness': [],
+        'semantic_similarity': [],
+        'g_eval': []
+    }
+
+    result = eval_rag(responses=replies_rag, data_under_test=dataset_under_test, _result=result)
+    total_faithfulness = sum(result['faithfulness'])
+    total_correctness = sum(result['correctness'])
+    total_semantic_similarity = sum(result['semantic_similarity'])
+    total_relevancy = sum(result['relevancy'])
+    total_g_eval = sum(result['g_eval'])
+
+    print("")
+    print(f"Average faithfulness: {total_faithfulness / n:.2f}")
+    print(f"Average correctness: {total_correctness / n:.2f}")
+    print(f"Average semantic similarity: {total_semantic_similarity / n:.2f}")
+    print(f"Average relevancy: {total_relevancy / n:.2f}")
+    print(f"Average G-Eval: {total_g_eval / n:.2f}")
+
+    # Create DataFrame with results
+    results = pd.DataFrame(result)
+    # print(results)
+    # Save results to CSV
+    results.to_csv(CACHE_PATH / f"{retriever_name}_results.csv", index=False)

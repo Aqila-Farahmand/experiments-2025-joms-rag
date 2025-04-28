@@ -10,7 +10,7 @@ from chroma import generate_chroma_db
 from documents import from_pandas_to_list
 
 
-def generate_simple_rag(
+def generate_vector_store_rag(
         csv_path: str, #  = str(DOCUMENTS_PATH / "data-generated.csv")
         chunk_size: int,
         overlap_ratio: float,
