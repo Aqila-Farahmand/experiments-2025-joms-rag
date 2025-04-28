@@ -6,9 +6,9 @@ from llama_index.core.llms import LLM
 from llama_index.core.postprocessor import LLMRerank
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.vector_stores.chroma import ChromaVectorStore
-
-from chroma import generate_chroma_db
+import chromadb
 from documents import from_pandas_to_list
+from chroma import PATH as CHROMA_PATH
 
 # Name the chroma embeddings
 _gemini_embedding = "gemini_chunk_size_256_overlapping_50"

@@ -16,7 +16,7 @@ from documents import PATH as DATA_PATH
 from generations import PATH as GENERATIONS_PATH
 from generations import RagUnderTest
 from generations.generate_replies import generate_replies_from_rag
-from rag.simple_rag import generate_simple_rag
+from rag.vector_store_retriever import generate_vector_store_rag
 
 embedding = [
     OllamaEmbedding(model_name="mxbai-embed-large"),
@@ -34,29 +34,42 @@ base = DATA_PATH / "data-generated.csv"
 
 def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTest]:
     # generate all the combination that we would like to test
-    rag = generate_simple_rag(
+    rag = generate_vector_store_rag(
         csv_path=base,
         chunk_size=256,
         overlap_ratio=0.5,
         embedding_model=embedding,
         llm=llm,
-        k=5
+        k=5,
+        alpha=0.5
     )
     # do this for several rags
-    return [RagUnderTest(rag=rag, tag=f"simple_rag__{llm.model}__{embedding.model_name}")]
+    return [RagUnderTest(rag=rag, tag=f"vector_store_rag__{llm.model}__{embedding.model_name}")]
 
 
 def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> None:
-    # generate a response for the rag
+    # paths where you will store outputs
+    json_path = os.path.join(where, f"{rag_under_test.tag}.json")
+    pickle_path = os.path.join(where, f"{rag_under_test.tag}.pkl")
+
+    # if already exists, skip
+    if os.path.exists(json_path) and os.path.exists(pickle_path):
+        print(f"Skipping {rag_under_test.tag}, already exists.")
+        return
+
+    # otherwise, generate responses
     responses = generate_replies_from_rag(rag_under_test.rag, data_under_test)
+
     # check if the folder exists, if not create
     if not os.path.exists(where):
         os.makedirs(where)
+
     # store "not raw" with json
-    with open(os.path.join(where, f"{rag_under_test.tag}.json"), "w") as f:
+    with open(json_path, "w") as f:
         json.dump([response.response for response in responses], f, indent=2)
+
     # store raw with pickle
-    with open(os.path.join(where, f"{rag_under_test.tag}.pkl"), "wb") as f:
+    with open(pickle_path, "wb") as f:
         pickle.dump(responses, f)
 
 
@@ -71,4 +84,4 @@ for embedding_model in embedding:
             print(f"Generating responses for {rag.tag}")
             # generate response and store
             generate_response_and_store(GENERATIONS_PATH, rag)
-            print(f"Generated responses for {rag.tag} and stored in {DATA_PATH}")
+            print(f"Generated responses for {rag.tag} and stored in {GENERATIONS_PATH}")
