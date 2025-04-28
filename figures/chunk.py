@@ -8,7 +8,7 @@ from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
 
 
-CHUNK_ANALYSIS_FILE = ANALYSIS_PATH / "chunks_evaluation.csv"
+CHUNK_ANALYSIS_FILE = ANALYSIS_PATH / "chunks_evaluation_gemini.csv"
 
 
 def generate_2d_graph(data: pd.DataFrame) -> None:

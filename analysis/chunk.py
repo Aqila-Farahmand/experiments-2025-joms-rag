@@ -1,3 +1,4 @@
+import os
 import time
 from pathlib import Path
 from typing import List, Tuple, Dict
@@ -5,10 +6,10 @@ from typing import List, Tuple, Dict
 import chromadb
 import fire
 import pandas as pd
-from llama_cloud import GeminiEmbedding
 from llama_index.core import VectorStoreIndex
 from llama_index.core.evaluation import FaithfulnessEvaluator, RelevancyEvaluator
 from llama_index.core.schema import Document
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.vector_stores.chroma import ChromaVectorStore
@@ -28,7 +29,7 @@ OVERLAP_RATIOS = [0.1, 0.2, 0.3, 0.4, 0.5]
 
 # Choose the LLM for chunk size and overlap evaluation
 # llm = Ollama(model="llama3.1", request_timeout=120.0)
-llm = GoogleGenAI(model_name="models/gemini-2.0-flash")
+llm = GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY"))
 
 faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
@@ -78,8 +79,8 @@ def main(
 
     # 2. Configure embedding
     # llm = Ollama(model="llama3.1", request_timeout=120.0)
-    embedding = GoogleGenAIEmbedding(model_name="models/text-embedding-004")
-
+    # embedding = GoogleGenAIEmbedding(model_name="models/text-embedding-004")
+    embedding = HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
     results: List[Dict[str, float]] = []
 
     # 3. Loop over chunk sizes and overlap ratios
