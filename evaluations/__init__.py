@@ -13,7 +13,6 @@ from requests import Response
 
 PATH = Path(__file__).parent
 
-
 judge_deep_eval = GeminiModel(
     model_name="gemini-2.0-flash",
     api_key=os.environ.get("GOOGLE_API_KEY"),
@@ -43,9 +42,9 @@ relevancy_evaluator = RelevancyEvaluator(llm=judge_llama_index)
 
 def eval_responses(responses: list[Response], data_under_test) -> dict:
     result = {
-        'correctness' : [],
-        'semantic_similarity' : [],
-        'g_eval' : []
+        'correctness': [],
+        'semantic_similarity': [],
+        'g_eval': []
     }
     for i, question in enumerate(data_under_test["Response"]):
         response = responses[i]
@@ -56,7 +55,8 @@ def eval_responses(responses: list[Response], data_under_test) -> dict:
             correctness_evaluator.evaluate_response(query=question, response=response, reference=reference).score
         )
         semantic_similarity_score = float(
-            semantic_similarity_evaluator.evaluate_response(query=question, response=response, reference=reference).score
+            semantic_similarity_evaluator.evaluate_response(query=question, response=response,
+                                                            reference=reference).score
         )
         # DeepEval score
         test_case = LLMTestCase(
@@ -76,6 +76,7 @@ def eval_responses(responses: list[Response], data_under_test) -> dict:
         result['semantic_similarity'].append(semantic_similarity_score)
         result['g_eval'].append(g_eval.test_results[0].metrics_data[0].score)
     return result
+
 
 def eval_rag(responses: list[Response], data_under_test):
     result = eval_responses(responses=responses, data_under_test=data_under_test)

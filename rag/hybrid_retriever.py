@@ -6,16 +6,17 @@ from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import QueryFusionRetriever
-from llama_index.core.schema import Node
+from llama_index.core.schema import TextNode, ObjectType
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.retrievers.bm25 import BM25Retriever
 from llama_index.vector_stores.chroma import ChromaVectorStore
 
 from chroma import generate_chroma_db
 from documents import from_pandas_to_list
+from chroma import PATH as CHROMA_PATH
 
-
-# to do: fix the bug in the bm25 retriever
+# path to the ChromaDB embedding
+embedding_db = CHROMA_PATH / "gemini_chunk_size_256_overlapping_50"
 
 
 def generate_hybrid_rag(
@@ -37,26 +38,21 @@ def generate_hybrid_rag(
     documents = from_pandas_to_list(df)
 
     # Convert raw documents (strings) to Node objects
-    nodes = [Node(text=doc) for doc in documents]
-
-    # Generate vector DB (Chroma)
-    stored_data = generate_chroma_db(
-        documents,
-        chunk_size=chunk_size,
-        overlap=overlap_ratio,
-        embedding_lm=embedding_model,
-        force_recreate=False,
-        db_name_base=f"hybrid_rag_{embedding_model.model_name}"
-    )
+    nodes = [TextNode(text=doc) for doc in documents]
+    text_nodes = []
+    for node in nodes:
+        node_type = node.metadata.get("_node_type", ObjectType.TEXT)
+        if node_type == ObjectType.TEXT or node_type is None:
+            text_nodes.append(node)
 
     # Initialize Chroma PersistentClient to create the Chroma vector store
-    db = chromadb.PersistentClient(path="./chroma")
-    chroma_collection = db.get_or_create_collection("dense_vectors")
+    db = chromadb.PersistentClient(path=str(CHROMA_PATH))
+    chroma_collection = db.get_or_create_collection("gemini_chunk_size_256_overlapping_50")
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 
     # Create SimpleDocumentStore to use with BM25Retriever
-    docstore = SimpleDocumentStore()
-    docstore.add_documents(nodes)
+    doc_store = SimpleDocumentStore()
+    doc_store.add_documents(text_nodes)
 
     # Create the vector store index (for dense retrieval)
     index = VectorStoreIndex.from_vector_store(
@@ -66,7 +62,7 @@ def generate_hybrid_rag(
 
     # Create retrievers for BM25 and vector-based retrieval
     bm25_retriever = BM25Retriever.from_defaults(
-        docstore=docstore, similarity_top_k=k
+        docstore=doc_store, similarity_top_k=k
     )
     vector_retriever = index.as_retriever(similarity_top_k=k)
 
@@ -78,6 +74,7 @@ def generate_hybrid_rag(
         ],
         num_queries=1,
         use_async=True,
+        retriever_weights=[alpha, 1 - alpha],  # Blend weights for each retriever
     )
 
     # Final query engine setup
