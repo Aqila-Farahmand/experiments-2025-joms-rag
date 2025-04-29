@@ -17,6 +17,9 @@ from generations import PATH as GENERATIONS_PATH
 from generations import RagUnderTest
 from generations.generate_replies import generate_replies_from_rag
 from rag.vector_store_retriever import generate_vector_store_rag
+from rag.vector_rerank_retriever import generate_vector_rerank_rag
+from rag.hybrid_retriever import generate_hybrid_rag
+# from analysis import CHROMA_COLLECTION_NAME
 
 embedding = [
     OllamaEmbedding(model_name="mxbai-embed-large", base_url="http://clusters.almaai.unibo.it:11434/"),
@@ -28,25 +31,44 @@ llms = [
     GoogleGenAI()
     # others
 ]
+
 data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:5]  # remove :5 for the full dataset
 base = DATA_PATH / "data-generated.csv"
 
+RETRIEVES = {
+    "vector_store": generate_vector_store_rag,
+    "vector_rerank": generate_vector_rerank_rag,
+    "hybrid": generate_hybrid_rag
+}
+
 
 def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTest]:
-    # generate all the combination that we would like to test
-    rag, index = generate_vector_store_rag(
-        csv_path=base,
-        chunk_size=256,
-        overlap_ratio=0.5,
-        embedding_model=embedding,
-        llm=llm,
-        k=3,
-        alpha=0.5
-    )
-    print(f"Number of docs indexed: {len(index.docstore.docs)}")
+    rags: list[RagUnderTest] = []
 
-    # do this for several rags
-    return [RagUnderTest(rag=rag, tag=f"vector_store_rag__{llm.model}__{embedding.model_name}")]
+    for retriever_name, retriever_fn in RETRIEVES.items():
+        print(f"Generating {retriever_name} for {llm.model} with {embedding.model_name}")
+
+        rag, index = retriever_fn(
+            csv_path=str(DATA_PATH / "data-generated.csv"),
+            chunk_size=256,
+            overlap_ratio=0.5,
+            embedding_model=embedding,
+            llm=llm,
+            k=3,
+            alpha=0.5,
+            persist=True
+        )
+
+        print(f"Number of docs indexed: {len(index.docstore.docs)}")
+
+        rags.append(
+            RagUnderTest(
+                rag=rag,
+                tag=f"{retriever_name}__{llm.model}__{embedding.model_name}"
+            )
+        )
+
+    return rags
 
 
 def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> None:

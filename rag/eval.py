@@ -117,7 +117,7 @@ for retriever_name, retriever in RETRIEVES.items():
         print(f"Results for {retriever_name} already exist. Skipping...")
         continue
 
-    # get vector store retriever
+    # get index and retriever
     rag, index = retriever(
         csv_path=str(DATA_PATH / "data-generated.csv"),
         chunk_size=256,
