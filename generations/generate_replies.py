@@ -5,12 +5,15 @@ from llama_index.core.prompts import RichPromptTemplate
 from pandas import DataFrame
 
 
-def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame) -> list[Response]:
+def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame) -> list[dict]:
     result = []
     for i, question in enumerate(data_under_test["Sentence"]):
         response = chain.query(question)
         print(f"[{i}] Question: {question}\nResponse: {response.response}\n")
-        result.append(response)
+        result.append({
+            "question": question,
+            "response": response.response
+        })
     return result
 
 

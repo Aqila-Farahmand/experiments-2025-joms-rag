@@ -97,8 +97,8 @@ def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> Non
                 embedder_model,
                 retriever,
                 llm_model,
-                item.query,            # assuming this is the question
-                item.response          # assuming this is the raw response text
+                item["question"],
+                item["response"]
             ])
 
 
