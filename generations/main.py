@@ -2,6 +2,7 @@
 import json
 import os
 import pickle
+import csv
 
 import pandas as pd
 from langchain_core.language_models import LLM
@@ -72,29 +73,33 @@ def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTe
 
 
 def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> None:
-    # paths where you will store outputs
-    json_path = os.path.join(where, f"{rag_under_test.tag}.json")
-    pickle_path = os.path.join(where, f"{rag_under_test.tag}.pkl")
-
-    # if already exists, skip
-    # if os.path.exists(json_path) and os.path.exists(pickle_path):
-        # print(f"Skipping {rag_under_test.tag}, already exists.")
-        # return
-
-    # otherwise, generate responses
+    # Generate responses
     responses = generate_replies_from_rag(rag_under_test.rag, data_under_test)
 
-    # check if the folder exists, if not create
-    if not os.path.exists(where):
-        os.makedirs(where)
+    # Ensure the output directory exists
+    os.makedirs(where, exist_ok=True)
 
-    # store "not raw" with json
-    with open(json_path, "w") as f:
-        json.dump([response.response for response in responses], f, indent=2)
+    # CSV path
+    csv_path = os.path.join(where, f"{rag_under_test.tag}.csv")
 
-    # store raw with pickle
-    with open(pickle_path, "wb") as f:
-        pickle.dump(responses, f)
+    # Extract metadata from tag
+    try:
+        retriever, llm_model, embedder_model = rag_under_test.tag.split("__")
+    except ValueError:
+        retriever = llm_model = embedder_model = "unknown"
+
+    # Write to CSV
+    with open(csv_path, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["embedder", "retriever", "LLM", "question", "response"])
+        for item in responses:
+            writer.writerow([
+                embedder_model,
+                retriever,
+                llm_model,
+                item.query,            # assuming this is the question
+                item.response          # assuming this is the raw response text
+            ])
 
 
 # iterate over the llms and embedding
