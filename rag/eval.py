@@ -19,7 +19,7 @@ from results.cache import PATH as CACHE_PATH
 from rag.vector_store_retriever import generate_vector_store_rag
 from rag.hybrid_retriever import generate_hybrid_rag
 from rag.vector_rerank_retriever import generate_vector_rerank_rag
-
+from analysis import CHROMA_COLLECTION_NAME
 
 RETRIEVES = {
     "vector_store": generate_vector_store_rag,
@@ -117,16 +117,20 @@ for retriever_name, retriever in RETRIEVES.items():
         print(f"Results for {retriever_name} already exist. Skipping...")
         continue
 
-    rag = retriever(
+    # get vector store retriever
+    rag, index = retriever(
         csv_path=str(DATA_PATH / "data-generated.csv"),
         chunk_size=256,
         overlap_ratio=0.5,
         embedding_model=embedding,
         llm=judge_llama_index,
         k=3,
-        alpha=0.5
+        alpha=0.5,
+        persist=True,
+        collection_name=CHROMA_COLLECTION_NAME,
     )
-    # remove for the full dataset
+
+    print(f"Number of docs indexed: {len(index.docstore.docs)}")
     dataset_under_test = test
     # consider to add caching
     replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"]]

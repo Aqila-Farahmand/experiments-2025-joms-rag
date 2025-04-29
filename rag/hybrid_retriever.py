@@ -1,23 +1,19 @@
-import chromadb
+# rag/hybrid_retriever.py
+import uuid
 import pandas as pd
+import chromadb
 from llama_index.core import VectorStoreIndex
-from llama_index.core.base.base_query_engine import BaseQueryEngine
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import QueryFusionRetriever
-from llama_index.core.schema import TextNode, ObjectType
+from llama_index.core.schema import Document, ObjectType
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.retrievers.bm25 import BM25Retriever
 from llama_index.vector_stores.chroma import ChromaVectorStore
 
-from chroma import generate_chroma_db
 from documents import from_pandas_to_list
 from chroma import PATH as CHROMA_PATH
-
-# Name the chroma embeddings
-_gemini_embedding = "gemini_chunk_size_256_overlapping_50"
-_nomadic_embedding = "nomadic_chunk_size_256_overlapping_50"
 
 
 def generate_hybrid_rag(
@@ -27,61 +23,64 @@ def generate_hybrid_rag(
     embedding_model: BaseEmbedding,
     llm: LLM,
     k: int,
-    alpha: float = 0.5  # Blending weight: 0.0 = only BM25, 1.0 = only vector
-) -> BaseQueryEngine:
+    alpha: float = 0.5,
+    *,
+    persist: bool = False,
+    collection_name: str = None
+) -> tuple[RetrieverQueryEngine, VectorStoreIndex]:
     """
-    Generate a Hybrid RAG (Retrieval-Augmented Generation) model using
-    both BM25 (keyword) and vector similarity search with LlamaIndex.
+    Generate a Hybrid RAG using both dense (vector) and sparse (BM25) retrieval.
     """
 
-    # Load CSV data
+    # Load CSV and process into text nodes
     df = pd.read_csv(csv_path)
     documents = from_pandas_to_list(df)
 
-    # Convert raw documents (strings) to Node objects
-    nodes = [TextNode(text=doc) for doc in documents]
-    text_nodes = []
-    for node in nodes:
-        node_type = node.metadata.get("_node_type", ObjectType.TEXT)
-        if node_type == ObjectType.TEXT or node_type is None:
-            text_nodes.append(node)
+    docs = [
+        Document(text=doc)
+        for doc in documents
+        if isinstance(doc, str) and doc.strip()
+    ]
 
-    # Initialize Chromadb and choose the embedding name
-    db = chromadb.PersistentClient(path=str(CHROMA_PATH))
-    chroma_collection = db.get_or_create_collection(_gemini_embedding)
-    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    # Initialize Chroma client
+    db = chromadb.PersistentClient(path=str(CHROMA_PATH)) if persist else chromadb.Client()
 
-    # Create SimpleDocumentStore to use with BM25Retriever
+    # Set collection name or generate one
+    if not collection_name:
+        collection_name = f"hybrid_{embedding_model.model_name}_{uuid.uuid4().hex[:6]}"
+
+    collection = db.get_or_create_collection(name=collection_name)
+    vector_store = ChromaVectorStore(chroma_collection=collection)
+
+    # Use a SimpleDocumentStore for BM25
     doc_store = SimpleDocumentStore()
-    doc_store.add_documents(text_nodes)
+    doc_store.add_documents(docs)
 
-    # Create the vector store index (for dense retrieval)
-    index = VectorStoreIndex.from_vector_store(
-        vector_store,
+    # Build index from documents and embedding model
+    index = VectorStoreIndex.from_documents(
+        docs,
         embed_model=embedding_model,
+        vector_store=vector_store
     )
 
-    # Create retrievers for BM25 and vector-based retrieval
-    bm25_retriever = BM25Retriever.from_defaults(
-        docstore=doc_store, similarity_top_k=k
-    )
+    print(f"[INFO] Hybrid RAG indexed {len(index.docstore.docs)} docs into collection '{collection_name}'")
+
+    # Create retrievers
     vector_retriever = index.as_retriever(similarity_top_k=k)
+    bm25_retriever = BM25Retriever.from_defaults(docstore=doc_store, similarity_top_k=k)
 
-    # Combine BM25 and Vector retrievers into a hybrid retriever
+    # Combine into hybrid retriever
     hybrid_retriever = QueryFusionRetriever(
-        [
-            vector_retriever,  # Dense vector-based retriever
-            bm25_retriever,    # BM25 keyword-based retriever
-        ],
+        [vector_retriever, bm25_retriever],
+        retriever_weights=[alpha, 1 - alpha],
         num_queries=1,
-        use_async=True,
-        retriever_weights=[alpha, 1 - alpha],  # Blend weights for each retriever
+        use_async=True
     )
 
-    # Final query engine setup
+    # Set up query engine
     query_engine = RetrieverQueryEngine.from_args(
         retriever=hybrid_retriever,
-        llm=llm,
+        llm=llm
     )
 
-    return query_engine
+    return query_engine, index

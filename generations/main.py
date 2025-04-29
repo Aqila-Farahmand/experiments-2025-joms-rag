@@ -34,7 +34,7 @@ base = DATA_PATH / "data-generated.csv"
 
 def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTest]:
     # generate all the combination that we would like to test
-    rag = generate_vector_store_rag(
+    rag, index = generate_vector_store_rag(
         csv_path=base,
         chunk_size=256,
         overlap_ratio=0.5,
@@ -43,6 +43,8 @@ def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTe
         k=3,
         alpha=0.5
     )
+    print(f"Number of docs indexed: {len(index.docstore.docs)}")
+
     # do this for several rags
     return [RagUnderTest(rag=rag, tag=f"vector_store_rag__{llm.model}__{embedding.model_name}")]
 
