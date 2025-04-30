@@ -4,9 +4,9 @@ from documents import PATH as DOCUMENTS_PATH
 import os
 import pickle
 from evaluations import eval_rag
-from evaluations import PATH as EVAL_PATH
-folder_load_path = GENERATIONS_PATH
-eval_path = EVAL_PATH
+from generations.cache import PATH as GENERATIONS_CACHE_PATH
+from evaluations.cache import PATH as EVAL_CACHE_PATH
+
 data_under_test = pd.read_csv(DOCUMENTS_PATH / "test.csv")[:5] # remove :5 for the full dataset
 
 
@@ -27,7 +27,7 @@ def load_pickle_in_folder(folder):
     return data
 
 
-to_eval = load_pickle_in_folder(folder_load_path)
+to_eval = load_pickle_in_folder(GENERATIONS_CACHE_PATH)
 for key, value in to_eval.items():
     print(f"Evaluating {key}")
     result = eval_rag(value, data_under_test)
@@ -35,10 +35,10 @@ for key, value in to_eval.items():
     # convert to pands
     df = pd.DataFrame.from_dict(result)
     # store as csv
-    df.to_csv(os.path.join(EVAL_PATH, f"{key}.csv"), index=False)
-    # summary, as follow:
+    df.to_csv(os.path.join(EVAL_CACHE_PATH, f"{key}.csv"), index=False)
+    # In summary, the following metrics are included:
     """
-               mean, std
+    mean, std
     correctness
     semantic_similarity
     ---
@@ -51,4 +51,4 @@ for key, value in to_eval.items():
     summary = summary[["metric", "average", "std"]]
 
     # store as csv
-    summary.to_csv(os.path.join(EVAL_PATH, f"{key}_summary.csv"), index=False)
+    summary.to_csv(os.path.join(EVAL_CACHE_PATH, f"{key}_summary.csv"), index=False)

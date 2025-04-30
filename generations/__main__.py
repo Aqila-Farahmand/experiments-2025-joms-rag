@@ -113,8 +113,9 @@ for embedding_model in embedding:
         for rag in rags:
             print(f"Generating responses for {rag.tag}")
             # generate response and store
-            generate_response_and_store(GENERATIONS_PATH, rag)
-            print(f"Generated responses for {rag.tag} and stored in {GENERATIONS_PATH}")
+            cache_path = GENERATIONS_PATH / "cache"
+            generate_response_and_store(cache_path, rag)
+            print(f"Generated responses for {rag.tag} and stored in {cache_path}")
 
 
 if __name__ == "__main__":
