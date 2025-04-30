@@ -1,11 +1,10 @@
-from evaluations import PATH as EVAL_PATH
-
+from evaluations.plots import PATH as PLOTS_PATH
+from evaluations.cache import PATH as CACHE_PATH
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-
 
 # load all the csv files in the folder (that does not have summary in the file name)
 
@@ -82,15 +81,13 @@ def plot_data(data: pd.DataFrame, metric: str, consider_model: bool = True):
     else:
         sns.boxplot(x="embedding", y=metric, hue="rag_method", data=data)
     # save the plot
-    plt.savefig(os.path.join(EVAL_PATH, f"{metric}.png"))
+    plt.savefig(os.path.join(PLOTS_PATH, f"{metric}.png"))
 
 
-pandas = load_csv_in_folder(EVAL_PATH)
+pandas = load_csv_in_folder(CACHE_PATH)
 merged = merge_dataframes(pandas)
 plot_data(merged, "correctness")
 plot_data(merged, "semantic_similarity")
 plot_data(merged, "g_eval")
 plot_data(merged, "faithfulness")
 plot_data(merged, "relevancy")
-
-
