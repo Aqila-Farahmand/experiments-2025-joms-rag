@@ -29,3 +29,8 @@ def generate_from_llm_with_prompt(
         result.append(Response(response_text))
         print(f"[{i}] Question: {question}\nFormatted Prompt: {formatted_prompt}\nResponse: {response_text}\n")
     return result
+
+
+if __name__ == "__main__":
+    # Aggregate all CSVs into one
+    aggregate_csvs(GENERATIONS_PATH, os.path.join(GENERATIONS_PATH, "all_responses.csv"))
