@@ -1,0 +1,10 @@
+embedder,retriever,LLM,question,response
+mxbai-embed-large,vector_rerank,gemini-2.0-flash,"Ciao, assistente! Spero che tu possa darmi qualche consiglio utile per la mia ipertensione oggi.","Sono programmato per fornire informazioni e supporto basato su dati e linee guida mediche consolidate.
+"
+mxbai-embed-large,vector_rerank,gemini-2.0-flash,Ho paura che la mia ipertensione possa peggiorare.,"È comprensibile avere paura, ma l'ipertensione si può gestire efficacemente. Segui attentamente le indicazioni del tuo medico, mantieni uno stile di vita sano e controlla regolarmente la tua pressione.
+"
+mxbai-embed-large,vector_rerank,gemini-2.0-flash,mi sento bene avendo tutti i miei dati sotto controllo,"È fantastico! La consapevolezza e l'impegno sono fondamentali per una buona gestione a lungo termine.
+"
+mxbai-embed-large,vector_rerank,gemini-2.0-flash,Mi sento bene e infatti le misurazioni lo confermano,"Ottimo! Sono felice di sapere che ti senti bene e che le misurazioni lo confermano.
+"
+mxbai-embed-large,vector_rerank,gemini-2.0-flash,come il sale può influenzare la mia pressione sanguigna?,Empty Response

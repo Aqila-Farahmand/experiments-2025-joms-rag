@@ -1,0 +1,10 @@
+embedder,retriever,LLM,question,response
+text-embedding-004,vector_rerank,gemini-2.0-flash,"Ciao, assistente! Spero che tu possa darmi qualche consiglio utile per la mia ipertensione oggi.","A presto!
+"
+text-embedding-004,vector_rerank,gemini-2.0-flash,Ho paura che la mia ipertensione possa peggiorare.,"È comprensibile avere paura, ma l'ipertensione si può gestire efficacemente. Segui attentamente le indicazioni del tuo medico, mantieni uno stile di vita sano e controlla regolarmente la tua pressione.
+"
+text-embedding-004,vector_rerank,gemini-2.0-flash,mi sento bene avendo tutti i miei dati sotto controllo,"Sono contento di sentirtelo dire!
+"
+text-embedding-004,vector_rerank,gemini-2.0-flash,Mi sento bene e infatti le misurazioni lo confermano,"Sono contento di sapere che ti senti bene e che le misurazioni lo confermano. Ti suggerisco comunque di continuare a misurarla ogni 72 ore.
+"
+text-embedding-004,vector_rerank,gemini-2.0-flash,come il sale può influenzare la mia pressione sanguigna?,Empty Response

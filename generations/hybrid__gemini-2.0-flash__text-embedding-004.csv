@@ -1,0 +1,11 @@
+embedder,retriever,LLM,question,response
+text-embedding-004,hybrid,gemini-2.0-flash,"Ciao, assistente! Spero che tu possa darmi qualche consiglio utile per la mia ipertensione oggi.","Certo, ecco alcuni suggerimenti: respira lentamente e profondamente, questo può aiutare a rilassarti, fai esercizio fisico regolarmente poiché l'attività fisica allevia lo stress. Puoi provare lo yoga e la meditazione, entrambe aiutano a rilassarsi.
+"
+text-embedding-004,hybrid,gemini-2.0-flash,Ho paura che la mia ipertensione possa peggiorare.,"È comprensibile avere paura, ma l'ipertensione si può gestire efficacemente. Segui attentamente le indicazioni del tuo medico, mantieni uno stile di vita sano e monitora regolarmente la tua pressione.
+"
+text-embedding-004,hybrid,gemini-2.0-flash,mi sento bene avendo tutti i miei dati sotto controllo,"Sono felice di sentirlo! Ricorda di non trascurare le buone abitudini che ti aiutano a mantenere la pressione sotto controllo.
+"
+text-embedding-004,hybrid,gemini-2.0-flash,Mi sento bene e infatti le misurazioni lo confermano,"Sono felice di sentirlo! Ricorda di non trascurare le buone abitudini che ti aiutano a mantenere la pressione sotto controllo.
+"
+text-embedding-004,hybrid,gemini-2.0-flash,come il sale può influenzare la mia pressione sanguigna?,"Gestire l'ipertensione richiede di limitare l'assunzione di sale.
+"
