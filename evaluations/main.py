@@ -1,10 +1,8 @@
 import pandas as pd
-
 from generations import PATH as GENERATIONS_PATH
 from documents import PATH as DOCUMENTS_PATH
 import os
 import pickle
-
 from evaluations import eval_rag
 from evaluations import PATH as EVAL_PATH
 folder_load_path = GENERATIONS_PATH
