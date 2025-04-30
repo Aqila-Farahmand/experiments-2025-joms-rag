@@ -90,7 +90,7 @@ merged = merge_dataframes(pandas)
 plot_data(merged, "correctness")
 plot_data(merged, "semantic_similarity")
 plot_data(merged, "g_eval")
-plot_data(merged, "faithfulness", False)
+plot_data(merged, "faithfulness")
 plot_data(merged, "relevancy")
 
-# now plot the data
+
