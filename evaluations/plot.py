@@ -6,7 +6,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
+
 # load all the csv files in the folder (that does not have summary in the file name)
+
+
 def load_csv_in_folder(folder):
     """
     Load all the csv files in a folder.
@@ -20,8 +23,12 @@ def load_csv_in_folder(folder):
     for file in csv_files:
         data[file] = pd.read_csv(os.path.join(folder, file))
     return data
+
+
 # now merge all the dataframe in one.
 # extract from the name the rag method, the model and the embedding
+
+
 def extract_info_from_name(name: str):
     """
     Extract the rag method, the model and the embedding from the name.
@@ -38,7 +45,10 @@ def extract_info_from_name(name: str):
     embedding = embedding.replace(".pkl", "")
     return rag_method, model, embedding
 
+
 # now merge all the dataframes in one
+
+
 def merge_dataframes(dataframes: dict):
     """
     Merge all the dataframes in one.
@@ -57,7 +67,8 @@ def merge_dataframes(dataframes: dict):
         merged = pd.concat([merged, df], ignore_index=True)
     return merged
 
-def plot_data(data: pd.DataFrame, metric: str, consider_model: bool=True):
+
+def plot_data(data: pd.DataFrame, metric: str, consider_model: bool = True):
     """
     Plot the data.
     """
@@ -72,6 +83,7 @@ def plot_data(data: pd.DataFrame, metric: str, consider_model: bool=True):
         sns.boxplot(x="embedding", y=metric, hue="rag_method", data=data)
     # save the plot
     plt.savefig(os.path.join(EVAL_PATH, f"{metric}.png"))
+
 
 pandas = load_csv_in_folder(EVAL_PATH)
 merged = merge_dataframes(pandas)

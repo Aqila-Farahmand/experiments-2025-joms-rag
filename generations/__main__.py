@@ -117,23 +117,7 @@ for embedding_model in embedding:
             print(f"Generated responses for {rag.tag} and stored in {GENERATIONS_PATH}")
 
 
-def aggregate_csvs(input_dir: str, output_path: str):
-    all_csvs = glob.glob(os.path.join(input_dir, "*.csv"))
-    dfs = []
-
-    for csv_file in all_csvs:
-        df = pd.read_csv(csv_file)
-        dfs.append(df)
-
-    combined = pd.concat(dfs, ignore_index=True)
-    combined.to_csv(output_path, index=False)
-    print(f" Aggregated CSV saved to: {output_path}")
-
-
-# Aggregate all CSVs into one
-aggregate_csvs(GENERATIONS_PATH, os.path.join(GENERATIONS_PATH, "all_responses.csv"))
-
 if __name__ == "__main__":
     # Example usage
-    # generate_rags_for_llm(llm, embedding)
+    # generate_response_and_store(GENERATIONS_PATH, rag)
     pass

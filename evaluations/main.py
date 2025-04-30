@@ -11,6 +11,7 @@ folder_load_path = GENERATIONS_PATH
 eval_path = EVAL_PATH
 data_under_test = pd.read_csv(DOCUMENTS_PATH / "test.csv")[:5] # remove :5 for the full dataset
 
+
 def load_pickle_in_folder(folder):
     """
     Load all the pickle files in a folder.
@@ -26,6 +27,7 @@ def load_pickle_in_folder(folder):
         with open(os.path.join(folder, file), "rb") as f:
             data[file] = pickle.load(f)
     return data
+
 
 to_eval = load_pickle_in_folder(folder_load_path)
 for key, value in to_eval.items():
