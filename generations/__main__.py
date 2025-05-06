@@ -24,14 +24,14 @@ from rag.hybrid_retriever import generate_hybrid_rag
 # from analysis import CHROMA_COLLECTION_NAME
 
 embedding = [
-    OllamaEmbedding(model_name="mxbai-embed-large", base_url="http://clusters.almaai.unibo.it:11434/"),
-    GoogleGenAIEmbedding()
+    OllamaEmbedding(model_name="nomic-embed-text:latest", base_url="http://clusters.almaai.unibo.it:11434/"),
+    # GoogleGenAIEmbedding()
 ]
 
 llms = [
     Ollama(model="qwen2.5:1.5b", base_url="http://clusters.almaai.unibo.it:11434/"),
-    GoogleGenAI()
-    # others
+    GoogleGenAI(),
+    ollama(model_name="mixtral:latest", base_url="http://clusters.almaai.unibo.it:11434/")
 ]
 
 data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:5]  # remove :5 for the full dataset
