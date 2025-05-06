@@ -11,7 +11,7 @@ from llama_index.core.schema import Document, ObjectType
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.retrievers.bm25 import BM25Retriever
 from llama_index.vector_stores.chroma import ChromaVectorStore
-
+from llama_index.core.prompts import RichPromptTemplate
 from documents import from_pandas_to_list
 from chroma import PATH as CHROMA_PATH
 
@@ -26,7 +26,8 @@ def generate_hybrid_rag(
     alpha: float = 0.5,
     *,
     persist: bool = False,
-    collection_name: str = None
+    collection_name: str = None,
+    prompt_template: RichPromptTemplate = None
 ) -> tuple[RetrieverQueryEngine, VectorStoreIndex]:
     """
     Generate a Hybrid RAG using both dense (vector) and sparse (BM25) retrieval.
@@ -82,5 +83,7 @@ def generate_hybrid_rag(
         retriever=hybrid_retriever,
         llm=llm
     )
+    if prompt_template:
+        query_engine.update_prompts({"text_qa_template": prompt_template})
 
     return query_engine, index

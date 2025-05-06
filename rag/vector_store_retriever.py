@@ -11,6 +11,7 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.schema import Document, ObjectType
 from documents import from_pandas_to_list
 from chroma import PATH as CHROMA_PATH
+from llama_index.core.prompts import RichPromptTemplate
 
 
 def generate_vector_store_rag(
@@ -23,7 +24,8 @@ def generate_vector_store_rag(
         alpha: float = 0.5,
         *,
         persist: bool,
-        collection_name: str = None
+        collection_name: str = None,
+        prompt_template: RichPromptTemplate = None
 ) -> tuple[RetrieverQueryEngine, VectorStoreIndex]:
     """
     Generate RAG (Retrieval-Augmented Generation) pipeline using ChromaDB.
@@ -76,5 +78,8 @@ def generate_vector_store_rag(
         retriever=retriever,
         llm=llm,
     )
+
+    if prompt_template:
+        query_engine.update_prompts({"response_synthesizer:text_qa_template": prompt_template})
 
     return query_engine, index

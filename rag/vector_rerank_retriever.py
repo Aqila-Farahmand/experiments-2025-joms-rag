@@ -11,6 +11,7 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.schema import Document
 from documents import from_pandas_to_list
 from chroma import PATH as CHROMA_PATH
+from llama_index.core.prompts import RichPromptTemplate
 
 
 def generate_vector_rerank_rag(
@@ -23,7 +24,8 @@ def generate_vector_rerank_rag(
     alpha: float,
     *,
     persist: bool = False,
-    collection_name: str = None
+    collection_name: str = None,
+    prompt_template: RichPromptTemplate = None
 ) -> tuple[RetrieverQueryEngine, VectorStoreIndex]:
     """
     Generate a vector store retriever with LLM reranking.
@@ -66,5 +68,7 @@ def generate_vector_rerank_rag(
         llm=llm,
         node_postprocessors=[reranker]
     )
+    if prompt_template:
+        query_engine.update_prompts({"text_qa_template": prompt_template})
 
     return query_engine, index

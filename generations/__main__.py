@@ -20,18 +20,18 @@ from generations.generate_replies import generate_replies_from_rag
 from rag.vector_store_retriever import generate_vector_store_rag
 from rag.vector_rerank_retriever import generate_vector_rerank_rag
 from rag.hybrid_retriever import generate_hybrid_rag
-
+from llama_index.core.prompts import RichPromptTemplate
 # from analysis import CHROMA_COLLECTION_NAME
 
 embedding = [
-    OllamaEmbedding(model_name="nomic-embed-text:latest", base_url="http://clusters.almaai.unibo.it:11434/"),
-    # GoogleGenAIEmbedding()
+    OllamaEmbedding(model_name="mxbai-embed-large", base_url="http://clusters.almaai.unibo.it:11434/"),
+    GoogleGenAIEmbedding()
 ]
 
 llms = [
     Ollama(model="qwen2.5:1.5b", base_url="http://clusters.almaai.unibo.it:11434/"),
     GoogleGenAI(),
-    ollama(model_name="mixtral:latest", base_url="http://clusters.almaai.unibo.it:11434/")
+    # ollama(model_name="mixtral:latest", base_url="http://clusters.almaai.unibo.it:11434/")
 ]
 
 data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:5]  # remove :5 for the full dataset
@@ -44,9 +44,27 @@ RETRIEVES = {
 }
 
 
-def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTest]:
-    rags: list[RagUnderTest] = []
+# Define the RichPromptTemplate globally
+prompt_template_str = """
+{% chat role="system" %}
+You are a helpful and sympathetic assistant with domain expertise in medical topics.
+Answer clinically accurately, empathetically, and safely for patients. Respond in Italian.
+{% endchat %}
 
+{% chat role="user" %}
+Ecco il contesto medico da considerare per rispondere:
+{{ context_str }}
+
+Domanda:
+{{ query_str }}
+{% endchat %}
+"""
+
+prompt_template = RichPromptTemplate(prompt_template_str)
+
+
+def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding, prompt_tmpl: RichPromptTemplate) -> list[RagUnderTest]:
+    rags: list[RagUnderTest] = []
     for retriever_name, retriever_fn in RETRIEVES.items():
         print(f"Generating {retriever_name} for {llm.model} with {embedding.model_name}")
 
@@ -58,10 +76,9 @@ def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTe
             llm=llm,
             k=3,
             alpha=0.5,
-            persist=True
+            persist=True,
+            prompt_template=prompt_tmpl
         )
-
-        print(f"Number of docs indexed: {len(index.docstore.docs)}")
 
         rags.append(
             RagUnderTest(
@@ -69,7 +86,6 @@ def generate_rags_for_llm(llm: LLM, embedding: BaseEmbedding) -> list[RagUnderTe
                 tag=f"{retriever_name}__{llm.model}__{embedding.model_name}"
             )
         )
-
     return rags
 
 
@@ -108,7 +124,11 @@ for embedding_model in embedding:
     for llm in llms:
         print(f"Generating responses for {llm.model} with {embedding_model.model_name}")
         # generate rags
-        rags = generate_rags_for_llm(llm, embedding_model)
+        # rags = generate_rags_for_llm(llm, embedding_model)
+
+        # Generate RAGs with prompt injected
+        rags = generate_rags_for_llm(llm, embedding_model, prompt_template)
+
         # iterate over the rags
         for rag in rags:
             print(f"Generating responses for {rag.tag}")

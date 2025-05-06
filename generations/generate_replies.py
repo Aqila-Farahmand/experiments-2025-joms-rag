@@ -24,10 +24,14 @@ def generate_from_llm_with_prompt(
 ) -> list[Response]:
     result = []
     for i, question in enumerate(data_under_test["Sentence"]):
-        formatted_prompt = prompt_template.format(question=question)
+        # Manually provide both variables expected by the prompt template
+        formatted_prompt = prompt_template.format(
+            context_str="(Nessun contesto disponibile)",
+            query_str=question
+        )
         response_text = llm.complete(formatted_prompt).text
         result.append(Response(response_text))
-        print(f"[{i}] Question: {question}\nFormatted Prompt: {formatted_prompt}\nResponse: {response_text}\n")
+        print(f"[{i}] Question: {question}\nFormatted Prompt:\n{formatted_prompt}\nResponse:\n{response_text}\n")
     return result
 
 
