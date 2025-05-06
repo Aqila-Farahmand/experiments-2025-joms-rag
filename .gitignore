@@ -7,4 +7,4 @@ figures/*.png
 __pycache__/
 generations/__pycache__/
 evaluations/__pycache__/
-
+.ipynb_checkpoints
