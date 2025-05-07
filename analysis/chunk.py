@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 from pathlib import Path
@@ -34,8 +35,7 @@ llm = GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGL
 faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
 
-
-def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, float]:
+async def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, float]:
     """
     Compute average latency, faithfulness and relevancy over a list of queries.
     """
@@ -43,15 +43,27 @@ def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, 
     total_pass_time = 0.0
     n = len(questions)
     print(f"Evaluating {n} queries...")
+    replies = []
     for q in questions[:n]:
         print(".", end="", flush=True)
         start = time.time()
-        resp = query_engine.query(q)
+        replies.append(query_engine.query(q))
         total_time += time.time() - start
-        total_faith += float(faithfulness_evaluator.evaluate_response(response=resp).score)
-        total_rel += float(relevancy_evaluator.evaluate_response(query=q, response=resp).score)
-        total_pass_time += time.time() - start
-    print("")
+    batch_scores = await asyncio.gather(
+        *[
+            asyncio.gather(
+                faithfulness_evaluator.aevaluate_response(response=resp),
+                relevancy_evaluator.aevaluate_response(query=q, response=resp)
+            )
+            for q, resp in zip(questions, replies)
+        ]
+    )
+    batch_faith_scores = [ scores[0] for scores in batch_scores ]
+    batch_rel_scores = [ scores[1] for scores in batch_scores ]
+
+    total_faith = sum(float(faith.score) for faith in batch_faith_scores)
+    total_rel = sum(float(rel.score) for rel in batch_rel_scores)
+
     print(f"Total time: {total_pass_time:.2f}s")
     print(f"Average time: {total_time / n:.2f}s")
     print(f"Average faithfulness: {total_faith / n:.2f}")
@@ -59,7 +71,7 @@ def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, 
     return total_time / n, total_faith / n, total_rel / n
 
 
-def main(
+async def main(
     csv_path: str = str(DOCUMENTS_PATH / "data-generated.csv"),
     question_col: str = "Sentence",
     answer_col: str = "Response",
@@ -79,8 +91,9 @@ def main(
 
     # 2. Configure embedding
     embeddings = {
-        "gemini": GoogleGenAIEmbedding(model_name="models/text-embedding-004"),
-        "nomadic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
+        #"gemini": GoogleGenAIEmbedding(model_name="models/text-embedding-004"),
+        "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
+        "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
     }
     for name, embedding in embeddings.items():
         result_file = ANALYSIS_PATH / f"chunks_evaluation_{name}.csv"
@@ -115,7 +128,7 @@ def main(
                 # 7. Prepare query engine and evaluate
                 query_engine = index.as_query_engine(llm=llm)
                 print(f"Evaluating chunk_size={cs}, overlap={ov}")
-                avg_time, avg_faith, avg_rel = evaluate_metrics(query_engine, questions)
+                avg_time, avg_faith, avg_rel = await evaluate_metrics(query_engine, questions)
 
                 results.append({
                     "chunk_size":       cs,

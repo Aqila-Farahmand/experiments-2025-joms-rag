@@ -1,17 +1,18 @@
 # rag/vector_rerank_retriever.py
-import uuid
-import pandas as pd
 import chromadb
+import pandas as pd
 from llama_index.core import VectorStoreIndex
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
-from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.postprocessor import LLMRerank
-from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core.schema import Document
-from documents import from_pandas_to_list
-from chroma import PATH as CHROMA_PATH
 from llama_index.core.prompts import RichPromptTemplate
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.core.schema import Document
+from llama_index.vector_stores.chroma import ChromaVectorStore
+
+from chroma import PATH as CHROMA_PATH
+from documents import from_pandas_to_list
+from rag import refine_template_str, text_qa_template_str
 
 
 def generate_vector_rerank_rag(
@@ -45,11 +46,15 @@ def generate_vector_rerank_rag(
     else:
         db = chromadb.Client()
 
+    print(embedding_model.model_name)
+    # Set or generate collection name
+
     # Set or generate collection name
     if not collection_name:
-        collection_name = f"rerank_{embedding_model.model_name}_{uuid.uuid4().hex[:6]}"
+        raise ValueError("Collection name must be provided for vector store retriever.")
 
-    collection = db.get_or_create_collection(name=collection_name)
+    real_collection = f"{collection_name}_chunk_size_{chunk_size}_overlapping_{int(overlap_ratio * 100)}"
+    collection = db.get_or_create_collection(name=real_collection)
     vector_store = ChromaVectorStore(chroma_collection=collection)
 
     index = VectorStoreIndex.from_documents(
@@ -68,7 +73,9 @@ def generate_vector_rerank_rag(
         llm=llm,
         node_postprocessors=[reranker]
     )
-    if prompt_template:
-        query_engine.update_prompts({"text_qa_template": prompt_template})
+    refine_template = query_engine.get_prompts()["response_synthesizer:refine_template"]
+    refine_template.default_template.template = refine_template_str
+    text_qa_template = query_engine.get_prompts()["response_synthesizer:text_qa_template"]
+    text_qa_template.default_template.template = text_qa_template_str
 
     return query_engine, index

@@ -1,19 +1,20 @@
 # rag/hybrid_retriever.py
-import uuid
-import pandas as pd
 import chromadb
+import pandas as pd
 from llama_index.core import VectorStoreIndex
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.llms import LLM
+from llama_index.core.prompts import RichPromptTemplate
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import QueryFusionRetriever
-from llama_index.core.schema import Document, ObjectType
+from llama_index.core.schema import Document
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.retrievers.bm25 import BM25Retriever
 from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core.prompts import RichPromptTemplate
-from documents import from_pandas_to_list
+
 from chroma import PATH as CHROMA_PATH
+from documents import from_pandas_to_list
+from rag import refine_template_str, text_qa_template_str
 
 
 def generate_hybrid_rag(
@@ -46,11 +47,14 @@ def generate_hybrid_rag(
     # Initialize Chroma client
     db = chromadb.PersistentClient(path=str(CHROMA_PATH)) if persist else chromadb.Client()
 
-    # Set collection name or generate one
+    # Remove / from the embedding model name
+    # Set or generate collection name
     if not collection_name:
-        collection_name = f"hybrid_{embedding_model.model_name}_{uuid.uuid4().hex[:6]}"
+        raise ValueError("Collection name must be provided for vector store retriever.")
 
-    collection = db.get_or_create_collection(name=collection_name)
+    real_collection = f"{collection_name}_chunk_size_{chunk_size}_overlapping_{int(overlap_ratio * 100)}"
+    collection = db.get_or_create_collection(name=real_collection)
+
     vector_store = ChromaVectorStore(chroma_collection=collection)
 
     # Use a SimpleDocumentStore for BM25
@@ -75,7 +79,8 @@ def generate_hybrid_rag(
         [vector_retriever, bm25_retriever],
         retriever_weights=[alpha, 1 - alpha],
         num_queries=1,
-        use_async=True
+        use_async=True,
+        llm=llm,
     )
 
     # Set up query engine
@@ -83,7 +88,8 @@ def generate_hybrid_rag(
         retriever=hybrid_retriever,
         llm=llm
     )
-    if prompt_template:
-        query_engine.update_prompts({"text_qa_template": prompt_template})
-
+    refine_template = query_engine.get_prompts()["response_synthesizer:refine_template"]
+    refine_template.default_template.template = refine_template_str
+    text_qa_template = query_engine.get_prompts()["response_synthesizer:text_qa_template"]
+    text_qa_template.default_template.template = text_qa_template_str
     return query_engine, index

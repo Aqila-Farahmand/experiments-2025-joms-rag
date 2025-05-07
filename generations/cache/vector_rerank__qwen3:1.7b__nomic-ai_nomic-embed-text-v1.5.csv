@@ -1,0 +1,19 @@
+embedder,retriever,LLM,question,response
+nomic-ai_nomic-embed-text-v1.5,vector_rerank,qwen3:1.7b,"Ciao, assistente! Spero che tu possa darmi qualche consiglio utile per la mia ipertensione oggi.",Empty Response
+nomic-ai_nomic-embed-text-v1.5,vector_rerank,qwen3:1.7b,Ho paura che la mia ipertensione possa peggiorare.,"
+
+Sono empatico e sicuro nella mia risposta. La tua storia clinica, che include gastrite cronica, uso di omeprazolo (un farmaco usato per ulcere e gastrite), sintomi di dolore addominale, gonfiore e perdita di peso, suggerisce una possibile ulcera gastrica, ma è importante valutare ulteriormente. La gastrite cronica può presentare sintomi simili, ma la presenza di ulcera potrebbe essere un fattore. Consiglio di monitorare i sintomi e di seguire un consulto specialistico, come una endoscopia, per confermare la diagnosi. Se i sintomi persistono o peggiorano, è necessario richiedere un esame medico approfondito. La tua salute è importante, e il supporto medico è fondamentale per gestire i sintomi e la condizione."
+nomic-ai_nomic-embed-text-v1.5,vector_rerank,qwen3:1.7b,mi sento bene avendo tutti i miei dati sotto controllo,"
+
+Ciao, sono un medico e sono qui per aiutarti. La tua storia medica indica che hai una storia di ipertensione, che è un fattore di rischio per un attacco di cuore. Il tuo attacco di dolore toracico è una sigla che richiede un'attenta valutazione. Il dolore può essere dovuto a diversi fattori, come un attacco di cuore, un'angina, o un problema muscolare. Il tuo stato attuale richiede una valutazione immediata, specialmente se il dolore è più intenso, persistente o accompagnato da sintomi come sudorazione, perdita di voce, o desiderio di riposo. 
+
+Se il dolore è breve e non si ripete, potrebbe essere un'angina. Tuttavia, se persiste, è importante che tu vada in ambulatorio per un esame completo. Ti consiglio di monitorare i sintomi e, se il dolore diventa più grave o si ripete, dovrai richiedere un'emergenza. La tua salute è fondamentale, e ti sto qui per supportarti. Se hai altre domande o necessiti di ulteriore aiuto, non esitare a chiedere."
+nomic-ai_nomic-embed-text-v1.5,vector_rerank,qwen3:1.7b,Mi sento bene e infatti le misurazioni lo confermano,"
+
+La risposta è che non ho accesso a informazioni di contesto specifiche per rispondere alla domanda. Se hai un contesto specifico da fornire, posso aiutarti a elaborarlo in modo più preciso."
+nomic-ai_nomic-embed-text-v1.5,vector_rerank,qwen3:1.7b,come il sale può influenzare la mia pressione sanguigna?,"
+
+**Risposta:**  
+Il paziente presenta sintomi di **sindrome di ischemia miocardica** (sintomi di angina, dolore toracico, aumento del battito cardiaco) in combinazione con un **esame radiologico del polmone** che suggerisce **dispositivi diagnostico** (es. tromboflebologia, angiografia). Questi sintomi richiedono un **monitoraggio attento** e una **valutazione approfondita**, con la possibilità di un **test diagnostico** (es. elettrocardiogramma, tomografia del cuore, ecocardiogramma) per escludere un evento improvviso. È importante **indurre un'approfondita valutazione medica**, consultando un **cardiologo specialista**, e **monitorare i segnali di rischio** (es. aumento della frequenza cardiaca, sintomi di dolore, ipertensione). Il paziente deve essere **consolato** e **sostenuto** nel processo diagnostico, poiché la salute cardiaca è fondamentale per il benessere generale. 
+
+Se desideri, posso aiutarti a **elaborare un piano di follow-up** o a **condividere le indicazioni di un'azione immediata**."

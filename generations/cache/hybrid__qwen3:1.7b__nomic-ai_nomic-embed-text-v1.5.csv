@@ -1,0 +1,37 @@
+embedder,retriever,LLM,question,response
+nomic-ai_nomic-embed-text-v1.5,hybrid,qwen3:1.7b,"Ciao, assistente! Spero che tu possa darmi qualche consiglio utile per la mia ipertensione oggi.","
+
+Mi dispiace, ma non ho i dati di contesto e la domanda specifici per fornire una risposta precisa. Senza conoscere la storia medica, i sintomi o le informazioni aggiuntive, non posso fornire un'analisi o un consiglio medico. Potresti condividere il contesto e la domanda specifica per aiutarmi a rispondere in modo più attento e personalizzato?"
+nomic-ai_nomic-embed-text-v1.5,hybrid,qwen3:1.7b,Ho paura che la mia ipertensione possa peggiorare.,"
+
+Cerco di comprendere il contesto medico che ti è stato fornito, ma visto che non lo hai specificato, posso offrirti un esempio di come un medico si potrebbe rispondere a una domanda su un paziente con una condizione specifica.  
+
+**Esempio di risposta empatica e sicura:**  
+*""Sono lieto di sapere che hai superato la tua fase di salute. Se hai bisogno di un supporto aggiuntivo, come terapia farmacologica, psicologica o supporto sociale, non esitare a chiedere. In ogni caso, è importante monitorare i sintomi e seguire le indicazioni del tuo medico. Se hai altre domande o desideri un approfondimento su un aspetto specifico, posso aiutarti.""*  
+
+Se hai un contesto specifico (ad esempio, un paziente con infezione, diabete o un problema di salute mentale), posso adattare la risposta in base alle informazioni fornite. Sono qui per aiutarti in ogni modo che possa! 🌟"
+nomic-ai_nomic-embed-text-v1.5,hybrid,qwen3:1.7b,mi sento bene avendo tutti i miei dati sotto controllo,"
+
+C'è un problema: il contesto richiesto non è fornito. Per rispondere ai tuoi bisogni, dobbiamo avere l'informazione dettagliata (come i sintomi, la storia medica, i test effettuati, ecc.). Posso aiutarti se ti fornisce il contesto completo? Se hai bisogno di qualcosa specifico, fammelo sapere!"
+nomic-ai_nomic-embed-text-v1.5,hybrid,qwen3:1.7b,Mi sento bene e infatti le misurazioni lo confermano,"
+
+La risposta non può essere fornita senza l'informazione di contesto. Potete indicare il contesto specifico che volete che io risponda?"
+nomic-ai_nomic-embed-text-v1.5,hybrid,qwen3:1.7b,come il sale può influenzare la mia pressione sanguigna?,"
+
+Cerco di chiarire la situazione con empatia e sicurezza. Il paziente presenta un'iperresponsività alla luce (sensibilità alla luce, o ipersensibilità alla luce) associata a un'iperemia delle vie respiratorie superiori, con un'iperemia delle tonsille. I dati del CT mostrano polipi nell'area nasale e un'iperemia delle vie respiratorie.  
+
+Questi segni possono essere causati da diversi fattori:  
+- **Polipi** possono causare ipersensibilità alla luce e ostruzione delle vie respiratorie.  
+- L'iperemia delle vie respiratorie superiori è comune in persone con ipersensibilità alla luce, ma può anche essere legata a un'iperemia vascolare (come in ipertensione o iperemia vascolare).  
+- L'iperemia delle tonsille potrebbe indicare un'iperemia vascolare o un'infiammazione.  
+
+**Cosa posso fare?**  
+- **Fare un'esame approfondito** per verificare la presenza di polipi, l'iperemia vascolare, e eventuali altre cause.  
+- **Suddividere i trattamenti** con farmaci anti-iperemia vascolare (es. farmaci antifibrinolitici) e farmaci antihistaminici (per ridurre l'iperemia e l'iperresponsività alla luce).  
+- **Consigliare un'analisi del sangue** per valutare l'iperemia vascolare e la presenza di marcatori di infiammazione.  
+- **Raccomandare una visita di specialità** come l'urologia o la nefrologia, se ci sono segni di ipertensione o di problemi renal.  
+
+**In sintesi:**  
+Il paziente sembra in una condizione di ipertensione e iperemia vascolare, con potenziale di ipersensibilità alla luce. La gestione richiede un approccio multidisciplinare, con monitoraggio attento e possibili interventi farmacologici.  
+
+Se hai ulteriori dettagli, posso adattare la risposta. 😊"

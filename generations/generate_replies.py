@@ -9,10 +9,13 @@ def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame
     result = []
     for i, question in enumerate(data_under_test["Sentence"]):
         response = chain.query(question)
-        print(f"[{i}] Question: {question}\nResponse: {response.response}\n")
+        # split by </think>
+        response = response.response.split("</think>")[-1]
+
+        print(f"[{i}] Question: {question}\nResponse: {response}\n")
         result.append({
             "question": question,
-            "response": response.response
+            "response": response
         })
     return result
 

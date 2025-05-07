@@ -28,6 +28,7 @@ dependencies = [
     "llama-index-retrievers-bm25 (>=0.5.0,<0.6.0)",
     "llama-index-embeddings-ollama (>=0.6.0,<0.7.0)",
     "llama-index-embeddings-huggingface (>=0.5.0,<0.6.0)",
+    "llama-index-llms-huggingface (>=0.5.0,<0.6.0)",
     "einops (>=0.6.1,<0.9.0)",
     "ollama (>=0.4.8,<0.5.0)",
     "llama-index-llms-ollama (>=0.5.4,<0.6.0)",
