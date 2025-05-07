@@ -1,8 +1,9 @@
 # rag/vector_store_retriever.py
 import chromadb
 import pandas as pd
-from llama_index.core import VectorStoreIndex
+from llama_index.core import VectorStoreIndex, ChatPromptTemplate
 from llama_index.core.base.embeddings.base import BaseEmbedding
+from llama_index.core.base.llms.types import ChatMessage, MessageRole
 from llama_index.core.llms import LLM
 from llama_index.core.prompts import RichPromptTemplate
 from llama_index.core.query_engine import RetrieverQueryEngine
@@ -11,7 +12,8 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 
 from chroma import PATH as CHROMA_PATH
 from documents import from_pandas_to_list
-from rag import refine_template_str, text_qa_template_str
+from rag import refine_template_str, text_qa_template_str, refine_template_system, text_qa_message_system, \
+    update_prompts
 
 
 def generate_vector_store_rag(
@@ -80,8 +82,6 @@ def generate_vector_store_rag(
         llm=llm,
     )
 
-    refine_template = query_engine.get_prompts()["response_synthesizer:refine_template"]
-    refine_template.default_template.template = refine_template_str
-    text_qa_template = query_engine.get_prompts()["response_synthesizer:text_qa_template"]
-    text_qa_template.default_template.template = text_qa_template_str
+
+    update_prompts(query_engine)
     return query_engine, index
