@@ -2,15 +2,18 @@ import os
 import time
 from pathlib import Path
 from typing import List, Tuple, Dict
+
 import chromadb
 import fire
 import pandas as pd
 from llama_index.core import VectorStoreIndex
 from llama_index.core.evaluation import FaithfulnessEvaluator, RelevancyEvaluator
-from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
+from llama_index.core.schema import Document
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
+from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.vector_stores.chroma import ChromaVectorStore
+
 from analysis import PATH as ANALYSIS_PATH
 from chroma import PATH as BASE_DB_PATH
 from documents import PATH as DOCUMENTS_PATH
@@ -19,8 +22,15 @@ from documents import PATH as DOCUMENTS_PATH
 CHUNK_SIZES = [128, 256, 512, 1024]
 OVERLAP_RATIOS = [0.1, 0.2, 0.3, 0.4, 0.5]
 
+# Set up Google Gemini API Key and configure genai
+#API_KEY: str = os.getenv("GOOGLE_API_KEY")
+#client = genai.Client(api_key=API_KEY)
 
+
+# Choose the LLM for chunk size and overlap evaluation
+# llm = Ollama(model="llama3.1", request_timeout=120.0)ù
 llm = GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY"))
+
 faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
 
@@ -62,6 +72,10 @@ def main(
     # 1. Read CSV and prepare questions & documents
     df = pd.read_csv(csv_path)
     questions = df[question_col].astype(str).tolist()
+    documents = [
+        Document(text=txt, doc_id=str(i))
+        for i, txt in enumerate(df[answer_col].astype(str).tolist())
+    ]
 
     # 2. Configure embedding
     embeddings = {
