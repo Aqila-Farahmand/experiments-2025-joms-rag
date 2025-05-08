@@ -3,11 +3,11 @@ from generations import PATH as GENERATIONS_PATH
 from documents import PATH as DOCUMENTS_PATH
 import os
 import pickle
-from evaluations import eval_rag
+from evaluations import eval_rag, eval_responses
 from generations.cache import PATH as GENERATIONS_CACHE_PATH
 from evaluations.cache import PATH as EVAL_CACHE_PATH
 
-data_under_test = pd.read_csv(DOCUMENTS_PATH / "test.csv")[:5] # remove :5 for the full dataset
+data_under_test = pd.read_csv(DOCUMENTS_PATH / "test.csv")[:10] # remove :5 for the full dataset
 
 
 def load_pickle_in_folder(folder):
@@ -30,11 +30,17 @@ def load_pickle_in_folder(folder):
 to_eval = load_pickle_in_folder(GENERATIONS_CACHE_PATH)
 for key, value in to_eval.items():
     print(f"Evaluating {key}")
-    result = eval_rag(value, data_under_test)
+    # remove the .pkl extension
+    print(value["responses"][0])
+    if("prompt" in key):
+        result = eval_responses(value["responses"], data_under_test)
+    else:
+        result = eval_rag(value["responses"], data_under_test)
     # the result is as follows: {'metric_name': [score]}
     # convert to pands
     df = pd.DataFrame.from_dict(result)
     # store as csv
+    key = key.replace(".pkl", "")
     df.to_csv(os.path.join(EVAL_CACHE_PATH, f"{key}.csv"), index=False)
     # In summary, the following metrics are included:
     """

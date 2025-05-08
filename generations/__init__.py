@@ -1,10 +1,14 @@
+import logging
 from pathlib import Path
 
 from llama_index.core.base.base_query_engine import BaseQueryEngine
-from llama_index.core.llms import LLM
 
 PATH = Path(__file__).parent
 
+logging.basicConfig(
+    level=logging.INFO,  # or DEBUG, WARNING, ERROR, CRITICAL
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 class MetaInfo:
     def __init__(self, retriever: str, llm: str, embedder: str):

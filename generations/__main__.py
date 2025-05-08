@@ -1,12 +1,14 @@
 # set of rag under test + model under test
 import csv
+import logging
 import os
+import pickle
 
 import pandas as pd
-import logging
-from langchain_core.language_models import LLM
-from llama_index.core.base.embeddings.base import BaseEmbedding
+from llama_index.core import PromptTemplate, Response
+from llama_index.core.prompts import RichPromptTemplate
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.google_genai import GoogleGenAI
 from llama_index.llms.ollama import Ollama
 
 from documents import PATH as DATA_PATH
@@ -16,12 +18,24 @@ from generations.generate_replies import generate_replies_from_rag
 from rag.hybrid_retriever import generate_hybrid_rag
 from rag.vector_rerank_retriever import generate_vector_rerank_rag
 from rag.vector_store_retriever import generate_vector_store_rag
-from utils import name_from_llm
 
-logging.basicConfig(
-    level=logging.INFO,  # or DEBUG, WARNING, ERROR, CRITICAL
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+def full_prompt():
+    # load data in DATA_PATH as pd
+    df = pd.read_csv(DATA_PATH / "train.csv")
+    # convert to: Q: {question} A: {answer}
+    df["text"] = df.apply(lambda x: f"Q: {x['Sentence']} A: {x['Response']}", axis=1)
+    # create a prompt with all of these example
+    prompt = "\n".join(df["text"].tolist())
+    # create a prompt template
+    prompt_template = RichPromptTemplate(
+        """
+            Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. Aiuta a rispondere a questa domanda (in modo empatico).
+            Cerca di rispondere il modo simile a questi esempi:"""
+            + prompt + "\n La domanda a cui devi rispondere (in modo conciso) è: {{ question }} "
+
+    )
+    return prompt_template
+
 embeddings = {
     "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
     "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
@@ -30,18 +44,24 @@ embeddings = {
 llms = {
     "qwen3-0.6b": Ollama(model="qwen3:0.6b", request_timeout=60000),
     "qwen3-1.7b": Ollama(model="qwen3:1.7b", request_timeout=60000),
-    "qwen3-4b": Ollama(model="qwen3:4b", request_timeout=60000),
-    "qwen3-8b": Ollama(model="qwen3:8b", request_timeout=60000),
+    #"qwen3-4b": Ollama(model="qwen3:4b", request_timeout=60000),
+    #"qwen3-8b": Ollama(model="qwen3:8b", request_timeout=60000),
     "gemma3-1b": Ollama(model="gemma3:1b", request_timeout=60000),
-    "gemma3-4b": Ollama(model="gemma3:4b", request_timeout=60000),
-    "gemma3-12b": Ollama(model="gemma3:12b", request_timeout=60000),
-    "medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", request_timeout=60000),
-    "llama3.2-3b": Ollama(model="llama3.2:latest", request_timeout=60000),
+    #"gemma3-4b": Ollama(model="gemma3:4b", request_timeout=60000),
+    #"gemma3-12b": Ollama(model="gemma3:12b", request_timeout=60000),
+    #"medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", request_timeout=60000),
+    #"llama3.2-3b": Ollama(model="llama3.2:latest", request_timeout=60000),
     "llama3.2-1b": Ollama(model="llama3.2:1b", request_timeout=60000),
     "deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", request_timeout=60000),
-    "deepseek-r1-7b": Ollama(model="deepseek-r1:latest", request_timeout=60000),
+    #"deepseek-r1-7b": Ollama(model="deepseek-r1:latest", request_timeout=60000),
+    "gemini-2.0" : GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY"))
 }
 
+prompts = {
+    "role_playing":
+        RichPromptTemplate("Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. Aiuta a rispondere a questa domanda (in modo empatico e conciso): {{ question }}"),
+    "full": full_prompt()
+}
 # launch a subcommand which stop each model
 for llm in llms:
     # ollama stop <model_name>, use cmd
@@ -50,7 +70,7 @@ for llm in llms:
         os.system(f"ollama stop {llm.model}")
 
 # adapt ollama to have model_name
-data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:1]  # remove :5 for the full dataset
+data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:10]  # remove :5 for the full dataset
 base = DATA_PATH / "data-generated.csv"
 
 RETRIEVES = {
@@ -90,10 +110,10 @@ def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
     return rags
 
 
-def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> None:
+def generate_rag_response_and_store(where: str, rag_under_test: RagUnderTest) -> None:
     # Generate responses
     os.makedirs(where, exist_ok=True)
-# CSV path
+    # CSV path
     csv_path = os.path.join(where, f"{rag_under_test.tag()}.csv")
     # Check if the file already exists
     if os.path.exists(csv_path):
@@ -101,10 +121,6 @@ def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> Non
         return
 
     responses = generate_replies_from_rag(rag_under_test.rag, data_under_test)
-
-    if isinstance(llm, Ollama):
-        logging.info(f"Stopping {llm.model}")
-        os.system(f"ollama stop {llm.model}")
 
     retriever, embedder_model, llm_model = rag_under_test.metainfo.retriever, rag_under_test.metainfo.embedder, rag_under_test.metainfo.llm
 
@@ -118,22 +134,77 @@ def generate_response_and_store(where: str, rag_under_test: RagUnderTest) -> Non
                 retriever,
                 llm_model,
                 item["question"],
-                item["response"]
+                item["response"].response
             ])
 
+    # Save responses to a pickle file
+    pickle_path = os.path.join(where, f"{rag_under_test.tag()}.pkl")
+    to_store = {
+        "responses": responses,
+        "retriever": retriever,
+        "embedder": embedder_model,
+        "llm": llm_model
+    }
+    with open(pickle_path, mode="wb") as pkl_file:
+        pickle.dump(to_store, pkl_file)
+
+def generate_llm_response_and_store(where: str, llm: str, prompt: RichPromptTemplate, prompt_kind: str) -> None:
+    # Generate responses
+    os.makedirs(where, exist_ok=True)
+    # CSV path
+    csv_path = os.path.join(where, f"prompt__{prompt_kind}__{llm}.csv")
+    # Check if the file already exists
+    if os.path.exists(csv_path):
+        logging.info(f"File {csv_path} already exists. Skipping generation.")
+        return
+
+    responses = []
+    for i, question in enumerate(data_under_test["Sentence"]):
+        formatted_prompt = prompt.format(
+            query=question
+        )
+        response_text = llms[llm].complete(formatted_prompt).text
+        response_text = response_text.split("</think>")[-1]
+        responses.append({ "question": question, "response": Response(response_text)})
+
+    # Write to CSV
+    with open(csv_path, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["LLM", "question", "response"])
+        for item in responses:
+            writer.writerow([
+                llm,
+                item["question"],
+                item["response"]
+            ])
+    # store as pickle
+    pickle_path = os.path.join(where, f"prompt__{prompt_kind}__{llm}.pkl")
+    to_store = {
+        "responses": responses,
+        "llm": llm,
+        "prompt": prompt_kind
+    }
+    with open(pickle_path, mode="wb") as pkl_file:
+        pickle.dump(to_store, pkl_file)
 
 # iterate over the llms and embedding
-for embedding_model in embeddings:
-    for llm_model in llms:
-        logging.info(f"Generating responses for {llm_model} with {embedding_model}")
-        rags = generate_rags_for_llm(llm_model, embedding_model)
-        for rag in rags:
-            logging.info(f"Generating responses for {rag.tag()}")
-            # generate response and store
-            cache_path = GENERATIONS_PATH / "cache"
-            generate_response_and_store(cache_path, rag)
-            logging.info(f"Generated responses for {rag.tag()} and stored in {cache_path}")
-
+cache_path = GENERATIONS_PATH / "cache"
+for llm_model in llms:
+    #for embedding_model in embeddings:
+    #    logging.info(f"Generating responses for {llm_model} with {embedding_model}")
+    #    rags = generate_rags_for_llm(llm_model, embedding_model)
+    #    for rag in rags:
+    #        logging.info(f"Generating responses for {rag.tag()}")
+    #        # generate response and store
+    #        generate_rag_response_and_store(cache_path, rag)
+    #        logging.info(f"Generated responses for {rag.tag()} and stored in {cache_path}")
+    for prompt in prompts:
+        logging.info(f"Generating responses for {llm_model} and prompt {prompt}")
+        # generate response and store
+        generate_llm_response_and_store(cache_path, llm_model, prompts[prompt], prompt)
+    if isinstance(llms[llm_model], Ollama):
+        logging.info(f"Stopping {llm_model}")
+        os.system(f"ollama stop {llms[llm_model].model}")
 
 if __name__ == "__main__":
     # Example usage

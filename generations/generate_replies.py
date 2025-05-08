@@ -12,31 +12,12 @@ def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame
         # split by </think>
         response_text = response.response.split("</think>")[-1]
         response.response = response_text
-        logging.info(f"[{i}] Question: {question}\nResponse: {response[:MAX_OUTPUT_BOUND]}\n")
+        logging.info(f"[{i}] Question: {question}\nResponse: {response_text[:MAX_OUTPUT_BOUND]}\n")
         result.append({
             "question": question,
             "response": response
         })
     return result
-
-
-def generate_from_llm_with_prompt(
-    llm: LLM,
-    data_under_test: DataFrame,
-    prompt_template: RichPromptTemplate
-) -> list[Response]:
-    result = []
-    for i, question in enumerate(data_under_test["Sentence"]):
-        # Manually provide both variables expected by the prompt template
-        formatted_prompt = prompt_template.format(
-            context_str="(Nessun contesto disponibile)",
-            query_str=question
-        )
-        response_text = llm.complete(formatted_prompt).text
-        result.append(Response(response_text))
-        logging.info(f"[{i}] Question: {question}\nFormatted Prompt:\n{formatted_prompt[:MAX_OUTPUT_BOUND]}\nResponse:\n{response_text[:MAX_OUTPUT_BOUND]}\n")
-    return result
-
 
 if __name__ == "__main__":
     # Example usage

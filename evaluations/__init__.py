@@ -40,7 +40,7 @@ semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embeddin
 relevancy_evaluator = RelevancyEvaluator(llm=judge_llama_index)
 
 
-def eval_responses(responses: list[Response], data_under_test) -> dict:
+def eval_responses(responses: list[dict], data_under_test) -> dict:
     result = {
         'correctness': [],
         'semantic_similarity': [],
@@ -50,18 +50,17 @@ def eval_responses(responses: list[Response], data_under_test) -> dict:
         response = responses[i]
         reference = data_under_test["Response"].iloc[i]
         print(".", end="", flush=True)
-
         correctness_score = float(
-            correctness_evaluator.evaluate_response(query=question, response=response, reference=reference).score
+            correctness_evaluator.evaluate_response(query=question, response=response['response'], reference=reference).score
         )
         semantic_similarity_score = float(
-            semantic_similarity_evaluator.evaluate_response(query=question, response=response,
+            semantic_similarity_evaluator.evaluate_response(query=question, response=response['response'],
                                                             reference=reference).score
         )
         # DeepEval score
         test_case = LLMTestCase(
             input=question,
-            actual_output=response.response,
+            actual_output=response['response'].response,
             expected_output=reference
         )
         g_eval = evaluate(
@@ -78,7 +77,7 @@ def eval_responses(responses: list[Response], data_under_test) -> dict:
     return result
 
 
-def eval_rag(responses: list[Response], data_under_test):
+def eval_rag(responses: list[dict], data_under_test):
     result = eval_responses(responses=responses, data_under_test=data_under_test)
     result['faithfulness'] = []
     result['relevancy'] = []
@@ -88,11 +87,11 @@ def eval_rag(responses: list[Response], data_under_test):
 
         # Evaluate metrics (LLaMa Index)
         faithfulness_score = float(
-            faithfulness_evaluator.evaluate_response(response=response).score
+            faithfulness_evaluator.evaluate_response(response=response['response']).score
         )
 
         relevancy_score = float(
-            relevancy_evaluator.evaluate_response(query=question, response=response).score
+            relevancy_evaluator.evaluate_response(query=question, response=response['response']).score
         )
         result['faithfulness'].append(faithfulness_score)
         result['relevancy'].append(relevancy_score)
