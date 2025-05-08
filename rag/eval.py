@@ -20,6 +20,7 @@ from rag.vector_store_retriever import generate_vector_store_rag
 from rag.hybrid_retriever import generate_hybrid_rag
 from rag.vector_rerank_retriever import generate_vector_rerank_rag
 from analysis import CHROMA_COLLECTION_NAME
+import logging
 
 RETRIEVES = {
     "vector_store": generate_vector_store_rag,
@@ -86,6 +87,7 @@ def eval_responses(responses: list[Response], data_under_test, _result: dict) ->
         _result['correctness'].append(correctness_score)
         _result['semantic_similarity'].append(semantic_similarity_score)
         _result['g_eval'].append(g_eval.test_results[0].metrics_data[0].score)
+    print("")
     return _result
 
 
@@ -114,7 +116,7 @@ def eval_rag(responses: list[Response], data_under_test, _result):
 for retriever_name, retriever in RETRIEVES.items():
 
     if os.path.exists(CACHE_PATH / f"{retriever_name}_results.csv"):
-        print(f"Results for {retriever_name} already exist. Skipping...")
+        logging.info(f"Results for {retriever_name} already exist. Skipping...")
         continue
 
     # get index and retriever
@@ -130,7 +132,7 @@ for retriever_name, retriever in RETRIEVES.items():
         collection_name=CHROMA_COLLECTION_NAME,
     )
 
-    print(f"Number of docs indexed: {len(index.docstore.docs)}")
+    logging.info(f"Number of docs indexed: {len(index.docstore.docs)}")
     dataset_under_test = test
     # consider to add caching
     replies_rag = [rag.query(question) for question in dataset_under_test["Sentence"]]
@@ -153,12 +155,11 @@ for retriever_name, retriever in RETRIEVES.items():
     total_relevancy = sum(result['relevancy'])
     total_g_eval = sum(result['g_eval'])
 
-    print("")
-    print(f"Average faithfulness: {total_faithfulness / n:.2f}")
-    print(f"Average correctness: {total_correctness / n:.2f}")
-    print(f"Average semantic similarity: {total_semantic_similarity / n:.2f}")
-    print(f"Average relevancy: {total_relevancy / n:.2f}")
-    print(f"Average G-Eval: {total_g_eval / n:.2f}")
+    logging.info(f"Average faithfulness: {total_faithfulness / n:.2f}")
+    logging.info(f"Average correctness: {total_correctness / n:.2f}")
+    logging.info(f"Average semantic similarity: {total_semantic_similarity / n:.2f}")
+    logging.info(f"Average relevancy: {total_relevancy / n:.2f}")
+    logging.info(f"Average G-Eval: {total_g_eval / n:.2f}")
 
     # Create DataFrame with results
     results = pd.DataFrame(result)

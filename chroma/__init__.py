@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List
 from chromadb import PersistentClient
 from chromadb.api.models.Collection import Collection
-
+import logging
 PATH = Path(__file__).parent
 
 # why not the SentenceSplitter => from llama_index.core.node_parser import SentenceSplitter
@@ -57,13 +57,13 @@ def generate_chroma_db(
     suffix = f"chunk_size_{chunk_size}_overlapping_{int(overlap * 100)}"
     db_name = f"{db_name_base}_{suffix}"
     db_folder = base_path / db_name
-    print(f"Creating database '{db_name}' at {db_folder}")
+    logging.info(f"Creating database '{db_name}' at {db_folder}")
     # Check if database already exists
     if db_folder.exists() and not force_recreate:
-        print(f"Database '{db_name}' already exists. Skipping creation.")
+        logging.info(f"Database '{db_name}' already exists. Skipping creation.")
         client = PersistentClient(path=str(db_folder))
         collection = client.get_collection(name=db_name)
-        print(f"Collection '{db_name}' contains {collection.count()} entries.")
+        logging.info(f"Collection '{db_name}' contains {collection.count()} entries.")
         return collection
 
     # Create directory for new database
@@ -73,12 +73,12 @@ def generate_chroma_db(
     client = PersistentClient(path=str(db_folder))
     collection = client.get_or_create_collection(name=db_name)
 
-    print(f"Indexing with chunk_size={chunk_size}, overlap={overlap}")
+    logging.info(f"Indexing with chunk_size={chunk_size}, overlap={overlap}")
 
     # Pre-process all documents to get chunks
     all_doc_chunks = []
     for doc_id, text in enumerate(docs):
-        print(f"Pre-processing document {doc_id + 1}/{len(docs)}")
+        logging.info(f"Pre-processing document {doc_id + 1}/{len(docs)}")
         chunks = chunk_text(text, chunk_size, overlap)
         # Store tuple of (doc_id, chunk_position, chunk_text)
         for pos, chunk in enumerate(chunks):
@@ -87,14 +87,14 @@ def generate_chroma_db(
     # Process all chunks in batches across all documents
     batch_size = 100
     total_chunks = len(all_doc_chunks)
-    print(f"Total chunks across all documents: {total_chunks}")
+    logging.info(f"Total chunks across all documents: {total_chunks}")
 
     for i in range(0, total_chunks, batch_size):
         start_index = i
         end_index = min(i + batch_size, total_chunks)
         current_batch = all_doc_chunks[start_index:end_index]
 
-        print(
+        logging.info(
             f"Processing batch {i // batch_size + 1} of {(total_chunks - 1) // batch_size + 1}, chunks {start_index}-{end_index - 1}")
 
         # Extract chunk texts for embedding
@@ -129,7 +129,7 @@ def generate_chroma_db(
                 metadatas=metadatas
             )
         except Exception as e:
-            print(f"[Error] batch {i // batch_size + 1}, cs={chunk_size}, ov={overlap}: {e}")
+            logging.info(f"[Error] batch {i // batch_size + 1}, cs={chunk_size}, ov={overlap}: {e}")
 
-    print(f"✅ DB '{db_name}' created successfully with {total_chunks} chunks.")
+    logging.info(f"✅ DB '{db_name}' created successfully with {total_chunks} chunks.")
     return collection

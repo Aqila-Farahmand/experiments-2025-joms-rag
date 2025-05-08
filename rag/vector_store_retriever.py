@@ -9,7 +9,7 @@ from llama_index.core.prompts import RichPromptTemplate
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.schema import Document
 from llama_index.vector_stores.chroma import ChromaVectorStore
-
+import logging
 from chroma import PATH as CHROMA_PATH
 from documents import from_pandas_to_list
 from rag import refine_template_str, text_qa_template_str, refine_template_system, text_qa_message_system, \
@@ -73,7 +73,7 @@ def generate_vector_store_rag(
         vector_store=vector_store,
     )
 
-    print(f"[INFO] Indexed {len(index.docstore.docs)} documents into collection '{collection_name}'.")
+    logging.info(f"[INFO] Indexed {len(index.docstore.docs)} documents into collection '{collection_name}'.")
 
     retriever = index.as_retriever(similarity_top_k=k)
 

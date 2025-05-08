@@ -7,7 +7,7 @@ from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from chroma import PATH as CHROMA_PATH, generate_chroma_db
 from documents import PATH as DOCUMENTS_PATH, read_csv, from_pandas_to_list
-
+import logging
 # — DEFAULT CONFIGURATION —
 DEFAULT_CHUNK_SIZES: Set[int] = {128, 256, 512, 1024}
 DEFAULT_OVERLAP_RATIOS: Set[float] = {0.1, 0.2, 0.3, 0.4, 0.5}
@@ -33,7 +33,7 @@ def main(
     docs: List[str] = from_pandas_to_list(df)
 
     for name, embedding_llm in MODELS.items():
-        print(f"Generating embeddings for {name}...")
+        logging.info(f"Generating embeddings for {name}...")
         for chunk_size in sorted(chunk_sizes):
             for overlap in sorted(overlap_ratios):
                 generate_chroma_db(
@@ -46,7 +46,7 @@ def main(
                     db_name_base=name,
                 )
 
-        print("✅ All embeddings have been created and saved.")
+        logging.info("✅ All embeddings have been created and saved.")
 
 
 if __name__ == "__main__":

@@ -3,16 +3,16 @@ from llama_index.core.base.base_query_engine import BaseQueryEngine
 from llama_index.core.llms import LLM
 from llama_index.core.prompts import RichPromptTemplate
 from pandas import DataFrame
-
-
+import logging
+MAX_OUTPUT_BOUND = 50
 def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame) -> list[dict]:
     result = []
     for i, question in enumerate(data_under_test["Sentence"]):
         response = chain.query(question)
         # split by </think>
-        response = response.response.split("</think>")[-1]
-
-        print(f"[{i}] Question: {question}\nResponse: {response}\n")
+        response_text = response.response.split("</think>")[-1]
+        response.response = response_text
+        logging.info(f"[{i}] Question: {question}\nResponse: {response[:MAX_OUTPUT_BOUND]}\n")
         result.append({
             "question": question,
             "response": response
@@ -34,7 +34,7 @@ def generate_from_llm_with_prompt(
         )
         response_text = llm.complete(formatted_prompt).text
         result.append(Response(response_text))
-        print(f"[{i}] Question: {question}\nFormatted Prompt:\n{formatted_prompt}\nResponse:\n{response_text}\n")
+        logging.info(f"[{i}] Question: {question}\nFormatted Prompt:\n{formatted_prompt[:MAX_OUTPUT_BOUND]}\nResponse:\n{response_text[:MAX_OUTPUT_BOUND]}\n")
     return result
 
 

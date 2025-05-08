@@ -18,7 +18,9 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 from analysis import PATH as ANALYSIS_PATH
 from chroma import PATH as BASE_DB_PATH
 from documents import PATH as DOCUMENTS_PATH
-
+import logging
+from tqdm import tqdm
+import logging
 # Evaluation parameters
 CHUNK_SIZES = [128, 256, 512, 1024]
 OVERLAP_RATIOS = [0.1, 0.2, 0.3, 0.4, 0.5]
@@ -42,9 +44,9 @@ async def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, f
     total_time = total_faith = total_rel = 0.0
     total_pass_time = 0.0
     n = len(questions)
-    print(f"Evaluating {n} queries...")
+    logging.info(f"Evaluating {n} queries...")
     replies = []
-    for q in questions[:n]:
+    for q in tqdm(questions[:n], desc="Processing queries"):
         print(".", end="", flush=True)
         start = time.time()
         replies.append(query_engine.query(q))
@@ -64,10 +66,10 @@ async def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, f
     total_faith = sum(float(faith.score) for faith in batch_faith_scores)
     total_rel = sum(float(rel.score) for rel in batch_rel_scores)
 
-    print(f"Total time: {total_pass_time:.2f}s")
-    print(f"Average time: {total_time / n:.2f}s")
-    print(f"Average faithfulness: {total_faith / n:.2f}")
-    print(f"Average relevancy: {total_rel / n:.2f}")
+    logging.info(f"Total time: {total_pass_time:.2f}s")
+    logging.info(f"Average time: {total_time / n:.2f}s")
+    logging.info(f"Average faithfulness: {total_faith / n:.2f}")
+    logging.info(f"Average relevancy: {total_rel / n:.2f}")
     return total_time / n, total_faith / n, total_rel / n
 
 
@@ -98,7 +100,7 @@ async def main(
     for name, embedding in embeddings.items():
         result_file = ANALYSIS_PATH / f"chunks_evaluation_{name}.csv"
         if result_file.exists():
-            print(f"File {result_file} already exists. Skipping...")
+            logging.info(f"File {result_file} already exists. Skipping...")
             continue
 
         results: List[Dict[str, float]] = []
@@ -127,7 +129,7 @@ async def main(
 
                 # 7. Prepare query engine and evaluate
                 query_engine = index.as_query_engine(llm=llm)
-                print(f"Evaluating chunk_size={cs}, overlap={ov}")
+                logging.info(f"Evaluating chunk_size={cs}, overlap={ov}")
                 avg_time, avg_faith, avg_rel = await evaluate_metrics(query_engine, questions)
 
                 results.append({
@@ -140,7 +142,7 @@ async def main(
 
         # 8. Save and print metrics
         df_metrics = pd.DataFrame(results)
-        print(df_metrics)
+        logging.info(df_metrics)
         df_metrics.to_csv(result_file, index=False)
 
 

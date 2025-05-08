@@ -1,9 +1,9 @@
 # rag/hybrid_retriever.py
 import chromadb
 import pandas as pd
+import logging
 from llama_index.core import VectorStoreIndex
 from llama_index.core.base.embeddings.base import BaseEmbedding
-from llama_index.core.base.llms.types import MessageRole, ChatMessage
 from llama_index.core.llms import LLM
 from llama_index.core.prompts import RichPromptTemplate
 from llama_index.core.query_engine import RetrieverQueryEngine
@@ -15,8 +15,7 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 
 from chroma import PATH as CHROMA_PATH
 from documents import from_pandas_to_list
-from rag import refine_template_str, text_qa_template_str, text_qa_message_system, refine_template_system, \
-    update_prompts
+from rag import update_prompts
 
 
 def generate_hybrid_rag(
@@ -70,7 +69,7 @@ def generate_hybrid_rag(
         vector_store=vector_store
     )
 
-    print(f"[INFO] Hybrid RAG indexed {len(index.docstore.docs)} docs into collection '{collection_name}'")
+    logging.info(f"Hybrid RAG indexed {len(index.docstore.docs)} docs into collection '{collection_name}'")
 
     # Create retrievers
     vector_retriever = index.as_retriever(similarity_top_k=k)

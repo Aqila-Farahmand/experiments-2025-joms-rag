@@ -10,7 +10,7 @@ from llama_index.core.evaluation import RelevancyEvaluator, SemanticSimilarityEv
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
 from requests import Response
-
+import logging
 PATH = Path(__file__).parent
 
 judge_deep_eval = GeminiModel(
@@ -84,7 +84,6 @@ def eval_rag(responses: list[Response], data_under_test):
     result['relevancy'] = []
     for i, question in enumerate(data_under_test["Response"]):
         response = responses[i]
-        reference = data_under_test["Response"].iloc[i]
         print(".", end="", flush=True)
 
         # Evaluate metrics (LLaMa Index)

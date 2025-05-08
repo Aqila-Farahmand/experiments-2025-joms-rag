@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import fire
 from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
-
+import logging
 
 CHUNK_ANALYSIS_FILES = [ANALYSIS_PATH / file for file in os.listdir(ANALYSIS_PATH) if file.endswith(".csv")]
 
@@ -145,15 +145,15 @@ def main():
         (data["avg_relevancy"] == best_relevancy)
     ]
     best_configs = best_configs.sort_values(by="avg_time", ascending=True)
-    print(f"Best configurations (highest average faithfulness and relevancy):")
+    logging.info(f"Best configurations (highest average faithfulness and relevancy):")
     for _, row in best_configs.iterrows():
-        print(f"model={row['llm']}")
-        print(f"chunk_size={int(row['chunk_size'])}")
-        print(f"overlap_ratio={int(row['overlap'] * 100)}")
-        print(f"average_faithfulness={row['avg_faithfulness']}")
-        print(f"average_relevancy={row['avg_relevancy']}")
-        print(f"average_latency={row['avg_time']}")
-        print("----------------------")
+        logging.info(f"model={row['llm']}")
+        logging.info(f"chunk_size={int(row['chunk_size'])}")
+        logging.info(f"overlap_ratio={int(row['overlap'] * 100)}")
+        logging.info(f"average_faithfulness={row['avg_faithfulness']}")
+        logging.info(f"average_relevancy={row['avg_relevancy']}")
+        logging.info(f"average_latency={row['avg_time']}")
+        logging.info("----------------------")
 
 
 
