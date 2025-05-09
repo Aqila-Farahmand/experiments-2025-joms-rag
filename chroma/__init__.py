@@ -132,4 +132,5 @@ def generate_chroma_db(
             logging.info(f"[Error] batch {i // batch_size + 1}, cs={chunk_size}, ov={overlap}: {e}")
 
     logging.info(f"✅ DB '{db_name}' created successfully with {total_chunks} chunks.")
+
     return collection

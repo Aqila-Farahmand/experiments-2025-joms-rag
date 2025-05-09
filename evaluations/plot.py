@@ -70,8 +70,8 @@ def plot_distributions(df: pd.DataFrame) -> None:
                         margin_titles=True, sharey=False)
     
     # Map boxplot with custom palette
-    g.map_dataframe(sns.boxplot, x="method", y="score", 
-                    palette="Set2", width=0.7, showfliers=True)
+    g.map_dataframe(sns.barplot, x="method", y="score",
+                    palette="Set2", width=0.7)
     
     # Enhance appearance and readability
     g.set_axis_labels("Method", "Score")

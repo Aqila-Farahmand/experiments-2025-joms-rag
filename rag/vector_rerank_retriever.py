@@ -11,7 +11,7 @@ from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.schema import Document
 from llama_index.vector_stores.chroma import ChromaVectorStore
 import logging
-from chroma import PATH as CHROMA_PATH
+from chroma import PATH as CHROMA_PATH, generate_chroma_db
 from documents import from_pandas_to_list
 from rag import refine_template_str, text_qa_template_str, text_qa_message_system, refine_template_system, \
     update_prompts
@@ -42,19 +42,13 @@ def generate_vector_rerank_rag(
         if isinstance(doc, str) and doc.strip()
     ]
 
-    # Create Chroma client
-    if persist:
-        db = chromadb.PersistentClient(path=str(CHROMA_PATH))
-    else:
-        db = chromadb.Client()
-    # Set or generate collection name
-
-    # Set or generate collection name
-    if not collection_name:
-        raise ValueError("Collection name must be provided for vector store retriever.")
-
-    real_collection = f"{collection_name}_chunk_size_{chunk_size}_overlapping_{int(overlap_ratio * 100)}"
-    collection = db.get_or_create_collection(name=real_collection)
+    collection = generate_chroma_db(
+        docs=docs,
+        chunk_size=chunk_size,
+        overlap=overlap_ratio,
+        embedding_lm=embedding_model,
+        db_name_base=collection_name,
+    )
     vector_store = ChromaVectorStore(chroma_collection=collection)
 
     index = VectorStoreIndex.from_documents(

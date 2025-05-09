@@ -36,6 +36,8 @@ dependencies = [
     "llama-index-core (>=0.12.32,<0.13.0)",
     # seaborn installtion
     "seaborn (>=0.12.2,<0.13.0)",
+    "ragas (>=0.2.15,<0.3.0)",
+    "RapidFuzz (>= 3.13.0,< 4.0.0)",
 ]
 
 

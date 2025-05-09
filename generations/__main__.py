@@ -5,7 +5,7 @@ import os
 import pickle
 
 import pandas as pd
-from llama_index.core import PromptTemplate, Response
+from llama_index.core import Response
 from llama_index.core.prompts import RichPromptTemplate
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
@@ -19,6 +19,7 @@ from rag.hybrid_retriever import generate_hybrid_rag
 from rag.vector_rerank_retriever import generate_vector_rerank_rag
 from rag.vector_store_retriever import generate_vector_store_rag
 
+
 def full_prompt():
     # load data in DATA_PATH as pd
     df = pd.read_csv(DATA_PATH / "train.csv")
@@ -29,7 +30,10 @@ def full_prompt():
     # create a prompt template
     prompt_template = RichPromptTemplate(
         """
-            Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. Aiuta a rispondere a questa domanda (in modo empatico).
+            Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
+            Aiuta a rispondere a questa domanda (in modo empatico).
+            Se è fuori dalle tue competenze, rispondi: 
+            Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
             Cerca di rispondere il modo simile a questi esempi:"""
             + prompt + "\n La domanda a cui devi rispondere (in modo conciso) è: {{ question }} "
 
@@ -38,30 +42,35 @@ def full_prompt():
 
 embeddings = {
     "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
-    "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
+    #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
 
 llms = {
     "qwen3-0.6b": Ollama(model="qwen3:0.6b", request_timeout=60000),
     "qwen3-1.7b": Ollama(model="qwen3:1.7b", request_timeout=60000),
-    #"qwen3-4b": Ollama(model="qwen3:4b", request_timeout=60000),
-    #"qwen3-8b": Ollama(model="qwen3:8b", request_timeout=60000),
+    "qwen3-4b": Ollama(model="qwen3:4b", request_timeout=60000),
+    "qwen3-8b": Ollama(model="qwen3:8b", request_timeout=60000),
     "gemma3-1b": Ollama(model="gemma3:1b", request_timeout=60000),
-    #"gemma3-4b": Ollama(model="gemma3:4b", request_timeout=60000),
-    #"gemma3-12b": Ollama(model="gemma3:12b", request_timeout=60000),
-    #"medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", request_timeout=60000),
-    #"llama3.2-3b": Ollama(model="llama3.2:latest", request_timeout=60000),
+    "gemma3-4b": Ollama(model="gemma3:4b", request_timeout=60000),
+    "gemma3-12b": Ollama(model="gemma3:12b", request_timeout=60000),
+    "medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", request_timeout=60000),
+    "llama3.2-3b": Ollama(model="llama3.2:latest", request_timeout=60000),
     "llama3.2-1b": Ollama(model="llama3.2:1b", request_timeout=60000),
     "deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", request_timeout=60000),
-    #"deepseek-r1-7b": Ollama(model="deepseek-r1:latest", request_timeout=60000),
+    "deepseek-r1-7b": Ollama(model="deepseek-r1:latest", request_timeout=60000),
     "gemini-2.0" : GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY"))
 }
 
 prompts = {
     "role_playing":
-        RichPromptTemplate("Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. Aiuta a rispondere a questa domanda (in modo empatico e conciso): {{ question }}"),
+        RichPromptTemplate("""
+        Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
+        Se non sei in grado di rispondere, dì: Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+        Aiuta a rispondere a questa domanda (in modo empatico e conciso): {{ question }}
+        """),
     "full": full_prompt()
 }
+
 # launch a subcommand which stop each model
 for llm in llms:
     # ollama stop <model_name>, use cmd
@@ -70,8 +79,8 @@ for llm in llms:
         os.system(f"ollama stop {llm.model}")
 
 # adapt ollama to have model_name
-data_under_test = pd.read_csv(DATA_PATH / "test.csv")[:10]  # remove :5 for the full dataset
-base = DATA_PATH / "data-generated.csv"
+data_under_test = pd.read_csv(DATA_PATH / "test_generated.csv")#[:10]  # remove :5 for the full dataset
+base = DATA_PATH / "train.csv"
 
 RETRIEVES = {
     "vector_store": generate_vector_store_rag,
@@ -96,7 +105,6 @@ def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
             persist=True,
             collection_name=embedding,
         )
-
         rags.append(
             RagUnderTest(
                 rag=rag,
@@ -161,7 +169,7 @@ def generate_llm_response_and_store(where: str, llm: str, prompt: RichPromptTemp
     responses = []
     for i, question in enumerate(data_under_test["Sentence"]):
         formatted_prompt = prompt.format(
-            query=question
+            question=question
         )
         response_text = llms[llm].complete(formatted_prompt).text
         response_text = response_text.split("</think>")[-1]
@@ -190,14 +198,14 @@ def generate_llm_response_and_store(where: str, llm: str, prompt: RichPromptTemp
 # iterate over the llms and embedding
 cache_path = GENERATIONS_PATH / "cache"
 for llm_model in llms:
-    #for embedding_model in embeddings:
-    #    logging.info(f"Generating responses for {llm_model} with {embedding_model}")
-    #    rags = generate_rags_for_llm(llm_model, embedding_model)
-    #    for rag in rags:
-    #        logging.info(f"Generating responses for {rag.tag()}")
-    #        # generate response and store
-    #        generate_rag_response_and_store(cache_path, rag)
-    #        logging.info(f"Generated responses for {rag.tag()} and stored in {cache_path}")
+    for embedding_model in embeddings:
+        logging.info(f"Generating responses for {llm_model} with {embedding_model}")
+        rags = generate_rags_for_llm(llm_model, embedding_model)
+        for rag in rags:
+            logging.info(f"Generating responses for {rag.tag()}")
+            # generate response and store
+            generate_rag_response_and_store(cache_path, rag)
+            logging.info(f"Generated responses for {rag.tag()} and stored in {cache_path}")
     for prompt in prompts:
         logging.info(f"Generating responses for {llm_model} and prompt {prompt}")
         # generate response and store

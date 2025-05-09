@@ -16,11 +16,11 @@ API_KEY: str = os.getenv("GOOGLE_API_KEY")
 MODELS = {
     #"gemini": GoogleGenAIEmbedding(model_name="models/text-embedding-004"),
     "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
-    "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
+    #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
 
 def main(
-    document: Path = DOCUMENTS_PATH / "data-generated.csv",
+    document: Path = DOCUMENTS_PATH / "train.csv",
     chunk_sizes: Set[int] = DEFAULT_CHUNK_SIZES,
     overlap_ratios: Set[float] = DEFAULT_OVERLAP_RATIOS,
     base_path: Path = CHROMA_PATH
