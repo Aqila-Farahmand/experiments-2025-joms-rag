@@ -1,66 +1,78 @@
 embedder,retriever,LLM,question,response
 nomic,vector_store,qwen3-0.6b,Posso avere i malattie renali se ho pressione alta?,"
 
-Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza. Se hai problemi inizia un colloquio con il tuo medico per un'analisi completa."
+Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
 nomic,vector_store,qwen3-0.6b,In che modo l'assunzione di caffeina influisce sulla misurazione della pressione sanguigna?,"
 
-Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
+Caffè può causare un aumento temporaneo della pressione sanguigna, ma monitorare il tuo corpo e parlare con il tuo medico per controllarlo."
 nomic,vector_store,qwen3-0.6b,"Quando sento mi sento poco bene e il mio cuore batte piu veloce del normale, dovrei sempre e subito correre dal mio Medico di Medicina Generale, oppure ci sono altre cose prima dovrei provare a fare per capire che sta succedendo al mio corpo?","
 
-Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza. Se hai un sintomato come il dolore al petto o il movimento veloce del cuore, contatta immediatamente il tuo medico di medicina generale o il 118. Il tuo corpo è il tuo responsabile, e siate sveglii a valutare le sue indicazioni."
+Se ti senti poco bene e il tuo cuore batte più rapidamente, contatta immediate il tuo Medico di Medicina Generale. La stanchezza potrebbe essere associata a fattori esterni, come stress o cambiamenti iniziali di routine, e non è sufficiente valutare solo la pressione alta. Mantieni un'attenzione a variazioni periodiche e segui le consigli professionali per un'ottimizzazione del corpo."
 nomic,vector_store,qwen3-0.6b,Come la razza nera influenza l'ipertensione?,"
 
-La razza è un fattore chiave nella prevenzione e nella gestione dell'ipertensione, con un'associazione specifica tra la razza nera e un aumento del rischio di malattie cardiache. Ad esempio, la pressione arteriosa è più soglia per un individuo nero rispetto a una persona bianca. La sua influenza è principalmente legata al tipo di ipertensione (es. ipertensia arteriosa) e non solo alla pressione stessa."
+La razza, come evidenziato nel contesto, associa maggiormente a ipertensione arteriosa a livello razionale rispetto alla razza bianca. La presenza di fattori come la razza potenzialmente aumenta il rischio di condurre una condotta sanguigna, che può influenzare la vita quotidiana in modo generale."
 nomic,vector_store,qwen3-0.6b,"Considerando che sto monitorando la mia salute con questo chatbot, e soffro di ipertensione, potresti spiegarmi più dettagliatamente cosa causa l'ipertensione e come posso monitorare al meglio la mia pressione sanguigna a lungo termine per evitare complicazioni?","
 
-La tua ipertensione può essere causata da fattori come l'età, la storia familiare, il consumo di alcol e cibi salati, la presenza di stress, e la perdita di peso. Per monitorare la tua pressione sanguigna a lungo termine, è importante seguire regolari valutazioni (es. in oncologico, e durante i check-ups), raccogliere dati sull'acuta, mantenere un'atmosfera di vita equilibrata e adottare strumenti come il monitoraggio del peso. Questo aiuta a prevenire complicazioni future. Sono un chatbot per fornire supporto, non tengo conto i dettagli del contesto."
+La tua ipertensione è un fattore chiave nella gestione della salute. I principi che causano la pressione sanguigna sono:  
+1. **Diet e alimenti** (es. consumo elevato di soda, cacioca e legumi),  
+2. **Eccedenza di cibi salati e grassi**,  
+3. **Stress e malnutrizione**,  
+4. **Sobrazione di cibi lussu.**  
+
+Per monitorarla a lungo termine, è importante:  
+- **Verificare il range normale di pressione sanguigna** (normalmente tra 85-120 mmHg),  
+- **Monitorare il tempo di brucio** (momenti di caldo, brucio, sonno),  
+- **Adottare modelli di vita sani** (es. esercizio, cattivo cibo e controllo della stanchezza).  
+
+Sebbene il tuo assistente è progettato per fornire supporto, non siate soli e controllate il tuo stato di salute informandosi da voi stessi!"
 nomic,vector_store,qwen3-0.6b,"Considerando che sto monitorando la mia ipertensione, vorrei capire se il diabete può avere un impatto sulla mia condizione e, in caso affermativo, in che modo specifico il diabete può influenzare la mia ipertensione?","
 
-Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
+Sei monitorando la tua condizione di ipertensione, posso spiegarti che il diabete può portare al rischio di sviluppare la condizione. L'ipertensione, in particolare, può svilupcare se non si gestisce regolarmente la sua causa. Il diabete, che aumenta il rischio di sviluppare l'ipertensione, può influenzare la pressione sanguigna attraverso lo svilapizzo sanguigno e la variazione nella coagulazione sanguine. È importante monitorare regolarmente la pressione sanguigna e consultare il medico per gestire i dati e risolvere eventuali problemi. Ricorda di controllare regolarmente la tua pressione e seguire i consigli del tuo medico per un'ottimizzazione della condizione."
 nomic,vector_store,qwen3-0.6b,"Come, la, razza bianca, influenza, la pressione?","
 
-Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
+La pressione sanguigna può essere influenzata da diversi fattori, tra cui la razza. Ad esempio, la razza nera si associa maggiormente a ipertensione arteriosa rispetto alla razza bianca. Se sei in grado di utilizzare le informazioni fornite, potresti dire: ""La pressione sanguigna è un fattore chiave che varia a base della razza, con la razza nera presentando un rischio proporzionale rispetto a quella della razza bianca""."
 nomic,vector_store,qwen3-0.6b,"Sono inkinta, kome la gravidanza puo influenzare il feto?","
 
-La gravidanza può aumentare il rischio di preeclampsia, una condizione grave per la madre e il feto. È importante monitorarla e gestirla attivamente per prevenire eventuali complica."
+La gravidanza può influenzare il feto attraverso varie fonti, come il sottostimolo di pressione sanguigna e il potenziale rischio di complicanze per la madre o il feto. Se il valore della pressione aumenta durante la gravidanza, è importante controllarlo attivamente e consultare il medico. La regola è che una gestione adeguata rinnova la routine del feto, e continuare a monitorare la salute durante l'emergenza è essenziale."
 nomic,vector_store,qwen3-0.6b,Quali consigli puoi fornirmi per gestire la mia ipertensione?,"
 
-Spero che ti stia tutto bene! Concentra sempre sulla salute e sulle azioni positive che puoi intraprendere per gestire l'ipertensione. Comunica con il tuo partner o chi ti aiuta per il rischio di sviluppare il tuo paziente, e non esitare su azioni come mangiar piccoli cibi di alto valore per il tuo corpo o esercitarci regolarmente. La tua salute è importante! 😊"
-nomic,vector_store,qwen3-0.6b,How does yoga help with my hypertension?,"
+Spero di aiutarti a gestire il tuo stato d'ipertensione con attenzione e pazienza. L'importante è mantenere un'attenta osservazione dei sintomi e seguire consigli professionali. Adatta il tuo stile di vita adattando il tuo corpo, e segui i consigli prescritti da un medico. Sono un assistente specializzato nella gestione dell'ipertensione e ti ringrazio per il tuo desidero di crescere in modo sicuro."
+nomic,vector_store,qwen3-0.6b,Lo yoga aiuta per la gestione dell'ipertensione?,"
 
-Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
+Spero che possa aiutarti, non soffrire di ipertensione, ma lo yoga è un metodo efficace per rilassarsi e gestire il stress. In base ai tuoi controlli, è importante mantenere una routine fisica e una attenzione ai sforzi. tranquilo!"
 nomic,vector_store,qwen3-0.6b,"Ehm, ipertensione... che significa... ehm... per favore?","
 
-La pressione sanguigna è il livello di pressione che si trova dentro i vasi sanguigni. Se valuta più di 130/80 mmHg, potrebbe essere ipertensione. Questo significa che non è un problema grave, ma necessita di monitoraggio e controlli per prevenire complicazioni. Consola ti puoi consultare un medico per un esame specifico e per un piano di azioni personalizzato. 😊"
+L'ipertensione è un aumento nella pressione sanguigna, che può danneggiare le strutture corporee. Sei in grado di gestirla grazie a modelli corretti e abilità. Consola-ti con i tuoi stessi cambiamenti e consulta il tuo medico per una valutazione. La tua salute è importante, e con il tempo, puoi renderla più facile. 😊"
 nomic,vector_store,qwen3-0.6b,Come posso gestire la mia ipertensione e quali consigli puoi darmi?,"
 
-La gestione dell'ipertensione è essenziale per prevenire danni come per il cuore, i reni, il cervello e gli occhi. Consiglio di monitorare i valori e seguire consigli come:  
-1. Mantenere un corretto peso e un'atmofora equilibrato.  
-2. Comportamenti fisiologici come camminare e bere consigliatamente.  
-3. Utilizzare medicinale in line con i target e evitare comportamenti che aumentano il rischio.  
+Sono un assistente per la gestione dell'ipertensione e ti consilino in modo trasparente. Per gestire la tua ipertensione, segui questi consigli:  
+1. Mantieni un'atmosfera sana, riducendo il consumo di cocaïna e alcol.  
+2. Comportati con una routine fisica regolare (es. corridotti, attività fisica).  
+3. Iniziaggi periodici di controllo sanguigno e consulti con il tuo medico per monitorare i dati e rispondere a domande specifiche.  
+4. Inoltro a regolarmente controllare la pressione sanguigna e seguire le consigli professionali del tuo obiettivo.  
 
-Se hai bisogno di consigli personali, invia-mi la tua informazione!"
+Spero di aiutarti a mantenere una vita sana e il tuo benessere."
 nomic,vector_store,qwen3-0.6b,"Considerando che sono i mesi estivi, come influisce l'estate sulla mia ipertensione?","
 
-Non ho né le informazioni di contesto né le conoscenze sufficienti per rispondere. Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
+La tua ipertensione è un fattore di rischio, e il tuo stile di vita in modo sano è essenziale per mantenere una salute fisica. In estate, è importante continuare a muoversi regolarmente e a gestire stress, poiché l'estate può intensificare il rischio di sviluppare ipertensione. Ricorda di monitorare la tua pressione e seguire i consigli del tuo medico per un ben digiti."
 nomic,vector_store,qwen3-0.6b,Come fumo influisce ictus?,"
 
-Un buon controllo della pressione arteriosa riduce significativamente il rischio di ictus, infarto, e altre complicanze cardiovascolari. Se un paziente iperteso smette di fumare, il rischio cardiovascolare diminuirà drasticamente, anche nel caso di anzia e in modo indipendente. Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
+Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza. Se hai domande su ipertensione, posso spiegarti come gestire il problema attraverso farmaci e modelli di vita sani."
 nomic,vector_store,qwen3-0.6b,La pasta integrale può aiutare con il mio peso?,"
 
-La pasta integrale è un'alimento ricco di fibre e di nutrienti importanti, che può contribuire a mantenere un peso sostenibile. Controlla il tuo stile di vita, includendo un'assunzione regolare e un consumo moderato di alimenti integrali. Se necessario, consigliamo di seguire regole di salute come la ridotta assunzione di sodio e di grassi saturi."
+Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
 nomic,vector_store,qwen3-0.6b,"Pasta integrale, puo aiutare a gestite il mio peso?","
 
-Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
+La pasta integrale è un alimento ricco di proteine e nutriente, essenziale per il controllo del peso. Molti membri di mia squadra stanno usando strategie come il consumo di alimenti sani per mantenerli sotto controllo e migliorare la salute globale. Posso aiutarti a combinare questi approcci con esercizi fisici per un equilibrio ottimale. Se hai bisogno di consigli specifici, non esitare!"
 nomic,vector_store,qwen3-0.6b,"Io come paziente iperteso, se voglio monitorare la pressione, devo farlo ogni quanto tempo per avere informazioni utili, tipo devo misurarla ogni 72 ore, o come?","
 
-Se hai un'ipertensione, monitorare la pressione ogni 72 ore è un'ottica per mantenere un controllo sostenuto. Questo permette di identificare eventuali sintomi o tendenze che potrebbero indicare un rischio. Sono un assistente per la gestione dell'ipertensione, e ti ringrazio per il tuo apprezzamento per questa informazione. 🌱"
+La regola è monitorare ogni 72 ore per garantire informazioni chiare, ma bisogna controllare anche le variazioni giornaliere. Monitora regolarmente, con i dati a intervalli più frequenti, e consulta il tuo medico per un'analisi più precisa. Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."
 nomic,vector_store,qwen3-0.6b,L'ipertensione può danneggiare il mio rene?,"
 
-L'ipertensione non controllata può danneggiare i reni nel tempo, portando a nefropatia ipertensiva. Per questo è importante monitorarla e gestirla con cura."
+L'ipertensione non controllata può danneggiare i reni nel tempo, portando a problemi renali a lungo termine come le nefropatie. Per prevenire i danni, è importante monitorarla e gestirla con il tuo medico. Mantenere una vita sana e seguire la terapia prescritta aiuta a preservare la salute dei reni."
 nomic,vector_store,qwen3-0.6b,"Considerando la mia ipertensione, quali sono i problemi seri che potrei avere, considerando anche la mia posizione in italia?","
 
-La mia ipertensione potrebbe portarmi a complicazioni come l'infarto, l'ictus, l'insufficienza renale e i problemi alla vista, tra cui non sono solo di rischio nazionale ma anche di salute generale. Per prevenire queste conseguenze, è essenziale monitorare e trattare l'ipertensione tempestivamente."
+La mia ipertensione può causare problemi seri come l'infarto, l'ictus e l'insufficienza renale, che potrebbero danneggiare la funzione cardiovascolare e renale. Sebbene la posizione in Italia sia un fattore di rischio globale, queste complicazioni sono comuni a tutti i pazienti. Ricorda di monitorarla regularmente e seguire i consigli del tuo medico per ridurre il rischio. Se ti serve ulteriore supporto, non esitare!"
 nomic,vector_store,qwen3-0.6b,Quale è la tua città preferita in italia?,"
 
 Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza."

@@ -100,7 +100,7 @@ def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
             overlap_ratio=0.5,
             embedding_model=embeddings[embedding],
             llm=llms[llm],
-            k=3,
+            k=7,
             alpha=0.5,
             persist=True,
             collection_name=embedding,

@@ -1,5 +1,5 @@
 embedder,retriever,LLM,question,response
-nomic,hybrid,gemini-2.0,Posso avere i malattie renali se ho pressione alta?,"Sì, l'ipertensione può danneggiare i reni e, a sua volta, i problemi renali possono causare ipertensione. È importante monitorare la funzione renale se si soffre di pressione alta.
+nomic,hybrid,gemini-2.0,Posso avere i malattie renali se ho pressione alta?,"Sì, l'ipertensione può danneggiare i reni. È importante monitorare la funzione renale se si soffre di pressione alta.
 "
 nomic,hybrid,gemini-2.0,In che modo l'assunzione di caffeina influisce sulla misurazione della pressione sanguigna?,"In alcune persone, un consumo eccessivo di caffeina può causare un temporaneo aumento della pressione sanguigna. Ti suggerisco di osservare come reagisce il tuo corpo e di parlarne con il tuo medico se hai dubbi.
 "
@@ -17,7 +17,7 @@ nomic,hybrid,gemini-2.0,"Sono inkinta, kome la gravidanza puo influenzare il fet
 "
 nomic,hybrid,gemini-2.0,Quali consigli puoi fornirmi per gestire la mia ipertensione?,"Ottimo! Continua a monitorare regolarmente la tua pressione e a seguire i consigli del tuo medico.
 "
-nomic,hybrid,gemini-2.0,How does yoga help with my hypertension?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,hybrid,gemini-2.0,Lo yoga aiuta per la gestione dell'ipertensione?,"Certo, lo yoga è un'ottima opzione.
 "
 nomic,hybrid,gemini-2.0,"Ehm, ipertensione... che significa... ehm... per favore?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
 "

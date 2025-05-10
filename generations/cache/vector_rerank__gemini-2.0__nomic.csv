@@ -1,38 +1,40 @@
 embedder,retriever,LLM,question,response
-nomic,vector_rerank,gemini-2.0,Posso avere i malattie renali se ho pressione alta?,Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
-nomic,vector_rerank,gemini-2.0,In che modo l'assunzione di caffeina influisce sulla misurazione della pressione sanguigna?,"La caffeina può causare un aumento temporaneo della pressione. È importante monitorare come il tuo corpo reagisce al caffè e parlarne con il tuo medico, che potrebbe consigliarti di limitarne il consumo. In alcune persone, un consumo eccessivo di caffeina può causare un aumento temporaneo della pressione sanguigna. Osserva come reagisce il tuo corpo e parlane con il tuo medico se hai dubbi.
+nomic,vector_rerank,gemini-2.0,Posso avere i malattie renali se ho pressione alta?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
 "
-nomic,vector_rerank,gemini-2.0,"Quando sento mi sento poco bene e il mio cuore batte piu veloce del normale, dovrei sempre e subito correre dal mio Medico di Medicina Generale, oppure ci sono altre cose prima dovrei provare a fare per capire che sta succedendo al mio corpo?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,gemini-2.0,In che modo l'assunzione di caffeina influisce sulla misurazione della pressione sanguigna?,"Un consumo eccessivo di caffeina può causare un temporaneo aumento della pressione sanguigna in alcune persone. Per questo, è consigliabile non assumere bevande contenenti caffeina nell’ora precedente la misurazione. Monitora come reagisce il tuo corpo e parlane con il tuo medico se hai dubbi.
+"
+nomic,vector_rerank,gemini-2.0,"Quando sento mi sento poco bene e il mio cuore batte piu veloce del normale, dovrei sempre e subito correre dal mio Medico di Medicina Generale, oppure ci sono altre cose prima dovrei provare a fare per capire che sta succedendo al mio corpo?","Se ti senti poco bene e la tua frequenza cardiaca è più alta del solito, ti consiglio di riferirlo al tuo Medico di Medicina Generale. Purtroppo la frequenza cardiaca non è un parametro molto affidabile per capire qual è la causa dei tuoi disturbi.
 "
 nomic,vector_rerank,gemini-2.0,Come la razza nera influenza l'ipertensione?,"La razza è uno dei fattori che possono influenzare la pressione. Ad esempio, la razza nera si associa maggiormente ad ipertensione arteriosa rispetto alla razza bianca.
 "
-nomic,vector_rerank,gemini-2.0,"Considerando che sto monitorando la mia salute con questo chatbot, e soffro di ipertensione, potresti spiegarmi più dettagliatamente cosa causa l'ipertensione e come posso monitorare al meglio la mia pressione sanguigna a lungo termine per evitare complicazioni?",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,gemini-2.0,"Considerando che sto monitorando la mia salute con questo chatbot, e soffro di ipertensione, potresti spiegarmi più dettagliatamente cosa causa l'ipertensione e come posso monitorare al meglio la mia pressione sanguigna a lungo termine per evitare complicazioni?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza.
+"
 nomic,vector_rerank,gemini-2.0,"Considerando che sto monitorando la mia ipertensione, vorrei capire se il diabete può avere un impatto sulla mia condizione e, in caso affermativo, in che modo specifico il diabete può influenzare la mia ipertensione?","Il diabete può aumentare il rischio di sviluppare ipertensione.
 "
 nomic,vector_rerank,gemini-2.0,"Come, la, razza bianca, influenza, la pressione?","La razza è uno dei fattori che possono influenzare la pressione. Ad esempio, la razza nera si associa maggiormente ad ipertensione arteriosa rispetto alla razza bianca.
 "
 nomic,vector_rerank,gemini-2.0,"Sono inkinta, kome la gravidanza puo influenzare il feto?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
 "
-nomic,vector_rerank,gemini-2.0,Quali consigli puoi fornirmi per gestire la mia ipertensione?,"L'ipertensione è una condizione gestibile. Concentrati sugli aspetti positivi e sulle azioni che puoi intraprendere per prenderti cura della tua salute.
-"
-nomic,vector_rerank,gemini-2.0,How does yoga help with my hypertension?,"Lo yoga può essere d'aiuto per l'ipertensione, in quanto favorisce il rilassamento.
+nomic,vector_rerank,gemini-2.0,Quali consigli puoi fornirmi per gestire la mia ipertensione?,Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,gemini-2.0,Lo yoga aiuta per la gestione dell'ipertensione?,"Certo, lo yoga è un'ottima opzione per gestire l'ipertensione.
 "
 nomic,vector_rerank,gemini-2.0,"Ehm, ipertensione... che significa... ehm... per favore?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
 "
-nomic,vector_rerank,gemini-2.0,Come posso gestire la mia ipertensione e quali consigli puoi darmi?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,gemini-2.0,Come posso gestire la mia ipertensione e quali consigli puoi darmi?,"Ricorda che la gestione dell'ipertensione è un percorso continuo. Mantieni uno stile di vita sano e segui i consigli del tuo medico. La consapevolezza e l'impegno sono fondamentali per una buona gestione a lungo termine. Non dimenticare i controlli periodici. Continua a monitorare regolarmente la tua pressione e a seguire i consigli del tuo medico.
 "
-nomic,vector_rerank,gemini-2.0,"Considerando che sono i mesi estivi, come influisce l'estate sulla mia ipertensione?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,gemini-2.0,"Considerando che sono i mesi estivi, come influisce l'estate sulla mia ipertensione?","Ricorda di continuare a monitorare la tua pressione.
 "
 nomic,vector_rerank,gemini-2.0,Come fumo influisce ictus?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
 "
 nomic,vector_rerank,gemini-2.0,La pasta integrale può aiutare con il mio peso?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
 "
-nomic,vector_rerank,gemini-2.0,"Pasta integrale, puo aiutare a gestite il mio peso?",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
-nomic,vector_rerank,gemini-2.0,"Io come paziente iperteso, se voglio monitorare la pressione, devo farlo ogni quanto tempo per avere informazioni utili, tipo devo misurarla ogni 72 ore, o come?","Mi fa piacere che tu stia monitorando la tua pressione. Ti suggerisco di continuare le misurazioni ogni almeno 72 ore per avere informazioni utili.
+nomic,vector_rerank,gemini-2.0,"Pasta integrale, puo aiutare a gestite il mio peso?","Concentrati su una dieta sana ed equilibrata, che includa cereali integrali.
 "
-nomic,vector_rerank,gemini-2.0,L'ipertensione può danneggiare il mio rene?,"Sì, purtroppo è così. L'ipertensione non controllata può danneggiare i vasi sanguigni dei reni, portando a problemi renali a lungo termine. È fondamentale monitorare e gestire la pressione per prevenire questi danni. Per questo è importante tenerla sotto controllo con la terapia e i controlli regolari prescritti dal tuo medico.
+nomic,vector_rerank,gemini-2.0,"Io come paziente iperteso, se voglio monitorare la pressione, devo farlo ogni quanto tempo per avere informazioni utili, tipo devo misurarla ogni 72 ore, o come?","Ti suggerisco di continuare le misurazioni ogni almeno 72 ore.
 "
-nomic,vector_rerank,gemini-2.0,"Considerando la mia ipertensione, quali sono i problemi seri che potrei avere, considerando anche la mia posizione in italia?","L'ipertensione non trattata può comportare problemi di salute seri come infarto, ictus, insufficienza renale, problemi alla vista e malattie cardiache. Tuttavia, è importante diagnosticare e trattare l'ipertensione precocemente per prevenire queste complicazioni. Agendo tempestivamente e seguendo le indicazioni mediche, puoi ridurre significativamente questo rischio.
+nomic,vector_rerank,gemini-2.0,L'ipertensione può danneggiare il mio rene?,"Sì, l'ipertensione non controllata può danneggiare i reni. È importante monitorare e gestire la pressione per prevenire questi danni.
+"
+nomic,vector_rerank,gemini-2.0,"Considerando la mia ipertensione, quali sono i problemi seri che potrei avere, considerando anche la mia posizione in italia?","L'ipertensione non trattata può portare a gravi problemi di salute, tra cui infarto, ictus, insufficienza renale, problemi alla vista e malattie cardiache. È importante diagnosticare e trattare l'ipertensione precocemente per prevenire queste complicazioni.
 "
 nomic,vector_rerank,gemini-2.0,Quale è la tua città preferita in italia?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza.
 "

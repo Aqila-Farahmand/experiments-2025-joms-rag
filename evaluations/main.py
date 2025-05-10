@@ -40,9 +40,9 @@ async def main():
         if os.path.exists(os.path.join(EVAL_CACHE_PATH, f"{key}.csv")):
             logging.info(f"File {key} already exists. Skipping...")
             continue
-        #await sleep(10)  #
+        await sleep(1)  #
         # remove the .pkl extension
-        print(value["responses"][0])
+        #print(value["responses"][0])
         if("prompt" in key):
             result = await eval_responses(value["responses"], data_under_test)
         else:

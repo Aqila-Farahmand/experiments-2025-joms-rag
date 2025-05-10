@@ -74,7 +74,7 @@ async def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, f
 
 
 async def main(
-    csv_path: str = str(DOCUMENTS_PATH / "data-generated.csv"),
+    csv_path: str = str(DOCUMENTS_PATH / "train.csv"),
     question_col: str = "Sentence",
     answer_col: str = "Response",
     db_base_path: str = str(BASE_DB_PATH),
@@ -95,7 +95,7 @@ async def main(
     embeddings = {
         #"gemini": GoogleGenAIEmbedding(model_name="models/text-embedding-004"),
         "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
-        "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
+        #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
     }
     for name, embedding in embeddings.items():
         result_file = ANALYSIS_PATH / f"chunks_evaluation_{name}.csv"

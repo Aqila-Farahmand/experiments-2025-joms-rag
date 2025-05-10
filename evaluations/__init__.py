@@ -24,7 +24,7 @@ judge_deep_eval = GeminiModel(
 )
 embedding = OllamaEmbedding("nomic-embed-text")
 
-judge_llama_index = GoogleGenAI(model="models/gemini-2.0-flash")
+judge_llama_index = GoogleGenAI(model="models/gemini-2.5-flash-preview-04-17")
 
 medical_faithfulness = GEval(
     name="Medical Correctness",
@@ -33,7 +33,6 @@ medical_faithfulness = GEval(
         "Verify each medical claim against the 'expected output', such as clinical guidelines or medical literature.",
         "Identify any contradictions or unsupported medical claims that could lead to misdiagnosis.",
         "Heavily penalize hallucinations, especially those that could result in incorrect medical advice.",
-        "Provide reasons for the faithfulness score, emphasizing the importance of clinical accuracy and patient safety."
     ],
     evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
     model=judge_deep_eval

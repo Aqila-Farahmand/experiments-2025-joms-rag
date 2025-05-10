@@ -1,0 +1,6 @@
+metric,average,std
+correctness,1.925,1.4167698620824989
+semantic_similarity,0.6651132776071877,0.14368115740421689
+g_eval,0.25,0.4442616583193193
+faithfulness,0.0,0.0
+relevancy,0.0,0.0

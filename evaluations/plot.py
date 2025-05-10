@@ -95,7 +95,7 @@ def plot_distributions(df: pd.DataFrame) -> None:
  
     
     # Save high-quality figure
-    plt.savefig(PLOTS_PATH / "distribution_scores.png", dpi=300, bbox_inches='tight')
+    plt.savefig(PLOTS_PATH / "distribution_scores.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
 
