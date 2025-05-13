@@ -12,6 +12,8 @@ import pandas as pd
 import os
 from matplotlib.patches import Patch
 from matplotlib.patches import Patch
+from scipy.stats import kendalltau
+from sklearn.metrics.pairwise import cosine_similarity
 import matplotlib.pyplot as plt
 
 # load all the csv files in the folder (that does not have summary in the file name)
@@ -49,13 +51,14 @@ def merge_dataframes(folder: str) -> pd.DataFrame:
             embedding=embedding
         )
         # Convert method to categorical with specified order
-        method_order = ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]
+        method_order = ["role_playing", "full", "vector_store"]
         df['method'] = pd.Categorical(df['method'], categories=method_order, ordered=True)
         # sort the method in this way: "role_playing, full, vector_store, vector_rerank, hybrid"
         rows.append(df)
+
     return pd.concat(rows, ignore_index=True)
 
-    # Enhanced visualization functions with improved styling and separate scales
+# Enhanced visualization functions with improved styling and separate scales
 def plot_distributions(df: pd.DataFrame) -> None:
     """
     Plot the distribution of scores across different methods using boxplots.
@@ -91,14 +94,118 @@ def plot_distributions(df: pd.DataFrame) -> None:
             ax.set_ylim(0, row_max * 1.1)  # Set y-limits to 10% above max value for better visibility
             # Rotate x-axis labels by 45 degrees
             plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
-    
- 
-    
+
     # Save high-quality figure
     plt.savefig(PLOTS_PATH / "distribution_scores.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
+def plot_g_eval_correlations(df: pd.DataFrame) -> None:
+    # collect g_eval scores for each kind-method-model combo
+    evaluations = {}
+    # Sort by kind (alphabetical), then by method (categorical order), then by model
+    for model in sorted(df['model'].unique()):
+        for method in df['method'].cat.categories:
+            for kind in df['kind'].unique():
+                data = df[
+                    (df['kind'] == kind) &
+                    (df['method'] == method) &
+                    (df['model'] == model) &
+                    (df['metric'] == "g_eval")
+                ]
+                if data.empty:
+                    continue
+                key = f"{kind[0]}-{method[0]}-{model}"
+                evaluations[key] = data["score"].values
 
+    # Build DataFrame and compute cosine similarity matrix
+    eval_df = pd.DataFrame(evaluations)
+    cos_sim_matrix = cosine_similarity(eval_df.T)
+    cos_sim_matrix = np.nan_to_num(cos_sim_matrix)
+    print("Cosine similarity matrix:")
+
+    # Plot heatmap of cosine similarities without numbers
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(
+        cos_sim_matrix,
+        annot=False,
+        cmap="coolwarm",
+        xticklabels=list(evaluations.keys()),
+        yticklabels=list(evaluations.keys())
+    )
+    plt.title("Cosine Similarity Matrix")
+    plt.tight_layout()
+    plt.savefig(PLOTS_PATH / "correlation_matrix_cosine.pdf", dpi=300, bbox_inches='tight')
+    plt.close()
+
+
+def plot_improvement_over_prompt_full(df: pd.DataFrame) -> None:
+    """
+    Plot g_eval improvement over the prompt-full baseline for each model
+    in a grid of bar plots, excluding the 'full' method.
+    """
+    # select only g_eval rows
+    gev = df[df["metric"] == "g_eval"].copy()
+    models = sorted(gev["model"].unique())
+    method_order = ["role_playing", "vector_store"]  # no 'full'
+    
+    # compute improvements
+    records = []
+    for model in models:
+        sub = gev[gev["model"] == model]
+        baseline = sub.loc[
+            (sub["kind"] == "prompt") & (sub["method"] == "full"), "score"
+        ].mean()
+        if np.isnan(baseline):
+            continue
+        for _, row in sub.iterrows():
+            if row["method"] == "full":
+                continue
+            records.append({
+                "model": model,
+                "kind": row["kind"],
+                "method": row["method"],
+                "improvement": row["score"] - baseline
+            })
+    imp_df = pd.DataFrame(records)
+
+    # plot grid of improvements with red for positive and green for negative
+    g = sns.catplot(
+        data=imp_df,
+        x="method",
+        y="improvement",
+        col="model",
+        kind="bar",
+        col_wrap=3,
+        order=method_order,
+        palette="Set2",   # will override per‐bar below
+        height=3,
+        aspect=1,
+        ci=None
+    )
+
+    # Rotate x-axis labels to show method names clearly
+    for ax in g.axes.flatten():
+        plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+    g.set_axis_labels("Method", "g_eval Improvement")
+    g.fig.suptitle("g_eval Improvement over Prompt-Full by Model", y=1.02)
+
+    # Recolor each bar: green if positive, red if negative
+    for ax in g.axes.flatten():
+        for bar in ax.patches:
+            bar.set_color("green" if bar.get_height() >= 0 else "red")
+
+    # Custom legend for sign
+    handles = [
+        Patch(color="green", label="Positive"),
+        Patch(color="red", label="Negative")
+    ]
+    g.fig.legend(handles=handles, title="Improvement Sign", loc="upper right")
+
+    plt.tight_layout()
+    out_path = PLOTS_PATH / "g_eval_improvement_grid.pdf"
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
 # Load and prepare the data
 df = merge_dataframes(CACHE_PATH)
 # Transform to long format for plotting
@@ -107,3 +214,5 @@ df = df.melt(id_vars=["kind", "method", "model", "embedding"],
 
 # Generate plots
 plot_distributions(df)
+plot_g_eval_correlations(df)
+plot_improvement_over_prompt_full(df)

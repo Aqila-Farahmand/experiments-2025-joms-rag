@@ -10,7 +10,7 @@ from evaluations import eval_rag, eval_responses
 from generations.cache import PATH as GENERATIONS_CACHE_PATH
 from evaluations.cache import PATH as EVAL_CACHE_PATH
 
-data_under_test = pd.read_csv(DOCUMENTS_PATH / "test_generated.csv")#[:10] # remove :5 for the full dataset
+data_under_test = pd.read_csv(DOCUMENTS_PATH / "test_generated_it.csv")#[:10] # remove :5 for the full dataset
 
 
 def load_pickle_in_folder(folder):

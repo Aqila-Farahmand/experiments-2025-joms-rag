@@ -1,41 +1,76 @@
 embedder,retriever,LLM,question,response
-nomic,vector_store,gemini-2.0,Posso avere i malattie renali se ho pressione alta?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_store,gemini-2.0,"Se ho l'ipertensione, posso avere insufficienza renale?
+","Sì, l'ipertensione può danneggiare i vasi sanguigni dei reni, riducendone la capacità di filtrare efficacemente i rifiuti dal sangue. Questo, nel tempo, può portare a insufficienza renale.
 "
-nomic,vector_store,gemini-2.0,In che modo l'assunzione di caffeina influisce sulla misurazione della pressione sanguigna?,"L'assunzione di bevande contenenti caffeina nell'ora precedente alla misurazione della pressione sanguigna può influenzare i risultati. Per una misurazione accurata, è consigliabile evitare la caffeina prima di misurare la pressione.
+nomic,vector_store,gemini-2.0,"Considerando che ho la pressione alta e sto cercando di tenerla sotto controllo, vorrei sapere in che modo la retinopatia ipertensiva è collegata alla mia condizione e quali sono i rischi specifici per la mia vista?
+","La retinopatia ipertensiva è collegata alla sua condizione perché la pressione alta può danneggiare i piccoli vasi sanguigni nella retina. Questo danno può portare a problemi alla vista. È importante monitorare regolarmente la pressione sanguigna e fare controlli oftalmologici regolari per prevenire o gestire questi potenziali problemi.
 "
-nomic,vector_store,gemini-2.0,"Quando sento mi sento poco bene e il mio cuore batte piu veloce del normale, dovrei sempre e subito correre dal mio Medico di Medicina Generale, oppure ci sono altre cose prima dovrei provare a fare per capire che sta succedendo al mio corpo?","Se ti senti poco bene ti consiglio di riferirlo al tuo Medico di Medicina Generale. Purtroppo la frequenza cardiaca non è un parametro molto affidabile per capire qual è la causa dei tuoi disturbi
+nomic,vector_store,gemini-2.0,"Come influisce l'ipertensione?
+","Può influire sulle tue attività quotidiane causando affaticamento, mal di testa e difficoltà di concentrazione. Inoltre, può influire sulla tua capacità di concentrazione, poiché un'elevata pressione sanguigna può ridurre il flusso sanguigno al cervello, portando a difficoltà cognitive e problemi di attenzione.
 "
-nomic,vector_store,gemini-2.0,Come la razza nera influenza l'ipertensione?,"La razza è uno dei fattori che possono influenzare la pressione. Ad esempio, la razza nera si associa maggiormente ad ipertensione arteriosa rispetto alla razza bianca. Questo significa che, come persona di razza nera, potresti avere una predisposizione maggiore a sviluppare ipertensione. È importante essere consapevoli di questo fattore di rischio e monitorare attentamente la tua pressione sanguigna, adottando uno stile di vita sano e seguendo le indicazioni del tuo medico.
+nomic,vector_store,gemini-2.0,"Come le donne vengono colpite dall'ipertensione dopo la menopausa?
+","Dopo la menopausa, l'incidenza dell'ipertensione nelle donne aumenta significativamente.
 "
-nomic,vector_store,gemini-2.0,"Considerando che sto monitorando la mia salute con questo chatbot, e soffro di ipertensione, potresti spiegarmi più dettagliatamente cosa causa l'ipertensione e come posso monitorare al meglio la mia pressione sanguigna a lungo termine per evitare complicazioni?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza.
+nomic,vector_store,gemini-2.0,"Come influisce il cortisolo, o il cortisolo, sulla mia pressione sanguigna?
+","Il cortisolo, rilasciato in risposta allo stress, può causare un aumento temporaneo della pressione sanguigna.
 "
-nomic,vector_store,gemini-2.0,"Considerando che sto monitorando la mia ipertensione, vorrei capire se il diabete può avere un impatto sulla mia condizione e, in caso affermativo, in che modo specifico il diabete può influenzare la mia ipertensione?","Il diabete può aumentare il rischio di sviluppare ipertensione.
+nomic,vector_store,gemini-2.0,"Come i disturbi della tiroide influenzano l'ipertensione?
+","I disturbi della tiroide possono contribuire all'aumento della pressione sanguigna.
 "
-nomic,vector_store,gemini-2.0,"Come, la, razza bianca, influenza, la pressione?","La razza è uno dei fattori che possono influenzare la pressione. Ad esempio, la razza nera si associa maggiormente ad ipertensione arteriosa rispetto alla razza bianca.
+nomic,vector_store,gemini-2.0,"Meditazione, aiuta con l'ipertensione?
+","Sì, la meditazione può essere utile per gestire l'ipertensione grazie alla sua capacità di ridurre lo stress.
 "
-nomic,vector_store,gemini-2.0,"Sono inkinta, kome la gravidanza puo influenzare il feto?","L'ipertensione in gravidanza, se non trattata adeguatamente, può associarsi a un elevato rischio di complicanze per il feto. È fondamentale informare il medico in caso di valori pressori troppo alti. Inoltre, se hai ipertensione preesistente, aumenta il rischio di preeclampsia, una condizione seria per il bambino. È essenziale un attento monitoraggio e gestione della pressione durante la gravidanza.
+nomic,vector_store,gemini-2.0,"Data la mia storia familiare di ipertensione e cancro, e le mie recenti preoccupazioni riguardo all'instabilità della pressione sanguigna, quali dispositivi sono disponibili per il monitoraggio della frequenza cardiaca che potrebbero aiutarmi a tracciare i miei dati sanitari in concomitanza con il monitoraggio regolare della pressione sanguigna, e quali modifiche allo stile di vita, come dieta ed esercizio fisico, dovrei considerare per gestire sia la mia frequenza cardiaca che la mia pressione sanguigna?
+","Mi dispiace sapere che hai una storia familiare di ipertensione e cancro e che sei preoccupato per l'instabilità della tua pressione sanguigna.
+
+Per quanto riguarda il monitoraggio della frequenza cardiaca, non ho informazioni sui dispositivi disponibili.
+
+Per gestire sia la frequenza cardiaca che la pressione sanguigna, è importante mantenere uno stile di vita sano, cercando di fare regolare esercizio fisico e di seguire una dieta equilibrata.
 "
-nomic,vector_store,gemini-2.0,Quali consigli puoi fornirmi per gestire la mia ipertensione?,"Concentrati sugli aspetti positivi e sulle azioni che puoi intraprendere per prenderti cura della tua salute. La consapevolezza e l'impegno sono fondamentali per una buona gestione a lungo termine. Ricorda che la gestione è un percorso continuo. Mantieni uno stile di vita sano e segui i consigli del tuo medico.
+nomic,vector_store,gemini-2.0,"Considerando le mie stressanti condizioni lavorative come impiegato, quali sono i dispositivi tecnologici più efficaci per il monitoraggio della pressione sanguigna che posso utilizzare regolarmente, e quali sono i potenziali rischi dell'ipertensione, soprattutto se dovessi rimanere incinta?
+","Per monitorare regolarmente la pressione sanguigna, soprattutto considerando le tue condizioni lavorative, puoi utilizzare monitor da polso e da braccio validati clinicamente, smartphone con app specifiche e orologi intelligenti con funzionalità avanzate. I misuratori digitali da braccio sono spesso considerati i più precisi e affidabili.
+
+È importante tenere sotto controllo l'ipertensione, soprattutto in previsione di una gravidanza, ma le informazioni fornite non mi permettono di approfondire i potenziali rischi in tale circostanza.
 "
-nomic,vector_store,gemini-2.0,Lo yoga aiuta per la gestione dell'ipertensione?,"Sì, lo yoga è un'ottima opzione per aiutarti a rilassarti.
+nomic,vector_store,gemini-2.0,"Date le mie preoccupazioni riguardo all'aumento dello stress, quali sono alcuni segnali che potrebbero indicare che sto sperimentando depressione, e quali metodi posso utilizzare per monitorare quotidianamente la mia frequenza cardiaca per comprendere meglio la sua correlazione con il mio stato mentale?
+","Comprendo la tua preoccupazione per l'aumento dello stress. La gestione dello stress emotivo legato alla depressione può influenzare la pressione arteriosa.
+
+Per quanto riguarda i segnali che potrebbero indicare che stai sperimentando depressione, tieni presente che una frequenza cardiaca più alta del solito può essere causata da vari fattori, come stress o ansia. Esistono condizioni in cui una frequenza cardiaca elevata è accettabile, come risposta adattativa temporanea in situazioni di stress. Tuttavia, se questo cambiamento persiste o è accompagnato da altri sintomi come vertigini o dolore al petto, ti consiglio vivamente di consultare un professionista della salute.
 "
-nomic,vector_store,gemini-2.0,"Ehm, ipertensione... che significa... ehm... per favore?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_store,gemini-2.0,"Come aggiungere i dati della pressione sanguigna dell'anno scorso e lo yoga fa bene all'ipertensione?
+","Puoi aggiungere i dati della tua pressione sanguigna dell'anno scorso in app di salute digitale, caricandoli manualmente o tramite l'importazione di file. Lo yoga è noto per i suoi benefici nel ridurre lo stress, il che può avere un effetto positivo sulla pressione sanguigna. Le tecniche di respirazione profonda e meditazione nello yoga possono ridurre lo stress e migliorare la vasodilatazione, contribuendo così a ridurre la pressione arteriosa.
 "
-nomic,vector_store,gemini-2.0,Come posso gestire la mia ipertensione e quali consigli puoi darmi?,"La gestione è un percorso continuo. Mantieni uno stile di vita sano e segui i consigli del tuo medico. La consapevolezza e l'impegno sono fondamentali per una buona gestione a lungo termine. L'accettazione è il primo passo per una gestione efficace e non dimenticare i controlli periodici. Continua a monitorare regolarmente la tua pressione e a seguire i consigli del tuo medico.
+nomic,vector_store,gemini-2.0,"Considerando la mia storia familiare di ipertensione e la mia origine etnica, quali sono i rischi specifici di sviluppare ipertensione e quali strategie di gestione dell'ipertensione posso adottare, inclusi cambiamenti nello stile di vita e monitoraggio, per prevenire complicazioni come problemi alla vista?
+","Avere una storia familiare di ipertensione può aumentare il rischio di sviluppare la stessa condizione, poiché i geni condivisi potrebbero renderti più suscettibile. Inoltre, l'origine etnica può influenzare l'ipertensione attraverso fattori genetici, ambientali e socio-economici.
+
+Monitorare regolarmente la pressione è importante per prevenire complicazioni gravi come infarti, ictus e insufficienza renale. Intervenire tempestivamente con cambiamenti nello stile di vita o terapie mediche può fare la differenza.
 "
-nomic,vector_store,gemini-2.0,"Considerando che sono i mesi estivi, come influisce l'estate sulla mia ipertensione?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_store,gemini-2.0,"Considerando l'ipertensione e la misurazione della pressione arteriosa, quali esami sono necessari per diagnosticare l'ipertensione e valutare la funzione renale, dato che l'ipertensione può influenzare quest'ultima?
+","Per diagnosticare l'ipertensione, è necessario misurare ripetutamente la pressione arteriosa in diverse occasioni e momenti della giornata. Per valutare la funzione renale, si effettuano esami del sangue e delle urine.
 "
-nomic,vector_store,gemini-2.0,Come fumo influisce ictus?,"Smettere di fumare è uno dei migliori investimenti per la salute cardiovascolare! Riduce drasticamente il rischio di infarto, ictus e altre malattie, indipendentemente dall'età o dalla durata del fumo.
+nomic,vector_store,gemini-2.0,"Considerando che sono una donna di 55 anni di nome Evelyn Reed, che lavora in ufficio e sta vivendo un aumento dello stress, e che sto cercando modi per gestire la mia ipertensione attraverso cambiamenti nello stile di vita e monitoraggio regolare, con quale frequenza dovrei misurare la pressione sanguigna a casa per valutare l'efficacia del trattamento e quali sono alcuni potenziali effetti collaterali dei farmaci per l'ipertensione a cui dovrei prestare attenzione?
+","Il monitoraggio regolare della pressione sanguigna a casa può aiutarti a gestire meglio la tua ipertensione e a capire come il tuo stile di vita e i farmaci possono influenzarla. Assicurati di utilizzare un misuratore di pressione omologato e di prendere le misure in maniera corretta, seguendo sempre le istruzioni del produttore.
 "
-nomic,vector_store,gemini-2.0,La pasta integrale può aiutare con il mio peso?,"Gestire l'ipertensione richiede attenzione alla dieta. Concentrati su alimenti ricchi di potassio, magnesio e fibre, come frutta, verdura e cereali integrali, per supportare la tua salute cardiovascolare e il controllo della pressione.
+nomic,vector_store,gemini-2.0,"Le afroamericane sono a maggior rischio di ipertensione e come influisce questo sulla loro salute?
+","Sì, alcune etnie sono più a rischio di ipertensione. Gli afroamericani sono più a rischio a causa di fattori genetici, socioeconomici e dietetici che contribuiscono all'insorgenza dell'ipertensione. L'ipertensione può danneggiare il cuore, i reni e i vasi sanguigni, aumentando il rischio di infarto e ictus. Può anche danneggiare i vasi sanguigni nei reni, riducendo la loro capacità di filtrare i rifiuti e i liquidi in eccesso dal sangue, portando a insufficienza renale nel tempo.
 "
-nomic,vector_store,gemini-2.0,"Pasta integrale, puo aiutare a gestite il mio peso?","Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_store,gemini-2.0,"Considerando i molteplici fattori che contribuiscono all'ipertensione, come la predisposizione genetica, lo stile di vita sedentario e lo stress, e tenendo conto dell'importanza cruciale di monitorare regolarmente l'ipertensione per prevenire complicazioni gravi come l'infarto, potresti spiegarmi nel dettaglio come l'ipertensione può influenzare la mia salute a lungo termine, aumentando il rischio di problemi cardiaci e danneggiando altri organi vitali?
+","L'ipertensione può influenzare la tua salute in vari modi, aumentando il rischio di problemi cardiaci come l'infarto, lo scompenso cardiaco e l'ictus, oltre a danneggiare altri organi come i reni e gli occhi nel lungo termine.
 "
-nomic,vector_store,gemini-2.0,"Io come paziente iperteso, se voglio monitorare la pressione, devo farlo ogni quanto tempo per avere informazioni utili, tipo devo misurarla ogni 72 ore, o come?","Ti suggerisco di continuare le misurazioni ogni almeno 72 ore.
+nomic,vector_store,gemini-2.0,"Considerando che sono una donna di 62 anni con una storia familiare di malattie cardiache e sono preoccupata per l'ipertensione, quali condizioni mediche, oltre all'ipertiroidismo, potrebbero causare un aumento repentino della pressione arteriosa, e quali fattori aggiuntivi, diversi dallo stress emotivo e dal consumo eccessivo di sale, potrebbero contribuire a un'improvvisa elevazione della pressione sanguigna?
+","Comprendo la sua preoccupazione, data la sua età e la storia familiare di malattie cardiache. Oltre all'ipertiroidismo, altre condizioni mediche sottostanti come le malattie cardiache o renali e il diabete possono causare un aumento repentino della pressione arteriosa. Altri fattori, diversi dallo stress emotivo e dal consumo eccessivo di sale, che potrebbero contribuire a un'improvvisa elevazione della pressione sanguigna includono l'abuso di alcol o caffeina, la mancanza di esercizio fisico, l'eccesso di peso e l'uso a lungo termine di determinati farmaci.
 "
-nomic,vector_store,gemini-2.0,L'ipertensione può danneggiare il mio rene?,"Sì, l'ipertensione non controllata può danneggiare i reni nel tempo. È importante monitorare e gestire la pressione per prevenire questi danni.
+nomic,vector_store,gemini-2.0,"Considerando la mia storia familiare di ipertensione, quali dispositivi tecnologici per monitorare la pressione sanguigna sono raccomandati e quali suggerimenti ci sono per gestire l'ipertensione oggi?
+","Considerando la tua storia familiare, ti suggerisco di monitorare attentamente la tua pressione sanguigna. Puoi utilizzare un misuratore di pressione a casa per tenere traccia delle letture quotidianamente, oppure dispositivi indossabili che monitorano la pressione in tempo reale. Per oggi, ti consiglio di misurare regolarmente la tua pressione arteriosa, preferibilmente alla stessa ora ogni giorno, utilizzando un misuratore affidabile. Inoltre, cerca di rilassarti, magari con tecniche di respirazione profonda.
 "
-nomic,vector_store,gemini-2.0,"Considerando la mia ipertensione, quali sono i problemi seri che potrei avere, considerando anche la mia posizione in italia?","L'ipertensione non trattata può portare a gravi problemi di salute, tra cui infarto, ictus, insufficienza renale, problemi alla vista e malattie cardiache. È importante diagnosticare e trattare l'ipertensione precocemente per prevenire queste complicazioni.
+nomic,vector_store,gemini-2.0,"Considerando le mie preoccupazioni riguardo all'ipertensione, può spiegarmi come l'alta pressione sanguigna porta specificamente alla retinopatia ipertensiva e quali complicazioni questa condizione può causare alla mia vista?
+","Sì, l'ipertensione può danneggiare i vasi sanguigni della retina, causando condizioni come la retinopatia ipertensiva. L'ipertensione non controllata può danneggiare i piccoli vasi sanguigni negli occhi, portando a condizioni come la retinopatia ipertensiva, che può compromettere la vista. È importante monitorare regolarmente la tua pressione sanguigna e fare controlli oftalmologici regolari per prevenire o gestire queste potenziali problemi.
 "
-nomic,vector_store,gemini-2.0,Quale è la tua città preferita in italia?,"Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza.
+nomic,vector_store,gemini-2.0,"Se ho l'ipertensione, dovrei mangiare cereali integrali e quanto spesso dovrei controllare la pressione?
+","Sì, includere cereali integrali nella tua alimentazione può essere utile per controllare l'ipertensione. Per quanto riguarda la frequenza con cui controllare la pressione, non ho informazioni al riguardo.
+"
+nomic,vector_store,gemini-2.0,"Come il colesterolo può contribuire all'aterosclerosi e se la mia pressione alta è responsabile del mal di testa?
+","L'accumulo di colesterolo può portare all'aterosclerosi, un processo in cui le arterie si induriscono e si restringono a causa della formazione di placche. Questo aumento di resistenza al flusso sanguigno può causare un aumento della pressione.
+
+È possibile che la pressione alta sia la causa dei suoi mal di testa, soprattutto se non ci sono altre cause evidenti e se la sua pressione è spesso elevata.
 "

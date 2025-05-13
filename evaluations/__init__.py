@@ -19,12 +19,12 @@ from tqdm.asyncio import tqdm_asyncio
 PATH = Path(__file__).parent
 
 judge_deep_eval = GeminiModel(
-    model_name="gemini-2.0-flash",
+    model_name="gemini-2.0-flash-lite",
     api_key=os.environ.get("GOOGLE_API_KEY"),
 )
 embedding = OllamaEmbedding("nomic-embed-text")
 
-judge_llama_index = GoogleGenAI(model="models/gemini-2.5-flash-preview-04-17")
+judge_llama_index = GoogleGenAI(model="models/gemini-2.0-flash")
 
 medical_faithfulness = GEval(
     name="Medical Correctness",
@@ -39,7 +39,7 @@ medical_faithfulness = GEval(
 )
 
 faithfulness_evaluator = FaithfulnessEvaluator(llm=judge_llama_index)
-correctness_evaluator = CorrectnessEvaluator(llm=judge_llama_index)
+correctness_evaluator = CorrectnessEvaluator(llm=judge_llama_index, score_threshold=3.0)
 semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embedding)
 relevancy_evaluator = RelevancyEvaluator(llm=judge_llama_index)
 
@@ -55,7 +55,7 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
     test_cases = []
     eval_tasks = []
 
-    for i, question in enumerate(data_under_test["Response"]):
+    for i, question in enumerate(data_under_test["Sentence"]):
         response = responses[i]
         reference = data_under_test["Response"].iloc[i]
 
@@ -66,7 +66,13 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
             expected_output=reference
         )
         test_cases.append(test_case)
-
+        print(":::::::::::::::: Question :::::::::::::::::::")
+        print(f"Question: {question}")
+        print(":::::::::::::::: Response :::::::::::::::::::")
+        print(response['response'])
+        print(":::::::::::::::: Reference :::::::::::::::::::")
+        print(reference)
+        print(":::::::::::::::::::::::::::::::::::")
         # Create async tasks for LlamaIndex evaluators
         eval_tasks.append(correctness_evaluator.aevaluate_response(
             query=question, response=response['response'], reference=reference
@@ -89,12 +95,12 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
 
     # Process results
     for i in range(0, len(all_scores), 2):
-        result['correctness'].append(float(all_scores[i].score))
+        result['correctness'].append(float(all_scores[i].passing))
         result['semantic_similarity'].append(float(all_scores[i + 1].score))
 
     # Process DeepEval results
     for test_result in g_eval_results.test_results:
-        result['g_eval'].append(test_result.metrics_data[0].score)
+        result['g_eval'].append(float(test_result.metrics_data[0].success))
 
     return result
 

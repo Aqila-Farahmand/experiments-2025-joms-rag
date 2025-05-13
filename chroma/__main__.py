@@ -20,7 +20,7 @@ MODELS = {
 }
 
 def main(
-    document: Path = DOCUMENTS_PATH / "train.csv",
+    document: Path = DOCUMENTS_PATH / "data_raw.csv",
     chunk_sizes: Set[int] = DEFAULT_CHUNK_SIZES,
     overlap_ratios: Set[float] = DEFAULT_OVERLAP_RATIOS,
     base_path: Path = CHROMA_PATH

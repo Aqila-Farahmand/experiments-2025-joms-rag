@@ -9,7 +9,6 @@ Informazioni di contesto sono fornite di seguito.
 ---------------------
 Dato le informazioni di contesto e senza conoscenze pregresse, rispondi alla domanda,
 come se fossi un medico che gestisce l'ipertensione (in modo empatico e sicuro), in italiano.
-Se non sai rispondere, usa: Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
 Domanda: {query_str}
 Risposta:
 """

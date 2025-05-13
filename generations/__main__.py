@@ -3,9 +3,14 @@ import csv
 import logging
 import os
 import pickle
+from abc import ABC
+from typing import Any
+from pydantic import BaseModel, Field
 
 import pandas as pd
 from llama_index.core import Response
+from llama_index.core.base.llms.types import LLMMetadata
+from llama_index.core.llms import LLM
 from llama_index.core.prompts import RichPromptTemplate
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
@@ -32,8 +37,6 @@ def full_prompt():
         """
             Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
             Aiuta a rispondere a questa domanda (in modo empatico).
-            Se è fuori dalle tue competenze, rispondi: 
-            Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
             Cerca di rispondere il modo simile a questi esempi:"""
             + prompt + "\n La domanda a cui devi rispondere (in modo conciso) è: {{ question }} "
 
@@ -44,6 +47,7 @@ embeddings = {
     "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
     #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
+
 
 llms = {
     "qwen3-0.6b": Ollama(model="qwen3:0.6b", request_timeout=60000),
@@ -65,7 +69,6 @@ prompts = {
     "role_playing":
         RichPromptTemplate("""
         Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
-        Se non sei in grado di rispondere, dì: Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
         Aiuta a rispondere a questa domanda (in modo empatico e conciso): {{ question }}
         """),
     "full": full_prompt()
@@ -79,13 +82,13 @@ for llm in llms:
         os.system(f"ollama stop {llm.model}")
 
 # adapt ollama to have model_name
-data_under_test = pd.read_csv(DATA_PATH / "test_generated.csv")#[:10]  # remove :5 for the full dataset
-base = DATA_PATH / "train.csv"
+data_under_test = pd.read_csv(DATA_PATH / "test_generated_it.csv")#[:10]  # remove :5 for the full dataset
+base = DATA_PATH / "data_raw.csv"
 
 RETRIEVES = {
     "vector_store": generate_vector_store_rag,
-    "vector_rerank": generate_vector_rerank_rag,
-    "hybrid": generate_hybrid_rag
+    #"vector_rerank": generate_vector_rerank_rag,
+    #"hybrid": generate_hybrid_rag
 }
 
 
@@ -95,12 +98,12 @@ def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
         logging.info(f"Generating {retriever_name} for {llm} with {embedding}")
 
         rag, index = retriever_fn(
-            csv_path=str(DATA_PATH / "data-generated.csv"),
+            csv_path=str(DATA_PATH / "data_raw.csv"),
             chunk_size=256,
             overlap_ratio=0.5,
             embedding_model=embeddings[embedding],
             llm=llms[llm],
-            k=7,
+            k=3,
             alpha=0.5,
             persist=True,
             collection_name=embedding,
