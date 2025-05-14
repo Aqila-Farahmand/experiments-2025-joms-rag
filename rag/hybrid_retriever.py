@@ -76,7 +76,7 @@ def generate_hybrid_rag(
     hybrid_retriever = QueryFusionRetriever(
         [vector_retriever, bm25_retriever],
         retriever_weights=[alpha, 1 - alpha],
-        num_queries=1,
+        num_queries=3,
         use_async=True,
         llm=llm,
     )

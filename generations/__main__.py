@@ -5,6 +5,8 @@ import os
 import pickle
 from abc import ABC
 from typing import Any
+
+import fire
 from pydantic import BaseModel, Field
 
 import pandas as pd
@@ -25,31 +27,12 @@ from rag.vector_rerank_retriever import generate_vector_rerank_rag
 from rag.vector_store_retriever import generate_vector_store_rag
 
 
-def full_prompt():
-    # load data in DATA_PATH as pd
-    df = pd.read_csv(DATA_PATH / "train.csv")
-    # convert to: Q: {question} A: {answer}
-    df["text"] = df.apply(lambda x: f"Q: {x['Sentence']} A: {x['Response']}", axis=1)
-    # create a prompt with all of these example
-    prompt = "\n".join(df["text"].tolist())
-    # create a prompt template
-    prompt_template = RichPromptTemplate(
-        """
-            Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
-            Aiuta a rispondere a questa domanda (in modo empatico).
-            Cerca di rispondere il modo simile a questi esempi:"""
-            + prompt + "\n La domanda a cui devi rispondere (in modo conciso) è: {{ question }} "
-
-    )
-    return prompt_template
-
-embeddings = {
+CACHE_PATH = GENERATIONS_PATH / "cache"
+EMBEDDINGS = {
     "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
     #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
-
-
-llms = {
+LLMs = {
     "qwen3-0.6b": Ollama(model="qwen3:0.6b", request_timeout=60000),
     "qwen3-1.7b": Ollama(model="qwen3:1.7b", request_timeout=60000),
     "qwen3-4b": Ollama(model="qwen3:4b", request_timeout=60000),
@@ -62,33 +45,53 @@ llms = {
     "llama3.2-1b": Ollama(model="llama3.2:1b", request_timeout=60000),
     "deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", request_timeout=60000),
     "deepseek-r1-7b": Ollama(model="deepseek-r1:latest", request_timeout=60000),
-    "gemini-2.0" : GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY"))
+    "gemini-2.0": GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY"))
+}
+RETRIEVES = {
+    #"vector_store": generate_vector_store_rag,
+    "vector_rerank": generate_vector_rerank_rag,
+    "hybrid": generate_hybrid_rag
 }
 
-prompts = {
-    "role_playing":
-        RichPromptTemplate("""
-        Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
-        Aiuta a rispondere a questa domanda (in modo empatico e conciso): {{ question }}
-        """),
-    "full": full_prompt()
-}
 
 # launch a subcommand which stop each model
-for llm in llms:
+for llm in LLMs:
     # ollama stop <model_name>, use cmd
     if isinstance(llm, Ollama):
         logging.info(f"Stopping {llm.model}")
         os.system(f"ollama stop {llm.model}")
 
 # adapt ollama to have model_name
-data_under_test = pd.read_csv(DATA_PATH / "test_generated_it.csv")#[:10]  # remove :5 for the full dataset
+data_under_test = pd.read_csv(DATA_PATH / "test_generated_it.csv")  # [:10]  # remove :5 for the full dataset
 base = DATA_PATH / "data_raw.csv"
 
-RETRIEVES = {
-    "vector_store": generate_vector_store_rag,
-    #"vector_rerank": generate_vector_rerank_rag,
-    #"hybrid": generate_hybrid_rag
+
+def full_prompt():
+    # load data in DATA_PATH as pd
+    df = pd.read_csv(DATA_PATH / "train.csv")
+    # convert to: Q: {question} A: {answer}
+    df["text"] = df.apply(lambda x: f"Q: {x['Sentence']} A: {x['Response']}", axis=1)
+    # create a prompt with all of these example
+    prompt = "\n".join(df["text"].tolist())
+    # create a prompt template
+    prompt_template = RichPromptTemplate(
+        """
+            Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
+            Aiuta a rispondere a questa domanda (in modo empatico).
+            Cerca di rispondere in modo simile a questi esempi:"""
+            + prompt + "\n La domanda a cui devi rispondere (in modo conciso) è: {{ question }} "
+
+    )
+    return prompt_template
+
+
+PROMPTS = {
+    "role_playing":
+        RichPromptTemplate("""
+        Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
+        Aiuta a rispondere a questa domanda (in modo empatico e conciso): {{ question }}
+        """),
+    "full": full_prompt()
 }
 
 
@@ -101,8 +104,8 @@ def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
             csv_path=str(DATA_PATH / "data_raw.csv"),
             chunk_size=256,
             overlap_ratio=0.5,
-            embedding_model=embeddings[embedding],
-            llm=llms[llm],
+            embedding_model=EMBEDDINGS[embedding],
+            llm=LLMs[llm],
             k=3,
             alpha=0.5,
             persist=True,
@@ -159,6 +162,7 @@ def generate_rag_response_and_store(where: str, rag_under_test: RagUnderTest) ->
     with open(pickle_path, mode="wb") as pkl_file:
         pickle.dump(to_store, pkl_file)
 
+
 def generate_llm_response_and_store(where: str, llm: str, prompt: RichPromptTemplate, prompt_kind: str) -> None:
     # Generate responses
     os.makedirs(where, exist_ok=True)
@@ -174,7 +178,7 @@ def generate_llm_response_and_store(where: str, llm: str, prompt: RichPromptTemp
         formatted_prompt = prompt.format(
             question=question
         )
-        response_text = llms[llm].complete(formatted_prompt).text
+        response_text = LLMs[llm].complete(formatted_prompt).text
         response_text = response_text.split("</think>")[-1]
         responses.append({ "question": question, "response": Response(response_text)})
 
@@ -198,26 +202,25 @@ def generate_llm_response_and_store(where: str, llm: str, prompt: RichPromptTemp
     with open(pickle_path, mode="wb") as pkl_file:
         pickle.dump(to_store, pkl_file)
 
-# iterate over the llms and embedding
-cache_path = GENERATIONS_PATH / "cache"
-for llm_model in llms:
-    for embedding_model in embeddings:
-        logging.info(f"Generating responses for {llm_model} with {embedding_model}")
-        rags = generate_rags_for_llm(llm_model, embedding_model)
-        for rag in rags:
-            logging.info(f"Generating responses for {rag.tag()}")
+
+def main():
+    for llm_model in LLMs:
+        for embedding_model in EMBEDDINGS:
+            logging.info(f"Generating responses for {llm_model} with {embedding_model}")
+            rags = generate_rags_for_llm(llm_model, embedding_model)
+            for rag in rags:
+                logging.info(f"Generating responses for {rag.tag()}")
+                # generate response and store
+                generate_rag_response_and_store(CACHE_PATH, rag)
+                logging.info(f"Generated responses for {rag.tag()} and stored in {CACHE_PATH}")
+        for prompt in PROMPTS:
+            logging.info(f"Generating responses for {llm_model} and prompt {prompt}")
             # generate response and store
-            generate_rag_response_and_store(cache_path, rag)
-            logging.info(f"Generated responses for {rag.tag()} and stored in {cache_path}")
-    for prompt in prompts:
-        logging.info(f"Generating responses for {llm_model} and prompt {prompt}")
-        # generate response and store
-        generate_llm_response_and_store(cache_path, llm_model, prompts[prompt], prompt)
-    if isinstance(llms[llm_model], Ollama):
-        logging.info(f"Stopping {llm_model}")
-        os.system(f"ollama stop {llms[llm_model].model}")
+            generate_llm_response_and_store(CACHE_PATH, llm_model, PROMPTS[prompt], prompt)
+        if isinstance(LLMs[llm_model], Ollama):
+            logging.info(f"Stopping {llm_model}")
+            os.system(f"ollama stop {LLMs[llm_model].model}")
+
 
 if __name__ == "__main__":
-    # Example usage
-    # generate_response_and_store(GENERATIONS_PATH, rag)
-    pass
+    fire.Fire(main)

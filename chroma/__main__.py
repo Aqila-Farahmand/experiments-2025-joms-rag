@@ -8,6 +8,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from chroma import PATH as CHROMA_PATH, generate_chroma_db
 from documents import PATH as DOCUMENTS_PATH, read_csv, from_pandas_to_list
 import logging
+
 # — DEFAULT CONFIGURATION —
 DEFAULT_CHUNK_SIZES: Set[int] = {128, 256, 512, 1024}
 DEFAULT_OVERLAP_RATIOS: Set[float] = {0.1, 0.2, 0.3, 0.4, 0.5}
@@ -19,11 +20,12 @@ MODELS = {
     #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
 
+
 def main(
-    document: Path = DOCUMENTS_PATH / "data_raw.csv",
-    chunk_sizes: Set[int] = DEFAULT_CHUNK_SIZES,
-    overlap_ratios: Set[float] = DEFAULT_OVERLAP_RATIOS,
-    base_path: Path = CHROMA_PATH
+        document: Path = DOCUMENTS_PATH / "data_raw.csv",
+        chunk_sizes: Set[int] = DEFAULT_CHUNK_SIZES,
+        overlap_ratios: Set[float] = DEFAULT_OVERLAP_RATIOS,
+        base_path: Path = CHROMA_PATH
 ) -> None:
     # Ensure base directory exists
     base_path.mkdir(parents=True, exist_ok=True)
