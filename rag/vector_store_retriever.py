@@ -88,6 +88,5 @@ def generate_vector_store_rag(
         llm=llm,
     )
 
-
     update_prompts(query_engine)
     return query_engine, index

@@ -62,7 +62,7 @@ for llm in LLMs:
         os.system(f"ollama stop {llm.model}")
 
 # adapt ollama to have model_name
-data_under_test = pd.read_csv(DATA_PATH / "test_generated_it.csv")  # [:10]  # remove :5 for the full dataset
+data_under_test = pd.read_csv(DATA_PATH / "test_generated_it.csv")  # [:10]
 base = DATA_PATH / "data_raw.csv"
 
 
