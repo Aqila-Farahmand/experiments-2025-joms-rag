@@ -1,0 +1,43 @@
+embedder,retriever,LLM,question,response
+nomic,vector_rerank,llama3.2-1b,"Se ho l'ipertensione, posso avere insufficienza renale?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando che ho la pressione alta e sto cercando di tenerla sotto controllo, vorrei sapere in che modo la retinopatia ipertensiva è collegata alla mia condizione e quali sono i rischi specifici per la mia vista?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Come influisce l'ipertensione?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Come le donne vengono colpite dall'ipertensione dopo la menopausa?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Come influisce il cortisolo, o il cortisolo, sulla mia pressione sanguigna?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Come i disturbi della tiroide influenzano l'ipertensione?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Meditazione, aiuta con l'ipertensione?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Data la mia storia familiare di ipertensione e cancro, e le mie recenti preoccupazioni riguardo all'instabilità della pressione sanguigna, quali dispositivi sono disponibili per il monitoraggio della frequenza cardiaca che potrebbero aiutarmi a tracciare i miei dati sanitari in concomitanza con il monitoraggio regolare della pressione sanguigna, e quali modifiche allo stile di vita, come dieta ed esercizio fisico, dovrei considerare per gestire sia la mia frequenza cardiaca che la mia pressione sanguigna?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando le mie stressanti condizioni lavorative come impiegato, quali sono i dispositivi tecnologici più efficaci per il monitoraggio della pressione sanguigna che posso utilizzare regolarmente, e quali sono i potenziali rischi dell'ipertensione, soprattutto se dovessi rimanere incinta?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Date le mie preoccupazioni riguardo all'aumento dello stress, quali sono alcuni segnali che potrebbero indicare che sto sperimentando depressione, e quali metodi posso utilizzare per monitorare quotidianamente la mia frequenza cardiaca per comprendere meglio la sua correlazione con il mio stato mentale?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Come aggiungere i dati della pressione sanguigna dell'anno scorso e lo yoga fa bene all'ipertensione?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando la mia storia familiare di ipertensione e la mia origine etnica, quali sono i rischi specifici di sviluppare ipertensione e quali strategie di gestione dell'ipertensione posso adottare, inclusi cambiamenti nello stile di vita e monitoraggio, per prevenire complicazioni come problemi alla vista?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando l'ipertensione e la misurazione della pressione arteriosa, quali esami sono necessari per diagnosticare l'ipertensione e valutare la funzione renale, dato che l'ipertensione può influenzare quest'ultima?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando che sono una donna di 55 anni di nome Evelyn Reed, che lavora in ufficio e sta vivendo un aumento dello stress, e che sto cercando modi per gestire la mia ipertensione attraverso cambiamenti nello stile di vita e monitoraggio regolare, con quale frequenza dovrei misurare la pressione sanguigna a casa per valutare l'efficacia del trattamento e quali sono alcuni potenziali effetti collaterali dei farmaci per l'ipertensione a cui dovrei prestare attenzione?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Le afroamericane sono a maggior rischio di ipertensione e come influisce questo sulla loro salute?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando i molteplici fattori che contribuiscono all'ipertensione, come la predisposizione genetica, lo stile di vita sedentario e lo stress, e tenendo conto dell'importanza cruciale di monitorare regolarmente l'ipertensione per prevenire complicazioni gravi come l'infarto, potresti spiegarmi nel dettaglio come l'ipertensione può influenzare la mia salute a lungo termine, aumentando il rischio di problemi cardiaci e danneggiando altri organi vitali?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando che sono una donna di 62 anni con una storia familiare di malattie cardiache e sono preoccupata per l'ipertensione, quali condizioni mediche, oltre all'ipertiroidismo, potrebbero causare un aumento repentino della pressione arteriosa, e quali fattori aggiuntivi, diversi dallo stress emotivo e dal consumo eccessivo di sale, potrebbero contribuire a un'improvvisa elevazione della pressione sanguigna?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando la mia storia familiare di ipertensione, quali dispositivi tecnologici per monitorare la pressione sanguigna sono raccomandati e quali suggerimenti ci sono per gestire l'ipertensione oggi?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Considerando le mie preoccupazioni riguardo all'ipertensione, può spiegarmi come l'alta pressione sanguigna porta specificamente alla retinopatia ipertensiva e quali complicazioni questa condizione può causare alla mia vista?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Se ho l'ipertensione, dovrei mangiare cereali integrali e quanto spesso dovrei controllare la pressione?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza
+nomic,vector_rerank,llama3.2-1b,"Come il colesterolo può contribuire all'aterosclerosi e se la mia pressione alta è responsabile del mal di testa?
+",Sono un chatbot progettato per fornire supporto nella gestione dell'ipertensione. La tua domanda non è correlata al mio ambito di competenza

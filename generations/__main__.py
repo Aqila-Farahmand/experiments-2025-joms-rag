@@ -41,7 +41,7 @@ LLMs = {
     #"gemma3-4b": Ollama(model="gemma3:4b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
     #"gemma3-12b": Ollama(model="gemma3:12b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
     #"medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    "llama3.2-3b": Ollama(model="llama3.2:latest", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
+    "llama3.2-3b": Ollama(model="llama3.2:3b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
     "llama3.2-1b": Ollama(model="llama3.2:1b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
     #"deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
     #"deepseek-r1-7b": Ollama(model="deepseek-r1:latest", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
