@@ -67,32 +67,6 @@ def generate_vector_rerank_rag(
         llm=llm,
         node_postprocessors=[reranker]
     )
-    refine_template = query_engine.get_prompts()["response_synthesizer:refine_template"]
-    refine_template.default_template.template = refine_template_str
 
-    refine_template.conditionals[0][1].message_templates = [
-        ChatMessage(
-            role=MessageRole.SYSTEM,
-            content=refine_template_system
-        )
-    ]
-    text_qa_template = query_engine.get_prompts()["response_synthesizer:text_qa_template"]
-    text_qa_template.default_template.template = text_qa_template_str
-    text_qa_template.conditionals[0][1].message_templates = [
-        ChatMessage(
-            role=MessageRole.SYSTEM,
-            content=text_qa_message_system
-        ),
-        ChatMessage(
-            role=MessageRole.USER,
-            content=text_qa_template_str
-        ),
-    ]
-    query_engine.update_prompts(
-        {
-            "response_synthesizer:refine_template": refine_template,
-            "response_synthesizer:text_qa_template": text_qa_template,
-        }
-    )
     update_prompts(query_engine)
     return query_engine, index
