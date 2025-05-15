@@ -1,6 +1,7 @@
 import chromadb
 import pandas as pd
 import logging
+from llama_index.llms.ollama import Ollama
 from chromadb.config import Settings
 from llama_index.core import VectorStoreIndex
 from llama_index.core.base.embeddings.base import BaseEmbedding
@@ -72,7 +73,8 @@ def generate_vector_rerank_rag(
     retriever = index.as_retriever(similarity_top_k=k)
 
     # Configure reranker and query engine
-    reranker = LLMRerank(top_n=k)
+    llm_for_reranking = Ollama(model="qwen2.5:32b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000)
+    reranker = LLMRerank(llm=llm_for_reranking, top_n=k)
     query_engine = RetrieverQueryEngine.from_args(
         retriever=retriever,
         reranker=reranker,
