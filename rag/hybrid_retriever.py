@@ -26,11 +26,8 @@ def generate_hybrid_rag(
     llm: LLM,
     k: int,
     alpha: float = 0.5,
-    *,
-    persist: bool = False,
     collection_name: str = None,
-    prompt_template: RichPromptTemplate = None
-) -> tuple[RetrieverQueryEngine, VectorStoreIndex]:
+) -> RetrieverQueryEngine:
     """
     Generate a Hybrid RAG using both dense (vector) and sparse (BM25) retrieval.
     """
@@ -87,4 +84,4 @@ def generate_hybrid_rag(
         llm=llm
     )
     update_prompts(query_engine)
-    return query_engine, index
+    return query_engine

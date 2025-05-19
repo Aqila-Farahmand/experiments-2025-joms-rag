@@ -22,9 +22,11 @@ from documents import PATH as DATA_PATH
 from generations import PATH as GENERATIONS_PATH, MetaInfo
 from generations import RagUnderTest
 from generations.generate_replies import generate_replies_from_rag
+from rag import bm25_retriever
 from rag.hybrid_retriever import generate_hybrid_rag
 from rag.vector_rerank_retriever import generate_vector_rerank_rag
 from rag.vector_store_retriever import generate_vector_store_rag
+from rag.bm25_retriever import generate_bm25_rag
 
 
 CACHE_PATH = GENERATIONS_PATH / "cache"
@@ -63,9 +65,9 @@ LLMs = {
 RETRIEVES = {
     "vector_store": generate_vector_store_rag,
     "vector_rerank": generate_vector_rerank_rag,
-    "hybrid": generate_hybrid_rag
+    "hybrid": generate_hybrid_rag,
+    "bm25": generate_bm25_rag,
 }
-
 
 # launch a subcommand which stop each model
 for llm in LLMs:
@@ -92,7 +94,7 @@ def full_prompt():
             Sei un medico esperto nell'ipertensione e nella salute cardiovascolare. 
             Aiuta a rispondere a questa domanda (in modo empatico).
             Cerca di rispondere in modo simile a questi esempi:"""
-            + prompt + "\n La domanda a cui devi rispondere (in modo conciso) è: {{ question }} "
+        + prompt + "\n La domanda a cui devi rispondere (in modo conciso) è: {{ question }} "
 
     )
     return prompt_template
@@ -135,7 +137,7 @@ def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
     for retriever_name, retriever_fn in RETRIEVES.items():
         logging.info(f"Generating {retriever_name} for {llm} with {embedding}")
 
-        rag, index = retriever_fn(
+        rag = retriever_fn(
             csv_path=str(DATA_PATH / "data_raw.csv"),
             chunk_size=256,
             overlap_ratio=0.5,
@@ -143,7 +145,6 @@ def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
             llm=LLMs[llm],
             k=3,
             alpha=0.5,
-            persist=True,
             collection_name=embedding,
         )
         rags.append(
@@ -216,7 +217,7 @@ def generate_llm_response_and_store(where: str, llm: str, prompt: RichPromptTemp
         )
         response_text = LLMs[llm].complete(formatted_prompt).text
         response_text = response_text.split("</think>")[-1]
-        responses.append({ "question": question, "response": Response(response_text)})
+        responses.append({"question": question, "response": Response(response_text)})
 
     # Write to CSV
     with open(csv_path, mode="w", newline="", encoding="utf-8") as f:

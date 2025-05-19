@@ -31,12 +31,9 @@ def generate_vector_rerank_rag(
         embedding_model: BaseEmbedding,
         llm: LLM,
         k: int,
-        alpha: float,
-        *,
-        persist: bool = False,
+        alpha: float = None,
         collection_name: str = None,
-        prompt_template: RichPromptTemplate = None
-) -> tuple[RetrieverQueryEngine, VectorStoreIndex]:
+) -> RetrieverQueryEngine:
     """
     Generate a vector store retriever with LLM reranking and customizable prompts.
     """
@@ -102,4 +99,4 @@ def generate_vector_rerank_rag(
         f"[INFO] Indexed {len(index.docstore.docs)} docs into collection '{collection_name}' with reranking."
     )
 
-    return query_engine, index
+    return query_engine

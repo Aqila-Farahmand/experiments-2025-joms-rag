@@ -24,11 +24,8 @@ def generate_vector_store_rag(
         llm: LLM,
         k: int = 3,
         alpha: float = 0.5,
-        *,
-        persist: bool,
         collection_name: str = None,
-        prompt_template: RichPromptTemplate = None
-) -> tuple[RetrieverQueryEngine, VectorStoreIndex]:
+) -> RetrieverQueryEngine:
     """
     Generate RAG (Retrieval-Augmented Generation) pipeline using ChromaDB.
 
@@ -53,17 +50,11 @@ def generate_vector_store_rag(
         if isinstance(doc, str) and doc.strip()
     ]
 
-    # Create Chroma client
-    if persist:
-        db = chromadb.PersistentClient(path=str(CHROMA_PATH))
-    else:
-        db = chromadb.Client()
-
     # Set or generate collection name
     if not collection_name:
         raise ValueError("Collection name must be provided for vector store retriever.")
 
-    #real_collection = f"{collection_name}_chunk_size_{chunk_size}_overlapping_{int(overlap_ratio * 100)}"
+    # real_collection = f"{collection_name}_chunk_size_{chunk_size}_overlapping_{int(overlap_ratio * 100)}"
     collection = generate_chroma_db(
         docs=docs,
         chunk_size=chunk_size,
@@ -89,4 +80,4 @@ def generate_vector_store_rag(
     )
 
     update_prompts(query_engine)
-    return query_engine, index
+    return query_engine
