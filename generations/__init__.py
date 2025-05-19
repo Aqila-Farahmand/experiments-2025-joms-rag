@@ -16,6 +16,9 @@ class MetaInfo:
         self.llm = llm
         self.embedder = embedder
 
+    def tag(self, separator: str = "__") -> str:
+        return f"{self.retriever}{separator}{self.llm}{separator}{self.embedder}"
+
 class RagUnderTest:
     def __init__(self, rag: BaseQueryEngine, metainfo: MetaInfo):
         self.rag = rag

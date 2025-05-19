@@ -17,7 +17,7 @@ API_KEY: str = os.getenv("GOOGLE_API_KEY")
 MODELS = {
     #"gemini": GoogleGenAIEmbedding(model_name="models/text-embedding-004"),
     "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
-    #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
+    "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
 
 

@@ -10,6 +10,7 @@ MAX_OUTPUT_BOUND = 50
 def generate_replies_from_rag(chain: BaseQueryEngine, data_under_test: DataFrame) -> list[dict]:
     result = []
     for i, question in enumerate(data_under_test["Sentence"]):
+
         response = chain.query(question)
         # split by </think>
         response_text = response.response.split("</think>")[-1]

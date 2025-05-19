@@ -1,20 +1,17 @@
-from evaluations.plots import PATH as PLOTS_PATH
-from evaluations.cache import PATH as CACHE_PATH
-import pandas as pd
-import os
-import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
-from pathlib import Path
-from evaluations.plots import PATH as PLOTS_PATH
-from evaluations.cache import PATH as CACHE_PATH
-import pandas as pd
 import os
-from matplotlib.patches import Patch
-from matplotlib.patches import Patch
-from scipy.stats import kendalltau
-from sklearn.metrics.pairwise import cosine_similarity
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib.patches import Patch
+from sklearn.metrics.pairwise import cosine_similarity
+
+from evaluations.cache import PATH as CACHE_PATH
+from evaluations.plots import PATH as PLOTS_PATH
+
 
 # load all the csv files in the folder (that does not have summary in the file name)
 def load_csv_in_folder(folder):
@@ -51,9 +48,12 @@ def merge_dataframes(folder: str) -> pd.DataFrame:
             embedding=embedding
         )
         # Convert method to categorical with specified order
-        method_order = ["role_playing", "full", "vector_store"]
+        method_order = ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]
         df['method'] = pd.Categorical(df['method'], categories=method_order, ordered=True)
         # sort the method in this way: "role_playing, full, vector_store, vector_rerank, hybrid"
+        # filter if the kind is rag and the embedding is nomic
+        if kind == "rag" and embedding == "mxbai":
+            continue
         rows.append(df)
 
     return pd.concat(rows, ignore_index=True)
@@ -69,9 +69,14 @@ def plot_distributions(df: pd.DataFrame) -> None:
     sns.set_style("whitegrid", {'grid.linestyle': '--', 'grid.alpha': 0.6})
     
     # Create FacetGrid with separate y-scales
+    # Convert 'score' to numeric, forcing errors to NaN
+    df["score"] = pd.to_numeric(df["score"], errors="coerce")
     g = sns.FacetGrid(df, col="model", row="metric", height=3.5, aspect=1.2, 
                         margin_titles=True, sharey=False)
-    
+
+    print(df["score"])
+    # where nan, fill with 0
+    #
     # Map boxplot with custom palette
     g.map_dataframe(sns.barplot, x="method", y="score",
                     palette="Set2", width=0.7)

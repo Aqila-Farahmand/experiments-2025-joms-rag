@@ -73,8 +73,8 @@ def generate_vector_rerank_rag(
     retriever = index.as_retriever(similarity_top_k=k)
 
     # Configure reranker and query engine
-    llm_for_reranking = Ollama(model="qwen2.5:32b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000)
-    reranker = LLMRerank(llm=llm_for_reranking, top_n=k)
+    #llm_for_reranking = Ollama(model="qwen2.5:32b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000)
+    reranker = LLMRerank(llm=llm, top_n=k)
     query_engine = RetrieverQueryEngine.from_args(
         retriever=retriever,
         reranker=reranker,

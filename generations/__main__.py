@@ -30,25 +30,38 @@ from rag.vector_store_retriever import generate_vector_store_rag
 CACHE_PATH = GENERATIONS_PATH / "cache"
 EMBEDDINGS = {
     "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
-    #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
+    "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
 LLMs = {
-    #"qwen3-0.6b": Ollama(model="qwen3:0.6b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"qwen3-1.7b": Ollama(model="qwen3:1.7b", base_url="http://clusters.almaai.unibo.it:11434/",  request_timeout=60000),
-    #"qwen3-4b": Ollama(model="qwen3:4b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"qwen3-8b": Ollama(model="qwen3:8b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"gemma3-1b": Ollama(model="gemma3:1b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"gemma3-4b": Ollama(model="gemma3:4b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"gemma3-12b": Ollama(model="gemma3:12b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    "llama3.2-3b": Ollama(model="llama3.2:3b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    "llama3.2-1b": Ollama(model="llama3.2:1b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"deepseek-r1-7b": Ollama(model="deepseek-r1:latest", base_url="http://clusters.almaai.unibo.it:11434/", request_timeout=60000),
-    #"gemini-2.0": GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY"))
+    #"smollm2-135m": Ollama(model="smollm2:135m", request_timeout=60000, ),
+    #"smollm2-135m": Ollama(model="smollm2:135m", request_timeout=60000),
+    #"smollm2-360m": Ollama(model="smollm2:135m", request_timeout=60000),
+    "smollm2-1.7b": Ollama(model="smollm2:1.7b", request_timeout=60000),
+    "qwen3-0.6b": Ollama(model="qwen3:0.6b", request_timeout=60000),
+    "qwen2.5-0.5b": Ollama(model="qwen2.5:0.5b", request_timeout=60000),
+    "falcon3-1b": Ollama(model="falcon3:1b", request_timeout=60000),
+    "granite3.1-moe:1b": Ollama(model="granite3.1-moe:1b", request_timeout=60000),
+    #"qwen3-1.7b": Ollama(model="qwen3:1.7b",  request_timeout=60000),
+    #"qwen3-4b": Ollama(model="qwen3:4b", request_timeout=60000),
+    #"qwen3-8b": Ollama(model="qwen3:8b", request_timeout=60000),
+    "gemma3-1b": Ollama(model="gemma3:1b", request_timeout=60000),
+    #"gemma3-4b": Ollama(model="gemma3:4b", request_timeout=60000),
+    #"gemma3-12b": Ollama(model="gemma3:12b", request_timeout=60000),
+    #"medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", request_timeout=60000),
+    #"llama3.2-3b": Ollama(model="llama3.2:latest", request_timeout=60000),
+    "llama3.2-1b": Ollama(model="llama3.2:1b", request_timeout=60000),
+    "deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", request_timeout=60000),
+    #"deepseek-r1-7b": Ollama(model="deepseek-r1:latest", request_timeout=60000),
+    #"gemini-2.0": GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY")),
+    #"mistral-nemo": Ollama(model="mistral-nemo:latest", request_timeout=60000),
+    #"gemma2": Ollama(model="gemma2:latest", request_timeout=60000),
+    #"qwen2-7b": Ollama(model="qwen2:7b", request_timeout=60000),
+    #"phi3-3b": Ollama(model="phi3:3.8b", request_timeout=60000),
+    #"llama3.1-8b": Ollama(model="llama3.1:8b", request_timeout=60000),
+    #"med-qwen2": Ollama(model="echelonify/med-qwen2:latest", request_timeout=60000),
 }
 RETRIEVES = {
-    #"vector_store": generate_vector_store_rag,
+    "vector_store": generate_vector_store_rag,
     "vector_rerank": generate_vector_rerank_rag,
     "hybrid": generate_hybrid_rag
 }
@@ -95,6 +108,28 @@ PROMPTS = {
 }
 
 
+def generate_rag_for_llm(llm: str, embedding: str, retriever_fn) -> RagUnderTest:
+    logging.info(f"Generating {llm} with {embedding}")
+    rag, index = retriever_fn(
+        csv_path=str(DATA_PATH / "data_raw.csv"),
+        chunk_size=256,
+        overlap_ratio=0.5,
+        embedding_model=EMBEDDINGS[embedding],
+        llm=LLMs[llm],
+        k=3,
+        alpha=0.5,
+        persist=True,
+        collection_name=embedding,
+    )
+
+    return RagUnderTest(
+        rag=rag,
+        metainfo=MetaInfo(
+            retriever="vector_store",
+            embedder=embedding,
+            llm=llm,
+        )
+    )
 def generate_rags_for_llm(llm: str, embedding: str) -> list[RagUnderTest]:
     rags: list[RagUnderTest] = []
     for retriever_name, retriever_fn in RETRIEVES.items():
@@ -137,6 +172,7 @@ def generate_rag_response_and_store(where: str, rag_under_test: RagUnderTest) ->
     responses = generate_replies_from_rag(rag_under_test.rag, data_under_test)
 
     retriever, embedder_model, llm_model = rag_under_test.metainfo.retriever, rag_under_test.metainfo.embedder, rag_under_test.metainfo.llm
+
 
     # Write to CSV
     with open(csv_path, mode="w", newline="", encoding="utf-8") as f:
@@ -211,6 +247,7 @@ def main():
             for rag in rags:
                 logging.info(f"Generating responses for {rag.tag()}")
                 # generate response and store
+
                 generate_rag_response_and_store(CACHE_PATH, rag)
                 logging.info(f"Generated responses for {rag.tag()} and stored in {CACHE_PATH}")
         for prompt in PROMPTS:

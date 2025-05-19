@@ -19,20 +19,20 @@ from tqdm.asyncio import tqdm_asyncio
 PATH = Path(__file__).parent
 
 judge_deep_eval = GeminiModel(
-    model_name="gemini-2.0-flash-lite",
+    model_name="gemini-2.0-flash",
     api_key=os.environ.get("GOOGLE_API_KEY"),
 )
 embedding = OllamaEmbedding("nomic-embed-text")
 
-judge_llama_index = GoogleGenAI(model="models/gemini-2.0-flash")
+judge_llama_index = GoogleGenAI(model="gemini-2.5-flash-preview-04-17")
 
 medical_faithfulness = GEval(
     name="Medical Correctness",
     evaluation_steps=[
-        "Extract medical claims or diagnoses from the 0 'actual output'.",
-        "Verify each medical claim against the 'expected output', such as clinical guidelines or medical literature.",
-        "Identify any contradictions or unsupported medical claims that could lead to misdiagnosis.",
-        "Heavily penalize hallucinations, especially those that could result in incorrect medical advice.",
+        "Estrai le affermazioni mediche o le diagnosi dal 'actual output'.",
+        "Verifica ogni affermazione medica contro il 'expected output', come le linee guida cliniche o la letteratura medica.",
+        "Identifica eventuali contraddizioni o affermazioni mediche non supportate che potrebbero portare a una diagnosi errata.",
+        "Penalizza pesantemente le allucinazioni, in particolare quelle che potrebbero generare consigli medici errati.",
     ],
     evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
     model=judge_deep_eval
@@ -46,8 +46,8 @@ relevancy_evaluator = RelevancyEvaluator(llm=judge_llama_index)
 
 async def eval_responses(responses: list[dict], data_under_test) -> dict:
     result = {
-        'correctness': [],
-        'semantic_similarity': [],
+        #'correctness': [],
+        #'semantic_similarity': [],
         'g_eval': []
     }
 
@@ -74,12 +74,12 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
         print(reference)
         print(":::::::::::::::::::::::::::::::::::")
         # Create async tasks for LlamaIndex evaluators
-        eval_tasks.append(correctness_evaluator.aevaluate_response(
-            query=question, response=response['response'], reference=reference
-        ))
-        eval_tasks.append(semantic_similarity_evaluator.aevaluate_response(
-            query=question, response=response['response'], reference=reference
-        ))
+        #eval_tasks.append(correctness_evaluator.aevaluate_response(
+        #    query=question, response=response['response'], reference=reference
+        #))
+        #eval_tasks.append(semantic_similarity_evaluator.aevaluate_response(
+        #    query=question, response=response['response'], reference=reference
+        #))
 
     # Run DeepEval in parallel with LlamaIndex evaluations
     g_eval_results = evaluate(
@@ -91,12 +91,13 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
     )
 
     # Execute all LlamaIndex evaluation tasks
-    all_scores = await tqdm_asyncio.gather(*eval_tasks, desc="Evaluating")
+    #all_scores = await tqdm_asyncio.gather(*eval_tasks, desc="Evaluating")
 
     # Process results
-    for i in range(0, len(all_scores), 2):
-        result['correctness'].append(float(all_scores[i].passing))
-        result['semantic_similarity'].append(float(all_scores[i + 1].score))
+    #for i in range(0, len(all_scores), 2):
+
+    #   result['correctness'].append(float(all_scores[i].passing) if all_scores[i].passing is not None else False)
+    #   result['semantic_similarity'].append(float(all_scores[i + 1].score) if all_scores[i + 1].score is not None else 0.0)
 
     # Process DeepEval results
     for test_result in g_eval_results.test_results:
@@ -124,12 +125,29 @@ async def eval_rag(responses: list[dict], data_under_test):
             relevancy_evaluator.aevaluate_response(query=question, response=response['response'])
         )
 
-    # Execute all tasks with progress bar
-    all_scores = await tqdm_asyncio.gather(*eval_tasks, desc="Evaluating RAG metrics")
+    async def safe_task_runner(task_coroutine, timeout=30):
+        try:
+            # Add timeout using asyncio.wait_for
+            return await asyncio.wait_for(task_coroutine, timeout=timeout)
+        except asyncio.TimeoutError:
+            print(f"Task timed out after {timeout} seconds")
+            return None
+        except Exception as e:
+            print(f"Task failed with error: {e}")
+            return None
+
+    # Wrap each task with the safe runner and timeout
+    safe_eval_tasks = [safe_task_runner(task) for task in eval_tasks]
+
+    # Gather all tasks, allowing some to fail or timeout
+    all_scores = await tqdm_asyncio.gather(*safe_eval_tasks, desc="Evaluating RAG metrics")
 
     # Process results - faithfulness at even indices, relevancy at odd indices
     for i in range(0, len(all_scores), 2):
-        result['faithfulness'].append(float(all_scores[i].score))
-        result['relevancy'].append(float(all_scores[i + 1].score))
+        # Use 0 for failed or timed out tasks (None values)
+        faith_score = 0.0 if all_scores[i] is None else float(all_scores[i].score)
+        rel_score = 0.0 if all_scores[i + 1] is None else float(all_scores[i + 1].score)
 
+        result['faithfulness'].append(faith_score)
+        result['relevancy'].append(rel_score)
     return result
