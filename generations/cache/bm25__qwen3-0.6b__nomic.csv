@@ -1,0 +1,41 @@
+embedder,retriever,LLM,question,response
+nomic,bm25,qwen3-0.6b,"Se ho l'ipertensione, posso avere insufficienza renale?
+","
+
+Se ti stai soffrendo di ipertensione, posso chiederti: è probabile che possiamo sviluppare insufficienza renale, poiché i vasi sanguigni renali sono sensibili al riscaldamento e a processi di riduzione della funzionalità. Se l'ipertensione non viene gestita correttamente, potresti sentirsi in difficoltà nel corso del tempo. Ricorda sempre di valutare i sintomi e seguire le indicazioni di un medico per prevenire eventuali complicazioni. 🌟"
+nomic,bm25,qwen3-0.6b,"Considerando che ho la pressione alta e sto cercando di tenerla sotto controllo, vorrei sapere in che modo la retinopatia ipertensiva è collegata alla mia condizione e quali sono i rischi specifici per la mia vista?
+","
+
+La pressione alta può danneggiare i vasi sanguigni nella retina, causando condizioni come la retinopatia ipertensiva. Questo potrebbe compromettere la vista, aumentando il rischio di danni visivi. Mantenere la pressione sanguigna sotto controllo è essenziale per prevenire questi rischi."
+nomic,bm25,qwen3-0.6b,"Come influisce l'ipertensione?
+","
+
+L'ipertensione può influenzare le tue attività quotidiane, causando sintomi come affaticamento e difficoltà di concentrazione, mentre la sua influenzata capacità cognitiva è diretta. Inoltre, la depressione può influenzare o essere coinvolta dall'ipertensione, con i sintomi depressivi legati al stress e all'ansia associati."
+nomic,bm25,qwen3-0.6b,"Come le donne vengono colpite dall'ipertensione dopo la menopausa?
+","
+
+Le donne, dopo la menopausa, mostrano un aumento significativo nella risulnerità all'ipertensione, mentre i uomini, a differenza di esse, sviluppano la condizione a un'età più giovane. Questo è un punto importante per monitorare le donne, poiché la risoluzione è più complessa e influente."
+nomic,bm25,qwen3-0.6b,"Come influisce il cortisolo, o il cortisolo, sulla mia pressione sanguigna?
+","
+
+L'androgen (adrenalina e cortisolo) è un ormono responsabile della risposta del corpo al stress, aumentando il ritmo cardiaco e la contrazione dei vasi sanguigni, che possono provocare un aumento della pressione sanguigna. Questo risposta è semplice e diretta, senza riferire il contesto precedente."
+nomic,bm25,qwen3-0.6b,"Come i disturbi della tiroide influenzano l'ipertensione?
+","
+
+Le condizioni mediche, come le malattie renali, la diabete e i disturbi della tiroide, possono influenzare l'ipertensione in diversi modi. Per esempio, le malattie della tiroide possono provocare una aumento della pressione sanguigna, come la mancata rimozione della tiroidea in caso di ipotiroidismo o la variazione della tiroidea in caso di ipertroidismo. Questo è un segnale preoccupante, quindi è consigliabile monitorare e controllare i sintomi."
+nomic,bm25,qwen3-0.6b,"Meditazione, aiuta con l'ipertensione?
+","
+
+Meditazione aiuta a ridurre lo stress e a controllare l'ipertensione, come dimostra l'informazione fornita. Per aiutarti, prova esercizi come yoga, camminate all'aperto o respirazioni profonde, che promuovono un'asana di rilassamento e un'assenza della frustrazione."
+nomic,bm25,qwen3-0.6b,"Data la mia storia familiare di ipertensione e cancro, e le mie recenti preoccupazioni riguardo all'instabilità della pressione sanguigna, quali dispositivi sono disponibili per il monitoraggio della frequenza cardiaca che potrebbero aiutarmi a tracciare i miei dati sanitari in concomitanza con il monitoraggio regolare della pressione sanguigna, e quali modifiche allo stile di vita, come dieta ed esercizio fisico, dovrei considerare per gestire sia la mia frequenza cardiaca che la mia pressione sanguigna?
+","
+
+Per monitorare la frequenza cardiaca, puoi utilizzare dispositivi come i smartwatches, i fasce toraciche o i monitor da polso specifici, che offrono precisione e comodità. Questi dispositivi aiutano a tracciare i dati sulle frequenze cardiache continuamente. Per gestire sia la frequenza cardiaca che la pressione sanguigna, considera modifiche allo stile di vita come una dieta equilibrata e attività fisica regolare. Inoltre, tenere traccia i dati sanitari è essenziale, quindi bisogna evitare informazioni che siano personalizzate e di rischio."
+nomic,bm25,qwen3-0.6b,"Considerando le mie stressanti condizioni lavorative come impiegato, quali sono i dispositivi tecnologici più efficaci per il monitoraggio della pressione sanguigna che posso utilizzare regolarmente, e quali sono i potenziali rischi dell'ipertensione, soprattutto se dovessi rimanere incinta?
+","
+
+In caso di condizioni di stress e rischi, i dispositivi digitali da polso e da braccio (calibrate e validati) sono adatti per monitorare la pressione sanguigna. Tuttavia, è importante seguire le consigli professionali per calibrarli e riconoscere eventuali effetti sulle funzionalità del paziente. Per la gravidezza, bisogna seguire i protocolli di prevenzione e monitoraggio per ridurre i rischi."
+nomic,bm25,qwen3-0.6b,"Date le mie preoccupazioni riguardo all'aumento dello stress, quali sono alcuni segnali che potrebbero indicare che sto sperimentando depressione, e quali metodi posso utilizzare per monitorare quotidianamente la mia frequenza cardiaca per comprendere meglio la sua correlazione con il mio stato mentale?
+","
+
+Sei in periodo di stress e potrebbe sentirsi innervosito. I segnali che potrebbero indicare depressione includono tristezza persistente, perdita di interesse o senso di vuoto, cambiamenti in sonno, stanchezza costante, difficoltà di concentrazione e pensieri di inutilità. Per monitorare la frequenza cardiaca, puoi utilizzare dispositivi come smartwatches, fasce toraciche o monitori polsi specializzati. La correlazione tra la frequenza cardiaca e il tuo stato mentale è importante per comprendere i cambiamenti iniziati. Per una valutazione, consello di un professionista è sempre utile."

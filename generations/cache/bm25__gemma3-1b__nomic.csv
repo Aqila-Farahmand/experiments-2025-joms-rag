@@ -1,0 +1,39 @@
+embedder,retriever,LLM,question,response
+nomic,bm25,gemma3-1b,"Se ho l'ipertensione, posso avere insufficienza renale?
+","Sì, l'ipertensione cronica può danneggiare i vasi sanguigni dei reni, riducendo la loro capacità di filtrare efficacemente i rifiuti dal sangue, aumentando il rischio di insufficienza renale nel tempo. È importante monitorare la tua salute renale e seguire le indicazioni del tuo medico."
+nomic,bm25,gemma3-1b,"Considerando che ho la pressione alta e sto cercando di tenerla sotto controllo, vorrei sapere in che modo la retinopatia ipertensiva è collegata alla mia condizione e quali sono i rischi specifici per la mia vista?
+","Capisco che sei preoccupato per la tua pressione alta e il rischio di retinopatia ipertensiva. È una situazione seria, e il fatto che possa influire sulla vista è motivo di preoccupazione. La retinopatia ipertensiva è una condizione che può verificarsi a causa di danni ai vasi sanguigni nella retina, e questo può portare a una perdita della vista.  È importante che tu continui a seguire le indicazioni del tuo medico per gestire la pressione alta e, in questo caso, per monitorare attentamente la tua salute oculare.  Possiamo parlare di un piano di gestione più completo per affrontare questo problema, e ti suggerirei di parlare con lui o con un altro medico specialista in oculistica."
+nomic,bm25,gemma3-1b,"Come influisce l'ipertensione?
+","L'ipertensione può influenzare diversi aspetti della tua vita quotidiana, portando a sintomi come affaticamento e mal di testa. Può anche influire sulla tua capacità di concentrazione. È importante gestirla per evitare possibili conseguenze negative."
+nomic,bm25,gemma3-1b,"Come le donne vengono colpite dall'ipertensione dopo la menopausa?
+","Le donne sono più a rischio di sviluppare ipertensione dopo la menopausa, ma l'incidenza è più elevata rispetto agli uomini."
+nomic,bm25,gemma3-1b,"Come influisce il cortisolo, o il cortisolo, sulla mia pressione sanguigna?
+","Capisco. Il cortisolo, in determinate circostanze, può contribuire ad aumentare la pressione sanguigna. È una situazione che è importante monitorare attentamente."
+nomic,bm25,gemma3-1b,"Come i disturbi della tiroide influenzano l'ipertensione?
+","Capisco. I disturbi della tiroide possono influenzare l'ipertensione. In generale, è importante che tu venga valutato dal tuo medico per escludere eventuali problemi alla tiroide."
+nomic,bm25,gemma3-1b,"Meditazione, aiuta con l'ipertensione?
+",La meditazione può essere un'ottima opzione per aiutarti a ridurre lo stress e a controllare l'ipertensione.
+nomic,bm25,gemma3-1b,"Data la mia storia familiare di ipertensione e cancro, e le mie recenti preoccupazioni riguardo all'instabilità della pressione sanguigna, quali dispositivi sono disponibili per il monitoraggio della frequenza cardiaca che potrebbero aiutarmi a tracciare i miei dati sanitari in concomitanza con il monitoraggio regolare della pressione sanguigna, e quali modifiche allo stile di vita, come dieta ed esercizio fisico, dovrei considerare per gestire sia la mia frequenza cardiaca che la mia pressione sanguigna?
+","Capisco che siate preoccupati per l’instabilità della pressione sanguigna e la storia familiare di ipertensione. È una situazione delicata, e è importante affrontare la pressione con un approccio completo.
+
+Considerando la vostra situazione, alcuni dispositivi di monitoraggio della frequenza cardiaca potrebbero essere utili. Smartwatch e fasce toraciche, in particolare, offrono un monitoraggio preciso e continuo. Tuttavia, è fondamentale che questi dispositivi siano integrati con il monitoraggio della pressione sanguigna.
+
+In base alla vostra storia familiare e alle vostre preoccupazioni, vi consiglio di modificare il vostro stile di vita:
+
+*   **Dieta:** Seguite una dieta sana ed equilibrata, limitando l'assunzione di sodio e grassi saturi.
+*   **Esercizio fisico:** Aumentate gradualmente l'intensità e la durata degli esercizi aerobici, mantenendo una frequenza cardiaca stabile.
+*   **Gestione dello stress:** Praticate tecniche di rilassamento come la meditazione o lo yoga per ridurre il rischio di ipertensione.
+
+È essenziale consultare il vostro medico per discutere un piano di monitoraggio e gestione della pressione sanguigna personalizzato, tenendo conto delle vostre specifiche esigenze."
+nomic,bm25,gemma3-1b,"Considerando le mie stressanti condizioni lavorative come impiegato, quali sono i dispositivi tecnologici più efficaci per il monitoraggio della pressione sanguigna che posso utilizzare regolarmente, e quali sono i potenziali rischi dell'ipertensione, soprattutto se dovessi rimanere incinta?
+","Capisco perfettamente la tua preoccupazione, considerando le tue condizioni di lavoro impegnative. Per il monitoraggio della pressione arteriosa, i misuratori digitali da braccio sono generalmente considerati i più accurati, ma assicurati che siano validati clinicamente e calibrati regolarmente.
+
+L'ipertensione, soprattutto in caso di gravidanza, può essere un problema serio e richiede un'attenzione particolare. È fondamentale che tu e il tuo medico monitoriate attentamente la pressione e che ricevi un'attenzione costante, per poter gestire eventuali complicazioni."
+nomic,bm25,gemma3-1b,"Date le mie preoccupazioni riguardo all'aumento dello stress, quali sono alcuni segnali che potrebbero indicare che sto sperimentando depressione, e quali metodi posso utilizzare per monitorare quotidianamente la mia frequenza cardiaca per comprendere meglio la sua correlazione con il mio stato mentale?
+","Capisco che ti senti preoccupato per l'aumento dello stress e vorresti capire se potrebbe essere correlato alla tua frequenza cardiaca. È un'attenzione importante. 
+
+Possibili segnali che potrebbero indicare una possibile depressione includono sentimenti di tristezza o vuoto, perdita di interesse per le attività, cambiamenti nel sonno e nell'appetito, stanchezza e difficoltà di concentrazione.
+
+Per monitorare quotidianamente la tua frequenza cardiaca, puoi usare un dispositivo indossabile o una fascia toracica, ma è importante notare che la frequenza cardiaca può essere influenzata da molti fattori.
+
+Se la tua preoccupazione persiste, ti consiglio di parlarne con un medico o un professionista della salute mentale. Possono aiutarti a capire meglio la situazione e a trovare le strategie più adatte a te."
