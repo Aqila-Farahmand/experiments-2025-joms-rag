@@ -12,10 +12,11 @@ from llama_index.core.schema import Document
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.retrievers.bm25 import BM25Retriever
 from llama_index.vector_stores.chroma import ChromaVectorStore
-
 from chroma import PATH as CHROMA_PATH, generate_chroma_db
 from documents import from_pandas_to_list
 from rag import update_prompts
+import Stemmer
+from llama_index.core.node_parser import SentenceSplitter
 
 
 def generate_hybrid_rag(
@@ -42,6 +43,10 @@ def generate_hybrid_rag(
         if isinstance(doc, str) and doc.strip()
     ]
 
+    # initialize node parser
+    splitter = SentenceSplitter(chunk_size=chunk_size)
+    nodes = splitter.get_nodes_from_documents(docs)
+
     collection = generate_chroma_db(
         docs=docs,
         chunk_size=chunk_size,
@@ -67,7 +72,12 @@ def generate_hybrid_rag(
 
     # Create retrievers
     vector_retriever = index.as_retriever(similarity_top_k=k)
-    bm25_retriever = BM25Retriever.from_defaults(docstore=doc_store, similarity_top_k=k)
+    bm25_retriever = BM25Retriever.from_defaults(
+        nodes=nodes,
+        similarity_top_k=k,
+        stemmer=Stemmer.Stemmer("italian"),
+        language="italian",
+    )
 
     # Combine into hybrid retriever
     hybrid_retriever = QueryFusionRetriever(
