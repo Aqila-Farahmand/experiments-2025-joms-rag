@@ -111,7 +111,7 @@ PROMPTS = {
 
 def generate_rag_for_llm(llm: str, embedding: str, retriever_fn) -> RagUnderTest:
     logging.info(f"Generating {llm} with {embedding}")
-    rag, index = retriever_fn(
+    rag = retriever_fn(
         csv_path=str(DATA_PATH / "data_raw.csv"),
         chunk_size=256,
         overlap_ratio=0.5,
