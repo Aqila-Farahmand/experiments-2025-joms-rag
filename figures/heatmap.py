@@ -43,12 +43,12 @@ def generate_heatmap(
     )
 
     metric_label = metric.replace("avg_", "Average ").capitalize()
-    ax.set_title(f"{metric_label} — {emb_label}", fontsize=16)
-    ax.set_xlabel("Chunk size", fontsize=12)
-    ax.set_ylabel("Overlap", fontsize=12)
+    # ax.set_title(f"{metric_label} — {emb_label}", fontsize=16)
+    ax.set_xlabel("Chunk size", fontsize=16)
+    ax.set_ylabel("Overlap", fontsize=16)
 
     cb = fig.colorbar(c, ax=ax, pad=0.02)
-    cb.set_label(metric.replace("avg_", "Average ").capitalize(), fontsize=12)
+    cb.set_label(metric.replace("avg_", "Average ").capitalize(), fontsize=16)
 
     ax.set_yticks(pivot.index)
     ax.set_yticklabels([f"{int(o*100)}%" for o in pivot.index])
