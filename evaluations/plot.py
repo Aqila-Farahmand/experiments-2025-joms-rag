@@ -211,13 +211,16 @@ def plot_improvement_over_prompt_full(df: pd.DataFrame) -> None:
     out_path = PLOTS_PATH / "g_eval_improvement_grid.pdf"
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close()
-# Load and prepare the data
-df = merge_dataframes(CACHE_PATH)
-# Transform to long format for plotting
-df = df.melt(id_vars=["kind", "method", "model", "embedding"], 
-                var_name="metric", value_name="score")
 
-# Generate plots
-plot_distributions(df)
-plot_g_eval_correlations(df)
-plot_improvement_over_prompt_full(df)
+
+if __name__ == "__main__":
+    # Load and prepare the data
+    df = merge_dataframes(CACHE_PATH)
+    # Transform to long format for plotting
+    df = df.melt(id_vars=["kind", "method", "model", "embedding"],
+                    var_name="metric", value_name="score")
+
+    # Generate plots
+    plot_distributions(df)
+    plot_g_eval_correlations(df)
+    plot_improvement_over_prompt_full(df)
