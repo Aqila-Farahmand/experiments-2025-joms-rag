@@ -36,22 +36,22 @@ LLMs = {
     #"smollm2-135m": Ollama(model="smollm2:135m", request_timeout=60000, ),
     #"smollm2-135m": Ollama(model="smollm2:135m", request_timeout=60000),
     #"smollm2-360m": Ollama(model="smollm2:135m", request_timeout=60000),
-    #"smollm2-1.7b": Ollama(model="smollm2:1.7b", request_timeout=60000),
-    #"qwen3-0.6b": Ollama(model="qwen3:0.6b", request_timeout=60000),
-    #"qwen2.5-0.5b": Ollama(model="qwen2.5:0.5b", request_timeout=60000),
-   # "falcon3-1b": Ollama(model="falcon3:1b", request_timeout=60000),
-    #"granite3.1-moe:1b": Ollama(model="granite3.1-moe:1b", request_timeout=60000),
+    "smollm2-1.7b": Ollama(model="smollm2:1.7b", request_timeout=60000),
+    "qwen3-0.6b": Ollama(model="qwen3:0.6b", request_timeout=60000),
+    "qwen2.5-0.5b": Ollama(model="qwen2.5:0.5b", request_timeout=60000),
+    "falcon3-1b": Ollama(model="falcon3:1b", request_timeout=60000),
+    "granite3.1-moe:1b": Ollama(model="granite3.1-moe:1b", request_timeout=60000),
     #"qwen3-1.7b": Ollama(model="qwen3:1.7b",  request_timeout=60000),
     #"qwen3-4b": Ollama(model="qwen3:4b", request_timeout=60000),
     #"qwen3-8b": Ollama(model="qwen3:8b", request_timeout=60000),
-    #"gemma3-1b": Ollama(model="gemma3:1b", request_timeout=60000),
+    "gemma3-1b": Ollama(model="gemma3:1b", request_timeout=60000),
     #"gemma3-4b": Ollama(model="gemma3:4b", request_timeout=60000),
     #"gemma3-12b": Ollama(model="gemma3:12b", request_timeout=60000),
     #"medllama3-v20": Ollama(model="ahmgam/medllama3-v20:latest", request_timeout=60000),
-    "llama3.2-3b": Ollama(model="llama3.2:latest", request_timeout=60000),
-    #"llama3.2-1b": Ollama(model="llama3.2:1b", request_timeout=60000),
-    "qwen2.5:1.5b": Ollama(model="qwen2.5:1.5b", request_timeout=60000, base_url="http://clusters.almaai.unibo.it:11434/"),
-    #"deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", request_timeout=60000),
+    #"llama3.2-3b": Ollama(model="llama3.2:latest", request_timeout=60000),
+    "llama3.2-1b": Ollama(model="llama3.2:1b", request_timeout=60000),
+    #"qwen2.5:1.5b": Ollama(model="qwen2.5:1.5b", request_timeout=60000, base_url="http://clusters.almaai.unibo.it:11434/"),
+    "deepseek-r1-1.5b": Ollama(model="deepseek-r1:1.5b", request_timeout=60000),
     #"deepseek-r1-7b": Ollama(model="deepseek-r1:latest", request_timeout=60000),
     #"gemini-2.0": GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGLE_API_KEY")),
     #"mistral-nemo": Ollama(model="mistral-nemo:latest", request_timeout=60000),
@@ -76,7 +76,7 @@ for llm in LLMs:
         os.system(f"ollama stop {llm.model}")
 
 # adapt ollama to have model_name
-data_under_test = pd.read_csv(DATA_PATH / "test_generated_it.csv")[:10]
+data_under_test = pd.read_csv(DATA_PATH / "test_generated_it.csv")  # [:10]
 base = DATA_PATH / "data_raw.csv"
 
 
