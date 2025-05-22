@@ -37,6 +37,7 @@ llm = GoogleGenAI(model_name="models/gemini-2.0-flash", api_key=os.getenv("GOOGL
 faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
 relevancy_evaluator = RelevancyEvaluator(llm=llm)
 
+
 async def evaluate_metrics(query_engine, questions: List[str]) -> Tuple[float, float, float]:
     """
     Compute average latency, faithfulness and relevancy over a list of queries.
