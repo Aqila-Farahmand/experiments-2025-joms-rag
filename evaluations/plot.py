@@ -13,6 +13,23 @@ from evaluations.cache import PATH as CACHE_PATH
 from evaluations.plots import PATH as PLOTS_PATH
 
 
+PRETTY_NAMES = {
+    "gemma3-1b": "Gemma 3 (1B)",
+    "granite3.1-moe:1b": "Granite 3.1 MoE (1B)",
+    "falcon3-1b": "Falcon 3 (1B)",
+    "qwen3-0.6b": "Qwen 3 (0.6B)",
+    "deepseek-r1-1.5b": "DeepSeek R1 (1.5B)",
+    "llama3.2-1b": "Llama 3.2 (1B)",
+    "smollm2-1.7b": "SmolLM2 (1.7B)",
+    "qwen2.5-0.5b": "Qwen 2.5 (0.5B)",
+    "role_playing": "Role Playing Prompt",
+    "hybrid": "Hybrid Prompt",
+    "vector_store": "Vector Store Prompt",
+    "vector_rerank": "Vector Rerank Prompt",
+    "full": "Full Prompt"
+}
+
+
 # load all the csv files in the folder (that does not have summary in the file name)
 def load_csv_in_folder(folder):
     """
@@ -28,7 +45,7 @@ def load_csv_in_folder(folder):
         data[file] = pd.read_csv(os.path.join(folder, file))
     return data
 
-def merge_dataframes(folder: str) -> pd.DataFrame:
+def merge_dataframes(folder: str, embedder:str = "nomic") -> pd.DataFrame:
     """Load all non-summary CSVs, extract kind/method/model/embedding, and concat."""
     rows = []
     for path in Path(folder).glob("*.csv"):
@@ -48,18 +65,19 @@ def merge_dataframes(folder: str) -> pd.DataFrame:
             embedding=embedding
         )
         # Convert method to categorical with specified order
-        method_order = ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]
+        method_order = [PRETTY_NAMES[x] for x in ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]]
+        df["method"] = df["method"].map(PRETTY_NAMES).fillna(df["method"])
         df['method'] = pd.Categorical(df['method'], categories=method_order, ordered=True)
         # sort the method in this way: "role_playing, full, vector_store, vector_rerank, hybrid"
         # filter if the kind is rag and the embedding is nomic
-        if kind == "rag" and embedding == "mxbai":
+        if kind == "rag" and embedding != embedder:
             continue
         rows.append(df)
 
     return pd.concat(rows, ignore_index=True)
 
 # Enhanced visualization functions with improved styling and separate scales
-def plot_distributions(df: pd.DataFrame) -> None:
+def plot_distributions(df: pd.DataFrame, only_g_eval: bool = False) -> None:
     """
     Plot the distribution of scores across different methods using boxplots.
     Each subplot uses its own appropriate scale based on the metric.
@@ -103,6 +121,66 @@ def plot_distributions(df: pd.DataFrame) -> None:
     # Save high-quality figure
     plt.savefig(PLOTS_PATH / "distribution_scores.pdf", dpi=300, bbox_inches='tight')
     plt.close()
+
+
+def plot_g_eval_distributions(df: pd.DataFrame, models_per_row: int = 4, embedder: str = "nomic") -> None:
+    """
+    Plot only the distribution of g_eval scores across different models and methods.
+    Organize the subplots in a grid with `models_per_row` columns.
+    """
+    g_eval_df = df[df["metric"] == "g_eval"].copy()
+    g_eval_df = g_eval_df[g_eval_df["model"].isin(PRETTY_NAMES.keys())].copy()
+    g_eval_df["score"] = pd.to_numeric(g_eval_df["score"], errors="coerce")
+    g_eval_df["model"] = g_eval_df["model"].map(PRETTY_NAMES).fillna(g_eval_df["model"])
+    sorted_model_names = sorted(g_eval_df["model"].unique())
+    g_eval_df["model"] = pd.Categorical(g_eval_df["model"], categories=sorted_model_names, ordered=True)
+
+    plt.rcParams.update({'font.size': 12, 'figure.figsize': (models_per_row * 6, 20)})
+    sns.set_style("whitegrid", {'grid.linestyle': '--', 'grid.alpha': 0.6})
+
+    g = sns.FacetGrid(
+        g_eval_df,
+        col="model",
+        col_wrap=models_per_row,
+        height=3.5,
+        aspect=1.2,
+        sharey=False
+    )
+
+    labels = ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]
+    labels = [PRETTY_NAMES[label] for label in labels]
+
+    def barplot_fixed_order(data, **kwargs):
+        ax = plt.gca()
+        sns.barplot(
+            data=data,
+            x="method",
+            y="score",
+            order=labels,
+            palette="Set2",
+            ax=ax,
+            width=0.7
+        )
+    g.map_dataframe(barplot_fixed_order, x="method", y="score", palette="Set2", width=0.7)
+    g.set_axis_labels("", "G-Eval Score")
+    g.set_titles(col_template="{col_name}")
+
+    for ax, model in zip(g.axes.flat, g.col_names):
+        row_data = g_eval_df[g_eval_df["model"] == model]
+        row_max = row_data["score"].max() if not row_data.empty else 0
+        # ax.text(0.5, 0.98, f"Max: {row_max:.2f}", transform=ax.transAxes,
+        #         ha='center', va='top', fontsize=9, fontweight='bold',
+        #         bbox=dict(facecolor='white', alpha=0.8, boxstyle='round,pad=0.3'))
+        ax.set_ylim(0, row_max * 1.1)
+        ax.set_xticks(range(len(labels)))
+        ax.set_xticklabels(labels, rotation=45, ha='right')
+
+    # Set the title for the entire figure
+    g.fig.suptitle(f"G-Eval distributions by model using {embedder.capitalize()} embeddings", fontsize=24, y=1.02)
+    plt.tight_layout()
+    plt.savefig(PLOTS_PATH / f"g_eval_distributions_{embedder}.pdf", dpi=300, bbox_inches='tight')
+    plt.close()
+
 
 def plot_g_eval_correlations(df: pd.DataFrame) -> None:
     # collect g_eval scores for each kind-method-model combo
@@ -214,13 +292,15 @@ def plot_improvement_over_prompt_full(df: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    # Load and prepare the data
-    df = merge_dataframes(CACHE_PATH)
-    # Transform to long format for plotting
-    df = df.melt(id_vars=["kind", "method", "model", "embedding"],
-                    var_name="metric", value_name="score")
+    for embedder in ("nomic", "mxbai"):
+        # Load and prepare the data
+        df = merge_dataframes(CACHE_PATH, embedder=embedder)
+        # Transform to long format for plotting
+        df = df.melt(id_vars=["kind", "method", "model", "embedding"],
+                        var_name="metric", value_name="score")
 
-    # Generate plots
-    plot_distributions(df)
-    plot_g_eval_correlations(df)
-    plot_improvement_over_prompt_full(df)
+        # Generate plots
+        # plot_distributions(df)
+        plot_g_eval_distributions(df, models_per_row=4, embedder=embedder)
+        # plot_g_eval_correlations(df)
+        # plot_improvement_over_prompt_full(df)

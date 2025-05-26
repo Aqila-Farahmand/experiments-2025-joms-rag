@@ -1,6 +1,7 @@
+analysis/chi_square/*.pdf
+analysis/chi_square/*.tex
 figures/*.eps
 figures/*.png
-
 .idea/
 .DS_Store
 .venv/
