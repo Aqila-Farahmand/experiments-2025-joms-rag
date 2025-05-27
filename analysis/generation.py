@@ -132,15 +132,13 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
             pval = float("nan")
 
         prop = group_counts.div(group_counts.sum(axis=1), axis=0)
-        better = "RAG" if prop.loc["RAG", 1] > prop.loc["No-RAG", 1] else "No-RAG"
 
         rows.append({
             "Model": model,
             "RAG success": f"{prop.loc['RAG', 1]*100:.1f}",
             "No-RAG success": f"{prop.loc['No-RAG', 1]*100:.1f}",
-            "Better group": better,
             "p-value": pval,
-            "Significant": "$\\Large\\color{\\green}{\\unicode{10004}}$" if pval < alpha else "$\\Large\\color{\\red}{\\unicode{10007}}$"
+            "Significant": "\\Large{\\textbf{\\textcolor{green}{v}}}" if pval < alpha else "\\Large{\\textbf{\\textcolor{red}{x}}}"
         })
 
     result_df = pd.DataFrame(rows)
@@ -151,7 +149,72 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
     latex_df.to_latex(output_folder / f"chi2_rag_vs_no_rag_{embedder}.tex",
                       index=False,
                       escape=False,
-                      column_format="lllrcc")
+                      column_format="lcccc")
+
+    return result_df
+
+def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH, embedder: str = "nomic") -> pd.DataFrame:
+    """
+    Perform pairwise chi-square tests across RAG-only methods (vector_store, vector_rerank, hybrid)
+    for each model. Produces a LaTeX table of success rates, p-values and significance.
+    """
+    df = df[df["metric"] == "g_eval"].copy()
+    df = df[df["model"].isin(PRETTY_NAMES.keys())].copy()
+    df["model"] = df["model"].map(PRETTY_NAMES)
+
+    rag_methods = ["vector_store", "vector_rerank", "hybrid"]
+    method_pretty = [PRETTY_NAMES[m] for m in rag_methods]
+    df = df[df["method"].isin(method_pretty)].copy()
+
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    rows = []
+
+    for m1, m2 in itertools.combinations(method_pretty, 2):
+        for model in sorted(df["model"].unique()):
+            model_df = df[df["model"] == model]
+
+            s1 = model_df[model_df["method"] == m1]["score"]
+            s2 = model_df[model_df["method"] == m2]["score"]
+
+            if s1.empty or s2.empty:
+                continue
+
+            c1 = s1.value_counts().reindex([0, 1], fill_value=0)
+            c2 = s2.value_counts().reindex([0, 1], fill_value=0)
+            contingency = [c1.tolist(), c2.tolist()]
+
+            try:
+                _, pval, _, _ = chi2_contingency(contingency)
+            except Exception:
+                pval = float("nan")
+
+            rate1 = c1[1] / (c1.sum()) * 100 if c1.sum() > 0 else 0.0
+            rate2 = c2[1] / (c2.sum()) * 100 if c2.sum() > 0 else 0.0
+
+            rows.append({
+                "Model": model,
+                "Method 1": m1,
+                "Method 2": m2,
+                "Success 1": f"{rate1:.1f}",
+                "Success 2": f"{rate2:.1f}",
+                "p-value": pval,
+                "Sig.": "\\Large{\\textbf{\\textcolor{green}{v}}}" if pval < alpha else "\\Large{\\textbf{\\textcolor{red}{x}}}"
+            })
+
+        # Riga vuota tra blocchi di confronto
+        rows.append({})
+
+    result_df = pd.DataFrame(rows)
+
+    # Prepara LaTeX
+    latex_df = result_df.copy()
+    latex_df["p-value"] = latex_df["p-value"].map(lambda x: f"\\textbf{{{x:.4f}}}" if pd.notna(x) and x < alpha else f"{x:.4f}" if pd.notna(x) else "")
+
+    latex_df.to_latex(output_folder / f"chi2_rag_method_pairs_{embedder}.tex",
+                      index=False,
+                      escape=False,
+                      column_format="llrrrc")
 
     return result_df
 
@@ -163,6 +226,7 @@ if __name__ == "__main__":
         df = merge_dataframes(CACHE_PATH, embedder=embedder)
         df = df.melt(id_vars=["kind", "method", "model", "embedding"],
                         var_name="metric", value_name="score")
-        chi_square_test_by_model(df, output_folder=ANALYSIS_PATH, embedder=embedder)
-        chi_square_test_rag_vs_no_rag(df, output_folder=ANALYSIS_PATH, embedder=embedder)
+        # chi_square_test_by_model(df, output_folder=ANALYSIS_PATH, embedder=embedder)
+        # chi_square_test_rag_vs_no_rag(df, output_folder=ANALYSIS_PATH, embedder=embedder)
+        chi_square_test_rag_method_pairs(df, output_folder=ANALYSIS_PATH, embedder=embedder)
 

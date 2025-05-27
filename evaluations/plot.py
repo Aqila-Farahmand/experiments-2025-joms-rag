@@ -12,7 +12,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 from evaluations.cache import PATH as CACHE_PATH
 from evaluations.plots import PATH as PLOTS_PATH
 
-
+EMBEDDERS = [
+    "role_playing",
+    "full",
+    "vector_store",
+    "vector_rerank",
+    # "bm25",
+    "hybrid",
+]
 PRETTY_NAMES = {
     "gemma3-1b": "Gemma 3 (1B)",
     "granite3.1-moe:1b": "Granite 3.1 MoE (1B)",
@@ -26,7 +33,8 @@ PRETTY_NAMES = {
     "hybrid": "Hybrid Prompt",
     "vector_store": "Vector Store Prompt",
     "vector_rerank": "Vector Rerank Prompt",
-    "full": "Full Prompt"
+    "full": "Full Prompt",
+    "bm25": "BM25 Prompt",
 }
 
 
@@ -65,7 +73,7 @@ def merge_dataframes(folder: str, embedder:str = "nomic") -> pd.DataFrame:
             embedding=embedding
         )
         # Convert method to categorical with specified order
-        method_order = [PRETTY_NAMES[x] for x in ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]]
+        method_order = [PRETTY_NAMES[x] for x in EMBEDDERS]
         df["method"] = df["method"].map(PRETTY_NAMES).fillna(df["method"])
         df['method'] = pd.Categorical(df['method'], categories=method_order, ordered=True)
         # sort the method in this way: "role_playing, full, vector_store, vector_rerank, hybrid"
@@ -147,8 +155,7 @@ def plot_g_eval_distributions(df: pd.DataFrame, models_per_row: int = 4, embedde
         sharey=False
     )
 
-    labels = ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]
-    labels = [PRETTY_NAMES[label] for label in labels]
+    labels = [PRETTY_NAMES[label] for label in EMBEDDERS]
 
     def barplot_fixed_order(data, **kwargs):
         ax = plt.gca()
