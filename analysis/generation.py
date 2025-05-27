@@ -1,21 +1,12 @@
-import pandas as pd
-import itertools
-import matplotlib.pyplot as plt
-import seaborn as sns
-from scipy.stats import chi2_contingency
 from analysis.chi_square import PATH as ANALYSIS_PATH
 from evaluations.cache import PATH as CACHE_PATH
 from evaluations.plot import merge_dataframes, PRETTY_NAMES
-
-
 import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import chi2_contingency
 from matplotlib.colors import ListedColormap
-from evaluations.plot import PRETTY_NAMES
-from pathlib import Path
 
 
 def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH, embedder: str = "nomic") -> dict:
@@ -112,6 +103,60 @@ def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folde
     return results
 
 
+def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH, embedder: str = "nomic") -> pd.DataFrame:
+    """
+    Compare 'no-RAG' methods (role_playing, full) vs. 'RAG' methods (vector_store, vector_rerank, hybrid)
+    using chi-square test for each model. Produces a LaTeX table of results.
+    """
+    df = df[df["metric"] == "g_eval"].copy()
+    df = df[df["model"].isin(PRETTY_NAMES.keys())].copy()
+    df["model"] = df["model"].map(PRETTY_NAMES)
+    df["kind"] = df["kind"].apply(lambda x: "RAG" if x == "rag" else "No-RAG")
+
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    rows = []
+
+    for model in sorted(df["model"].unique()):
+        model_df = df[df["model"] == model]
+
+        group_counts = model_df.groupby(["kind", "score"]).size().unstack(fill_value=0)
+
+        if group_counts.shape != (2, 2):
+            print(f"Skipping {model} – insufficient data.")
+            continue
+
+        try:
+            chi2, pval, _, _ = chi2_contingency(group_counts.values)
+        except Exception:
+            pval = float("nan")
+
+        prop = group_counts.div(group_counts.sum(axis=1), axis=0)
+        better = "RAG" if prop.loc["RAG", 1] > prop.loc["No-RAG", 1] else "No-RAG"
+
+        rows.append({
+            "Model": model,
+            "RAG success": f"{prop.loc['RAG', 1]*100:.1f}",
+            "No-RAG success": f"{prop.loc['No-RAG', 1]*100:.1f}",
+            "Better group": better,
+            "p-value": pval,
+            "Significant": "$\\Large\\color{\\green}{\\unicode{10004}}$" if pval < alpha else "$\\Large\\color{\\red}{\\unicode{10007}}$"
+        })
+
+    result_df = pd.DataFrame(rows)
+
+    # Save LaTeX table
+    latex_df = result_df.copy()
+    latex_df["p-value"] = latex_df["p-value"].map(lambda x: f"\\textbf{{{x:.4f}}}" if x < alpha else f"{x:.4f}")
+    latex_df.to_latex(output_folder / f"chi2_rag_vs_no_rag_{embedder}.tex",
+                      index=False,
+                      escape=False,
+                      column_format="lllrcc")
+
+    return result_df
+
+
+
 if __name__ == "__main__":
     for embedder in ("nomic", "mxbai"):
         # Load and prepare the data
@@ -119,4 +164,5 @@ if __name__ == "__main__":
         df = df.melt(id_vars=["kind", "method", "model", "embedding"],
                         var_name="metric", value_name="score")
         chi_square_test_by_model(df, output_folder=ANALYSIS_PATH, embedder=embedder)
+        chi_square_test_rag_vs_no_rag(df, output_folder=ANALYSIS_PATH, embedder=embedder)
 

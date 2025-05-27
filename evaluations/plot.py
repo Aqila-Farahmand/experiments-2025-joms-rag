@@ -176,7 +176,7 @@ def plot_g_eval_distributions(df: pd.DataFrame, models_per_row: int = 4, embedde
         ax.set_xticklabels(labels, rotation=45, ha='right')
 
     # Set the title for the entire figure
-    g.fig.suptitle(f"G-Eval distributions by model using {embedder.capitalize()} embeddings", fontsize=24, y=1.02)
+    # g.fig.suptitle(f"G-Eval distributions by model using {embedder.capitalize()} embeddings", fontsize=24, y=1.02)
     plt.tight_layout()
     plt.savefig(PLOTS_PATH / f"g_eval_distributions_{embedder}.pdf", dpi=300, bbox_inches='tight')
     plt.close()
