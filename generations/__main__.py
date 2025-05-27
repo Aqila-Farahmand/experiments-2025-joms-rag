@@ -29,8 +29,8 @@ from rag.bm25_retriever import generate_bm25_rag
 
 CACHE_PATH = GENERATIONS_PATH / "cache"
 EMBEDDINGS = {
-    "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
-    #"mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
+    #"nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
+    "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
 LLMs = {
     #"smollm2-135m": Ollama(model="smollm2:135m", request_timeout=60000, ),
@@ -64,7 +64,7 @@ LLMs = {
 RETRIEVES = {
     #"vector_store": generate_vector_store_rag,
     #"vector_rerank": generate_vector_rerank_rag,
-    "hybrid": generate_hybrid_rag,
+    #"hybrid": generate_hybrid_rag,
     "bm25": generate_bm25_rag,
 }
 
