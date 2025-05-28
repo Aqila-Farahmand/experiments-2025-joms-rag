@@ -18,7 +18,7 @@ def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folde
     df = df[df["model"].isin(PRETTY_NAMES.keys())].copy()
     df["model"] = df["model"].map(PRETTY_NAMES)
 
-    method_ids = ["role_playing", "full", "vector_store", "vector_rerank", "hybrid"]
+    method_ids = ["role_playing", "full", "vector_store", "vector_rerank", "bm25", "hybrid"]
     methods = [PRETTY_NAMES[m] for m in method_ids]
     results = {}
 
@@ -162,7 +162,7 @@ def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, outp
     df = df[df["model"].isin(PRETTY_NAMES.keys())].copy()
     df["model"] = df["model"].map(PRETTY_NAMES)
 
-    rag_methods = ["vector_store", "vector_rerank", "hybrid"]
+    rag_methods = ["vector_store", "vector_rerank", "bm25", "hybrid"]
     method_pretty = [PRETTY_NAMES[m] for m in rag_methods]
     df = df[df["method"].isin(method_pretty)].copy()
 
@@ -226,7 +226,7 @@ if __name__ == "__main__":
         df = merge_dataframes(CACHE_PATH, embedder=embedder)
         df = df.melt(id_vars=["kind", "method", "model", "embedding"],
                         var_name="metric", value_name="score")
-        # chi_square_test_by_model(df, output_folder=ANALYSIS_PATH, embedder=embedder)
-        # chi_square_test_rag_vs_no_rag(df, output_folder=ANALYSIS_PATH, embedder=embedder)
+        chi_square_test_by_model(df, output_folder=ANALYSIS_PATH, embedder=embedder)
+        chi_square_test_rag_vs_no_rag(df, output_folder=ANALYSIS_PATH, embedder=embedder)
         chi_square_test_rag_method_pairs(df, output_folder=ANALYSIS_PATH, embedder=embedder)
 

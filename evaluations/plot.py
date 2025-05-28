@@ -17,7 +17,7 @@ EMBEDDERS = [
     "full",
     "vector_store",
     "vector_rerank",
-    # "bm25",
+    "bm25",
     "hybrid",
 ]
 PRETTY_NAMES = {
@@ -29,12 +29,12 @@ PRETTY_NAMES = {
     "llama3.2-1b": "Llama 3.2 (1B)",
     "smollm2-1.7b": "SmolLM2 (1.7B)",
     "qwen2.5-0.5b": "Qwen 2.5 (0.5B)",
-    "role_playing": "Role Playing Prompt",
-    "hybrid": "Hybrid Prompt",
-    "vector_store": "Vector Store Prompt",
-    "vector_rerank": "Vector Rerank Prompt",
-    "full": "Full Prompt",
-    "bm25": "BM25 Prompt",
+    "role_playing": "Role Playing",
+    "hybrid": "Hybrid",
+    "vector_store": "Vector Store",
+    "vector_rerank": "Vector Rerank",
+    "full": "Full",
+    "bm25": "BM25",
 }
 
 
