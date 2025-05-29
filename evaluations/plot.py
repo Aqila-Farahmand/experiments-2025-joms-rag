@@ -29,11 +29,11 @@ PRETTY_NAMES = {
     "llama3.2-1b": "Llama 3.2 (1B)",
     "smollm2-1.7b": "SmolLM2 (1.7B)",
     "qwen2.5-0.5b": "Qwen 2.5 (0.5B)",
-    "role_playing": "Role Playing",
-    "hybrid": "Hybrid",
-    "vector_store": "Vector Store",
-    "vector_rerank": "Vector Rerank",
-    "full": "Full",
+    "role_playing": "role-playing",
+    "hybrid": "hybrid",
+    "vector_store": "vector_search",
+    "vector_rerank": "vector_rerank",
+    "full": "full-prompt",
     "bm25": "BM25",
 }
 
@@ -143,7 +143,7 @@ def plot_g_eval_distributions(df: pd.DataFrame, models_per_row: int = 4, embedde
     sorted_model_names = sorted(g_eval_df["model"].unique())
     g_eval_df["model"] = pd.Categorical(g_eval_df["model"], categories=sorted_model_names, ordered=True)
 
-    plt.rcParams.update({'font.size': 12, 'figure.figsize': (models_per_row * 6, 20)})
+    plt.rcParams.update({'font.size': 13, 'figure.figsize': (models_per_row * 6, 20)})
     sns.set_style("whitegrid", {'grid.linestyle': '--', 'grid.alpha': 0.6})
 
     g = sns.FacetGrid(

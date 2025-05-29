@@ -120,7 +120,12 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
     for model in sorted(df["model"].unique()):
         model_df = df[df["model"] == model]
 
-        group_counts = model_df.groupby(["kind", "score"]).size().unstack(fill_value=0)
+        # group_counts = model_df.groupby(["kind", "score"]).size().unstack(fill_value=0)
+        # Pick the best for each kind
+        best_rag = model_df[model_df["kind"] == "RAG"].groupby("method")["score"].mean().idxmax()
+        best_no_rag = model_df[model_df["kind"] == "No-RAG"].groupby("method")["score"].mean().idxmax()
+        # create group count with the best methods
+        group_counts = model_df[model_df["method"].isin([best_rag, best_no_rag])].groupby(["kind", "score"]).size().unstack(fill_value=0)
 
         if group_counts.shape != (2, 2):
             print(f"Skipping {model} – insufficient data.")
@@ -138,7 +143,7 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
             "RAG success": f"{prop.loc['RAG', 1]*100:.1f}",
             "No-RAG success": f"{prop.loc['No-RAG', 1]*100:.1f}",
             "p-value": pval,
-            "Significant": "\\Large{\\textbf{\\textcolor{green}{v}}}" if pval < alpha else "\\Large{\\textbf{\\textcolor{red}{x}}}"
+            "Significant": "\\textcolor{darkgreen}{$\\checkmark$}" if pval < alpha else "\\textcolor{red}{$\\times$}"
         })
 
     result_df = pd.DataFrame(rows)
@@ -199,7 +204,7 @@ def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, outp
                 "Success 1": f"{rate1:.1f}",
                 "Success 2": f"{rate2:.1f}",
                 "p-value": pval,
-                "Sig.": "\\Large{\\textbf{\\textcolor{green}{v}}}" if pval < alpha else "\\Large{\\textbf{\\textcolor{red}{x}}}"
+                "Sig.": "\\textcolor{darkgreen}{$\\checkmark$}" if pval < alpha else "\\textcolor{red}{$\\times$}"
             })
 
         # Riga vuota tra blocchi di confronto
