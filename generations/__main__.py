@@ -29,7 +29,7 @@ from rag.bm25_retriever import generate_bm25_rag
 
 CACHE_PATH = GENERATIONS_PATH / "cache"
 EMBEDDINGS = {
-    #"nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
+    # "nomic": HuggingFaceEmbedding(model_name="nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True),
     "mxbai": HuggingFaceEmbedding(model_name="mixedbread-ai/mxbai-embed-large-v1", trust_remote_code=True),
 }
 LLMs = {

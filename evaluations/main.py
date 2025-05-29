@@ -10,7 +10,7 @@ from evaluations import eval_rag, eval_responses
 from generations.cache import PATH as GENERATIONS_CACHE_PATH
 from evaluations.cache import PATH as EVAL_CACHE_PATH
 
-data_under_test = pd.read_csv(DOCUMENTS_PATH / "test_generated_it.csv")#[:10] # remove :5 for the full dataset
+data_under_test = pd.read_csv(DOCUMENTS_PATH / "test_generated_it.csv")  # [:10] # remove :5 for the full dataset
 
 
 def load_pickle_in_folder(folder):
@@ -30,8 +30,7 @@ def load_pickle_in_folder(folder):
     return data
 
 
-async def main(): 
-
+async def main():
     to_eval = load_pickle_in_folder(GENERATIONS_CACHE_PATH)
     for key, value in to_eval.items():
         key = key.replace(".pkl", "")
@@ -42,8 +41,8 @@ async def main():
             continue
         await sleep(1)  #
         # remove the .pkl extension
-        #print(value["responses"][0])
-        if("prompt" in key):
+        # print(value["responses"][0])
+        if "prompt" in key:
             result = await eval_responses(value["responses"], data_under_test)
         else:
             result = await eval_rag(value["responses"], data_under_test)
@@ -69,7 +68,9 @@ async def main():
         # store as csv
         summary.to_csv(os.path.join(EVAL_CACHE_PATH, f"{key}_summary.csv"), index=False)
 
-# launch async 
+
+# launch async
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

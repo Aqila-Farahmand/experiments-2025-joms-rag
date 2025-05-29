@@ -26,8 +26,8 @@ CHUNK_SIZES = [128, 256, 512, 1024]
 OVERLAP_RATIOS = [0.1, 0.2, 0.3, 0.4, 0.5]
 
 # Set up Google Gemini API Key and configure genai
-#API_KEY: str = os.getenv("GOOGLE_API_KEY")
-#client = genai.Client(api_key=API_KEY)
+# API_KEY: str = os.getenv("GOOGLE_API_KEY")
+# client = genai.Client(api_key=API_KEY)
 
 
 # Choose the LLM for chunk size and overlap evaluation

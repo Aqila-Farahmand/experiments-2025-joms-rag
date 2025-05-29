@@ -9,7 +9,8 @@ from scipy.stats import chi2_contingency
 from matplotlib.colors import ListedColormap
 
 
-def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH, embedder: str = "nomic") -> dict:
+def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH,
+                             embedder: str = "nomic") -> dict:
     """
     For each model, perform chi-square tests on all pairs of methods using g_eval scores (0 or 1).
     Outputs significance tables as LaTeX and annotated heatmaps of p-values.
@@ -62,7 +63,8 @@ def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folde
         fmt_pvals = pvals.apply(lambda col: col.map(lambda x: f"{x:.4f}" if pd.notna(x) else ""))
 
         # Binary mask: 1 = significant, 0 = non-significant
-        sig_mask = pvals.apply(lambda col: col.map(lambda x: 1 if pd.notna(x) and x < alpha else 0 if pd.notna(x) else float("nan")))
+        sig_mask = pvals.apply(
+            lambda col: col.map(lambda x: 1 if pd.notna(x) and x < alpha else 0 if pd.notna(x) else float("nan")))
 
         # Create color matrix: 0 = azzurro, 1 = rosso chiaro
         cmap = ListedColormap(["#cce5ff", "#f4cccc"])
@@ -103,7 +105,8 @@ def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folde
     return results
 
 
-def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH, embedder: str = "nomic") -> pd.DataFrame:
+def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH,
+                                  embedder: str = "nomic") -> pd.DataFrame:
     """
     Compare 'no-RAG' methods (role_playing, full) vs. 'RAG' methods (vector_store, vector_rerank, hybrid)
     using chi-square test for each model. Produces a LaTeX table of results.
@@ -125,7 +128,8 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
         best_rag = model_df[model_df["kind"] == "RAG"].groupby("method")["score"].mean().idxmax()
         best_no_rag = model_df[model_df["kind"] == "No-RAG"].groupby("method")["score"].mean().idxmax()
         # create group count with the best methods
-        group_counts = model_df[model_df["method"].isin([best_rag, best_no_rag])].groupby(["kind", "score"]).size().unstack(fill_value=0)
+        group_counts = model_df[model_df["method"].isin([best_rag, best_no_rag])].groupby(
+            ["kind", "score"]).size().unstack(fill_value=0)
 
         if group_counts.shape != (2, 2):
             print(f"Skipping {model} – insufficient data.")
@@ -140,8 +144,8 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
 
         rows.append({
             "Model": model,
-            "RAG success": f"{prop.loc['RAG', 1]*100:.1f}",
-            "No-RAG success": f"{prop.loc['No-RAG', 1]*100:.1f}",
+            "RAG success": f"{prop.loc['RAG', 1] * 100:.1f}",
+            "No-RAG success": f"{prop.loc['No-RAG', 1] * 100:.1f}",
             "p-value": pval,
             "Significant": "\\textcolor{darkgreen}{$\\checkmark$}" if pval < alpha else "\\textcolor{red}{$\\times$}"
         })
@@ -158,7 +162,9 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
 
     return result_df
 
-def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH, embedder: str = "nomic") -> pd.DataFrame:
+
+def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH,
+                                     embedder: str = "nomic") -> pd.DataFrame:
     """
     Perform pairwise chi-square tests across RAG-only methods (vector_store, vector_rerank, hybrid)
     for each model. Produces a LaTeX table of success rates, p-values and significance.
@@ -214,7 +220,8 @@ def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, outp
 
     # Prepara LaTeX
     latex_df = result_df.copy()
-    latex_df["p-value"] = latex_df["p-value"].map(lambda x: f"\\textbf{{{x:.4f}}}" if pd.notna(x) and x < alpha else f"{x:.4f}" if pd.notna(x) else "")
+    latex_df["p-value"] = latex_df["p-value"].map(
+        lambda x: f"\\textbf{{{x:.4f}}}" if pd.notna(x) and x < alpha else f"{x:.4f}" if pd.notna(x) else "")
 
     latex_df.to_latex(output_folder / f"chi2_rag_method_pairs_{embedder}.tex",
                       index=False,
@@ -224,14 +231,12 @@ def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, outp
     return result_df
 
 
-
 if __name__ == "__main__":
     for embedder in ("nomic", "mxbai"):
         # Load and prepare the data
         df = merge_dataframes(CACHE_PATH, embedder=embedder)
         df = df.melt(id_vars=["kind", "method", "model", "embedding"],
-                        var_name="metric", value_name="score")
+                     var_name="metric", value_name="score")
         chi_square_test_by_model(df, output_folder=ANALYSIS_PATH, embedder=embedder)
         chi_square_test_rag_vs_no_rag(df, output_folder=ANALYSIS_PATH, embedder=embedder)
         chi_square_test_rag_method_pairs(df, output_folder=ANALYSIS_PATH, embedder=embedder)
-

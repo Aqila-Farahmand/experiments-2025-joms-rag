@@ -29,12 +29,12 @@ PRETTY_NAMES = {
     "llama3.2-1b": "Llama 3.2 (1B)",
     "smollm2-1.7b": "SmolLM2 (1.7B)",
     "qwen2.5-0.5b": "Qwen 2.5 (0.5B)",
-    "role_playing": "role-playing",
+    "role_playing": "role-playing prompt",
     "hybrid": "hybrid",
     "vector_store": "vector_search",
     "vector_rerank": "vector_rerank",
-    "full": "full-prompt",
-    "bm25": "BM25",
+    "full": "full-context prompt",
+    "bm25": "bm25",
 }
 
 
@@ -53,7 +53,8 @@ def load_csv_in_folder(folder):
         data[file] = pd.read_csv(os.path.join(folder, file))
     return data
 
-def merge_dataframes(folder: str, embedder:str = "nomic") -> pd.DataFrame:
+
+def merge_dataframes(folder: str, embedder: str = "nomic") -> pd.DataFrame:
     """Load all non-summary CSVs, extract kind/method/model/embedding, and concat."""
     rows = []
     for path in Path(folder).glob("*.csv"):
@@ -84,6 +85,7 @@ def merge_dataframes(folder: str, embedder:str = "nomic") -> pd.DataFrame:
 
     return pd.concat(rows, ignore_index=True)
 
+
 # Enhanced visualization functions with improved styling and separate scales
 def plot_distributions(df: pd.DataFrame, only_g_eval: bool = False) -> None:
     """
@@ -93,12 +95,12 @@ def plot_distributions(df: pd.DataFrame, only_g_eval: bool = False) -> None:
     # Set aesthetic parameters
     plt.rcParams.update({'font.size': 10, 'figure.figsize': (14, 10)})
     sns.set_style("whitegrid", {'grid.linestyle': '--', 'grid.alpha': 0.6})
-    
+
     # Create FacetGrid with separate y-scales
     # Convert 'score' to numeric, forcing errors to NaN
     df["score"] = pd.to_numeric(df["score"], errors="coerce")
-    g = sns.FacetGrid(df, col="model", row="metric", height=3.5, aspect=1.2, 
-                        margin_titles=True, sharey=False)
+    g = sns.FacetGrid(df, col="model", row="metric", height=3.5, aspect=1.2,
+                      margin_titles=True, sharey=False)
 
     print(df["score"])
     # where nan, fill with 0
@@ -106,20 +108,20 @@ def plot_distributions(df: pd.DataFrame, only_g_eval: bool = False) -> None:
     # Map boxplot with custom palette
     g.map_dataframe(sns.barplot, x="method", y="score",
                     palette="Set2", width=0.7)
-    
+
     # Enhance appearance and readability
     g.set_axis_labels("Method", "Score")
     g.set_titles(col_template="{col_name} Model", row_template="{row_name}")
-    
+
     # Rotate x-axis labels and add max value for each row
     for i, row_axes in enumerate(g.axes):
         metric_name = df['metric'].unique()[i]
         # Calculate the max value for the entire row (across all models with this metric)
         row_data = df[df['metric'] == metric_name]
         row_max = row_data['score'].max() if not row_data.empty else 0
-        
+
         for ax in row_axes:
-            ax.text(0.5, 0.98, f"Row Max: {row_max:.2f}", transform=ax.transAxes, 
+            ax.text(0.5, 0.98, f"Row Max: {row_max:.2f}", transform=ax.transAxes,
                     ha='center', va='top', fontsize=9, fontweight='bold',
                     bbox=dict(facecolor='white', alpha=0.8, boxstyle='round,pad=0.3'))
             ax.set_ylim(0, row_max * 1.1)  # Set y-limits to 10% above max value for better visibility
@@ -168,6 +170,7 @@ def plot_g_eval_distributions(df: pd.DataFrame, models_per_row: int = 4, embedde
             ax=ax,
             width=0.7
         )
+
     g.map_dataframe(barplot_fixed_order, x="method", y="score", palette="Set2", width=0.7)
     g.set_axis_labels("", "G-Eval Score")
     g.set_titles(col_template="{col_name}")
@@ -201,7 +204,7 @@ def plot_g_eval_correlations(df: pd.DataFrame) -> None:
                     (df['method'] == method) &
                     (df['model'] == model) &
                     (df['metric'] == "g_eval")
-                ]
+                    ]
                 if data.empty:
                     continue
                 key = f"{kind[0]}-{method[0]}-{model}"
@@ -237,7 +240,7 @@ def plot_improvement_over_prompt_full(df: pd.DataFrame) -> None:
     gev = df[df["metric"] == "g_eval"].copy()
     models = sorted(gev["model"].unique())
     method_order = ["role_playing", "vector_store"]  # no 'full'
-    
+
     # compute improvements
     records = []
     for model in models:
@@ -267,7 +270,7 @@ def plot_improvement_over_prompt_full(df: pd.DataFrame) -> None:
         kind="bar",
         col_wrap=3,
         order=method_order,
-        palette="Set2",   # will override per‐bar below
+        palette="Set2",  # will override per‐bar below
         height=3,
         aspect=1,
         ci=None
@@ -304,7 +307,7 @@ if __name__ == "__main__":
         df = merge_dataframes(CACHE_PATH, embedder=embedder)
         # Transform to long format for plotting
         df = df.melt(id_vars=["kind", "method", "model", "embedding"],
-                        var_name="metric", value_name="score")
+                     var_name="metric", value_name="score")
 
         # Generate plots
         # plot_distributions(df)
