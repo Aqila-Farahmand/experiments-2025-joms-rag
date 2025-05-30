@@ -1,4 +1,4 @@
-# Applying Retrieval-Augmented Generation on Open LLMs for a Medical Chatbot Supporting Hypertensive Patients
+# Applying Retrieval-Augmented Generation on Open SLMs for a Medical Chatbot Supporting Hypertensive Patients
 
 This repository contains the experiments for the following paper: 
 
