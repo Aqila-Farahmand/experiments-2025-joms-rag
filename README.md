@@ -78,14 +78,14 @@ Start with the documents module and progress through embedding, rag, generations
  python embedding/__main__.py
 ```
 
-📊 Evaluation
+### Evaluation
 Our evaluation includes:
 
 + Quantitative Metrics: G-eval metric
 
 + Qualitative Analysis: Human feedback on response helpfulness and safety
 
-+ Comparative Baselines: Comparison against SLM-only responses using role-playing (zero shot) and full-context (few shots) prompts engineering techniques
++ Comparative Baselines: Comparison against SLM-only responses using role-playing (zero-shot) and full-context (few-shot) prompts engineering techniques
 
 ### Contributing
 We welcome community contributions! If you’d like to help improve the system:
@@ -102,4 +102,4 @@ We welcome community contributions! If you’d like to help improve the system:
 This project is licensed under the  Apache License. See the LICENSE file for details.
 
 ### Contact
-If you have any questions or collaborations, please contact [aqila.farahmand@uniurb.it].
+For questions, feedback, or collaboration inquiries, feel free to reach out to any of the project collaborators.
