@@ -1,4 +1,4 @@
-# RAG System designed to assist patients with hypertension
+# RAG System is designed to assist patients with hypertension
 
 This repository provides the implementation of a **Retrieval-Augmented Generation (RAG)** system designed to assist **hypertensive patients** by delivering context-aware, trustworthy, and privacy-preserving information. 
 The system follows a modular pipeline, enabling focused evaluation and improvement at each stage.
@@ -8,12 +8,12 @@ The system follows a modular pipeline, enabling focused evaluation and improveme
 ## Project Overview
 
 The goal of this project is to design and evaluate a RAG-based system that offers reliable support to individuals managing hypertension. 
-The system integrates information retrieval with generative language models to improve accuracy and relevance, especially in a health-sensitive context.
+The system integrates information retrieval with generative language models to enhance accuracy and relevance, particularly in health-sensitive contexts.
 
 Our methodology is rooted in two core principles:
 
 - **Privacy Preservation**: Ensuring that no sensitive patient data is exposed.
-- **Reliable Communication**: Generating medically appropriate, clear, and trustworthy responses in Italian Language.
+- **Reliable Communication**: Generating medically appropriate, clear, and trustworthy responses in the Italian Language.
 
 ---
 
@@ -34,7 +34,7 @@ The RAG pipeline is structured into five main phases:
    → [`rag/`](./rag)
 
 4. **Response Generation**  
-   Using a SLM, the system generates responses based on the retrieved context.  
+   Using an SLM, the system generates responses based on the retrieved context.  
    → [`generations/`](./generations)
 
 5. **Evaluation**  
@@ -87,8 +87,8 @@ Our evaluation includes:
 
 + Comparative Baselines: Comparison against SLM-only responses using role-playing (zero shot) and full-context (few shots) prompts engineering techniques
 
-🤝 Contributing
-We welcome community contributions!If you’d like to help improve the system:
+### Contributing
+We welcome community contributions! If you’d like to help improve the system:
 
 1. Fork the repo
 
@@ -98,7 +98,7 @@ We welcome community contributions!If you’d like to help improve the system:
 
 4. Feel free to open issues for bug reports or feature suggestions.
 
-📄 License
+### License
 This project is licensed under the  Apache License. See the LICENSE file for details.
 
 📬 Contact
