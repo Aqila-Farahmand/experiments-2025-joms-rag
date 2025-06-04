@@ -101,5 +101,5 @@ We welcome community contributions! If you’d like to help improve the system:
 ### License
 This project is licensed under the  Apache License. See the LICENSE file for details.
 
-📬 Contact
-For questions or collaborations, please contact [aqila.farahmand@uniurb.it].
+### Contact
+If you have any questions or collaborations, please contact [aqila.farahmand@uniurb.it].
