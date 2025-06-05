@@ -25,19 +25,23 @@ The RAG pipeline is structured into five main phases:
    Medical documents, patient FAQs, and other hypertension-relevant texts are collected and preprocessed.  
    → [`documents/`](./documents)
 
-2. **Embedding Generation & Chunk Evaluation**  
-   Documents are segmented and converted into vector embeddings. Various chunking methods and embedding models are evaluated for performance.  
+2. **Embedding Generation**  
+   Documents are segmented and converted into vector embeddings.  
    → [`embedding/`](./embedding)
 
-3. **Retrieval & Augmentation**  
+3. **Chunk Evaluation**
+   Various chunk sizes and overlap ratios, as well as embedding models, are evaluated for performance.
+   → [`analysis/`](./analysis)
+
+4. **Retrieval & Augmentation**  
    Given a user query, the system retrieves the most relevant text chunks and augments the prompt sent to the generator.  
    → [`rag/`](./rag)
 
-4. **Response Generation**  
+5. **Response Generation**  
    Using an SLM, the system generates responses based on the retrieved context.  
    → [`generations/`](./generations)
 
-5. **Evaluation**  
+6. **Evaluation**  
    We evaluate the RAG system using both automatic metrics and human assessments, and compare it to single-LM (SLM) baselines under different prompting strategies.  
    → [`evaluations/`](./evaluations)
 
