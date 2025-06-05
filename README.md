@@ -30,18 +30,20 @@ The RAG pipeline is structured into five main phases:
    → [`embedding/`](./embedding)
 
 3. **Chunk Evaluation**
+   
    Various chunk sizes and overlap ratios, as well as embedding models, are evaluated for performance.
+   
    → [`analysis/`](./analysis)
 
-4. **Retrieval & Augmentation**  
+5. **Retrieval & Augmentation**  
    Given a user query, the system retrieves the most relevant text chunks and augments the prompt sent to the generator.  
    → [`rag/`](./rag)
 
-5. **Response Generation**  
+6. **Response Generation**  
    Using an SLM, the system generates responses based on the retrieved context.  
    → [`generations/`](./generations)
 
-6. **Evaluation**  
+7. **Evaluation**  
    We evaluate the RAG system using both automatic metrics and human assessments, and compare it to single-LM (SLM) baselines under different prompting strategies.  
    → [`evaluations/`](./evaluations)
 
