@@ -1,4 +1,4 @@
-# RAG System is designed to assist patients with hypertension
+# RAG-Enhanced Open SLMs for Hypertension Management Chatbots
 
 This repository provides the implementation of a **Retrieval-Augmented Generation (RAG)** system designed to assist **hypertensive patients** by delivering context-aware, trustworthy, and privacy-preserving information. 
 The system follows a modular pipeline, enabling focused evaluation and improvement at each stage.
