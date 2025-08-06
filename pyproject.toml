@@ -40,6 +40,7 @@ dependencies = [
     "RapidFuzz (>= 3.13.0,< 4.0.0)",
     "pystemmer (>=2.2.0.1,<3.0.0.0)",
     "stemmer (>=0.0.4,<0.0.5)",
+    "italian-ats-evaluator==3.0.2",
 ]
 
 

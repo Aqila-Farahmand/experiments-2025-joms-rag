@@ -58,7 +58,7 @@ def merge_dataframes(folder: str, embedder: str = "nomic") -> pd.DataFrame:
     """Load all non-summary CSVs, extract kind/method/model/embedding, and concat."""
     rows = []
     for path in Path(folder).glob("*.csv"):
-        if "summary" in path.name:
+        if "summary" in path.name or "embeddings" in path.name:
             continue
         parts = path.stem.split("__")
         if parts[0] == "prompt":

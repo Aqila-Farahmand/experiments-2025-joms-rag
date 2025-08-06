@@ -151,3 +151,21 @@ async def eval_rag(responses: list[dict], data_under_test):
         result['faithfulness'].append(faith_score)
         result['relevancy'].append(rel_score)
     return result
+
+async def embed_response(response: list[dict]) -> list[float]:
+    """Embed the responses using the Ollama embedding model."""
+    tasks = []
+    for resp in response:
+        tasks.append(embedding.aget_text_embedding(resp['response'].response))
+
+    embeddings = await tqdm_asyncio.gather(*tasks, desc="Embedding responses")
+    return embeddings
+
+async def embed_ground_truth(data_under_test: dict) -> list[float]:
+    """Embed the ground truth responses."""
+    tasks = []
+    for resp in data_under_test["Response"]:
+        tasks.append(embedding.aget_text_embedding(resp))
+
+    embeddings = await tqdm_asyncio.gather(*tasks, desc="Embedding ground truth")
+    return embeddings
