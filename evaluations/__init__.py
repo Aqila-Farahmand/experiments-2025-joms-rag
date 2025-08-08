@@ -1,10 +1,13 @@
 import os
+import time
 from pathlib import Path
 
 from deepeval import evaluate
 from deepeval.metrics import GEval
 from deepeval.models import GeminiModel
 from deepeval.test_case import LLMTestCaseParams, LLMTestCase
+from google.genai.types import GenerateContentConfig, ThinkingConfig
+from llama_index.core import PromptTemplate
 from llama_index.core.evaluation import RelevancyEvaluator, SemanticSimilarityEvaluator, CorrectnessEvaluator, \
     FaithfulnessEvaluator
 from llama_index.embeddings.google_genai import GoogleGenAIEmbedding
@@ -14,6 +17,7 @@ from requests import Response
 import logging
 import asyncio
 from deepeval import evaluate
+from torch.distributed import group
 from tqdm.asyncio import tqdm_asyncio
 
 PATH = Path(__file__).parent
@@ -24,7 +28,8 @@ judge_deep_eval = GeminiModel(
 )
 embedding = OllamaEmbedding("nomic-embed-text")
 
-judge_llama_index = GoogleGenAI(model="gemini-2.5-flash-preview-04-17")
+judge_llama_index = GoogleGenAI(model="gemini-2.5-flash-lite")
+judge_llama_index_eval = GoogleGenAI(model="gemini-2.5-pro", generation_config=GenerateContentConfig(thinking_config=ThinkingConfig(thinking_budget=128)))
 
 medical_faithfulness = GEval(
     name="Medical Correctness",
@@ -38,6 +43,58 @@ medical_faithfulness = GEval(
     model=judge_deep_eval
 )
 
+prompt = PromptTemplate("""
+Sei un medico incaricato di valutare la qualità delle risposte in un dominio di ipertensione.
+ Il tuo compito è confrontare la risposta fornita con quella corretta e assegnare un punteggio da 1 (molto diversa da quella corretta) a 5 (simile a quella corretta).
+
+## IMPORTANTE: Rispondi ESCLUSIVAMENTE con un numero da 1 a 5. Non aggiungere spiegazioni, commenti o altro testo.
+
+## Criteri di Valutazione (considera sempre quanto si discosta dalla risposta corretta):
+
+**1 - Risposta fuori contesto**
+La risposta è completamente estranea alla domanda posta, 
+oppure è completamente illeggibile e incomprensibile rispetto alla lingua italiana.
+(es. se chiedo "Come ti chiami?", la risposta è "18 anni")
+
+**2 - Risposta in contesto, ma con informazioni errate e/o pericolose**
+La risposta è pertinente alla domanda, ma contiene informazioni sbagliate che potrebbero causare danni
+(es. se chiedo "Come si misura la pressione?", la risposta è "Per misurare la pressione devi inserire un ago nel braccio")
+
+**3 - Risposta sostanzialmente corretta, ma con imprecisioni minori**
+La risposta è perlopiù corretta e utile, ma presenta piccoli errori, 
+dettagli trascurabili o informazioni non del tutto pertinenti, 
+oppure ha dei piccoli problemi con la grammatica italiana
+(es. se chiedo "Come si misura la pressione?", la risposta descrive il modo corretto ma indica un valore di ipertensione accettabile palesemente sbagliato come "190/20 mmHg")
+
+**4 - Risposta corretta, ma con informazioni superflue o con un linguaggio poco comprensibile**
+La risposta è accurata e completa, ma include dettagli ridondanti 
+o non strettamente necessari che un esperto avrebbe omesso per brevità.
+(es. se chiedo "Come si misura la pressione?", la risposta descrive il metodo corretto ma aggiunge lunghi paragrafi su consigli alimentari e sulla gestione generale dell'ipertensione)
+
+**5 - Risposta corretta, concisa ed efficace**
+La risposta è precisa, va dritta al punto e fornisce tutte le informazioni necessarie in modo chiaro e sintetico, 
+senza aggiunte inutili. È la risposta che darebbe un esperto
+
+## Processo di Valutazione:
+
+**Step di valutazione:**
+- leggi la domanda (Domanda)
+- leggi la risposta dell'altro medico (Risposta del Medico da Valutare)
+- dai uno score seguendo rigorosamente i criteri sopra elencati, 
+---
+
+**Domanda:**
+{question}
+
+**Risposta Corretta:**
+{ground_truth}
+
+**Risposta del Medico da Valutare:**
+{reply}
+
+NOTA!!! cerca di evitare QUANTO più possibile di dare degli score intermedi!!! (es. 3, 2 ecc.), ma piuttosto < 2 o > 4, in modo da avere una valutazione più chiara e netta.
+**VALUTAZIONE (solo numero da 1 a 5):**
+""")
 faithfulness_evaluator = FaithfulnessEvaluator(llm=judge_llama_index)
 correctness_evaluator = CorrectnessEvaluator(llm=judge_llama_index, score_threshold=3.0)
 semantic_similarity_evaluator = SemanticSimilarityEvaluator(embed_model=embedding)
@@ -54,7 +111,7 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
     # Create all test cases first for batch evaluation
     test_cases = []
     eval_tasks = []
-
+    prompts = []
     for i, question in enumerate(data_under_test["Sentence"]):
         response = responses[i]
         reference = data_under_test["Response"].iloc[i]
@@ -65,7 +122,8 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
             actual_output=response['response'].response,
             expected_output=reference
         )
-        test_cases.append(test_case)
+        prompts.append(prompt.format(question=question, ground_truth=reference, reply=response['response'].response[:2500]))
+        print(len(response['response'].response[:2500]))
         print(":::::::::::::::: Question :::::::::::::::::::")
         print(f"Question: {question}")
         print(":::::::::::::::: Response :::::::::::::::::::")
@@ -73,23 +131,18 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
         print(":::::::::::::::: Reference :::::::::::::::::::")
         print(reference)
         print(":::::::::::::::::::::::::::::::::::")
-        # Create async tasks for LlamaIndex evaluators
+        ## Create async tasks for LlamaIndex evaluators
         #eval_tasks.append(correctness_evaluator.aevaluate_response(
         #    query=question, response=response['response'], reference=reference
         #))
         #eval_tasks.append(semantic_similarity_evaluator.aevaluate_response(
         #    query=question, response=response['response'], reference=reference
         #))
-
-    # Run DeepEval in parallel with LlamaIndex evaluations
-    g_eval_results = evaluate(
-        test_cases=test_cases,
-        metrics=[medical_faithfulness],
-        show_indicator=False,
-        display=None,
-        print_results=False
-    )
-
+    # run async and wait
+    results = [judge_llama_index_eval.acomplete(prompt) for prompt in prompts]
+    # Gather all results
+    g_eval_results = await tqdm_asyncio.gather(*results, desc="Evaluating with DeepEval")
+    time.sleep(30)
     # Execute all LlamaIndex evaluation tasks
     #all_scores = await tqdm_asyncio.gather(*eval_tasks, desc="Evaluating")
 
@@ -100,8 +153,9 @@ async def eval_responses(responses: list[dict], data_under_test) -> dict:
     #   result['semantic_similarity'].append(float(all_scores[i + 1].score) if all_scores[i + 1].score is not None else 0.0)
 
     # Process DeepEval results
-    for test_result in g_eval_results.test_results:
-        result['g_eval'].append(float(test_result.metrics_data[0].success))
+    for test_result in g_eval_results:
+        print(test_result)
+        result['g_eval'].append(float(str(test_result)))
 
     return result
 

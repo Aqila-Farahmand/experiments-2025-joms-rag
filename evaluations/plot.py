@@ -140,7 +140,7 @@ def plot_g_eval_distributions(df: pd.DataFrame, models_per_row: int = 4, embedde
     """
     g_eval_df = df[df["metric"] == "g_eval"].copy()
     g_eval_df = g_eval_df[g_eval_df["model"].isin(PRETTY_NAMES.keys())].copy()
-    g_eval_df["score"] = pd.to_numeric(g_eval_df["score"], errors="coerce")
+    g_eval_df["score"] = pd.to_numeric(g_eval_df["score"], errors="coerce") #> 3.0
     g_eval_df["model"] = g_eval_df["model"].map(PRETTY_NAMES).fillna(g_eval_df["model"])
     sorted_model_names = sorted(g_eval_df["model"].unique())
     g_eval_df["model"] = pd.Categorical(g_eval_df["model"], categories=sorted_model_names, ordered=True)
