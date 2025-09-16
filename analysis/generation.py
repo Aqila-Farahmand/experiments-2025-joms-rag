@@ -2,10 +2,12 @@ from analysis.chi_square import PATH as ANALYSIS_PATH
 from evaluations.cache import PATH as CACHE_PATH
 from evaluations.plot import merge_dataframes, PRETTY_NAMES
 import pandas as pd
+import numpy as np
 import itertools
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import chi2_contingency
+from statsmodels.stats.proportion import proportion_confint
 from matplotlib.colors import ListedColormap
 
 
@@ -105,12 +107,12 @@ def chi_square_test_by_model(df: pd.DataFrame, alpha: float = 0.05, output_folde
     return results
 
 
-def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_folder=ANALYSIS_PATH,
-                                  embedder: str = "nomic") -> pd.DataFrame:
-    """
-    Compare 'no-RAG' methods (role_playing, full) vs. 'RAG' methods (vector_store, vector_rerank, hybrid)
-    using chi-square test for each model. Produces a LaTeX table of results.
-    """
+def chi_square_test_rag_vs_no_rag(
+    df: pd.DataFrame,
+    alpha: float = 0.05,
+    output_folder = ANALYSIS_PATH,
+    embedder: str = "nomic"
+) -> pd.DataFrame:
     df = df[df["metric"] == "g_eval"].copy()
     df = df[df["model"].isin(PRETTY_NAMES.keys())].copy()
     df["model"] = df["model"].map(PRETTY_NAMES)
@@ -123,42 +125,67 @@ def chi_square_test_rag_vs_no_rag(df: pd.DataFrame, alpha: float = 0.05, output_
     for model in sorted(df["model"].unique()):
         model_df = df[df["model"] == model]
 
-        # group_counts = model_df.groupby(["kind", "score"]).size().unstack(fill_value=0)
-        # Pick the best for each kind
         best_rag = model_df[model_df["kind"] == "RAG"].groupby("method")["score"].mean().idxmax()
         best_no_rag = model_df[model_df["kind"] == "No-RAG"].groupby("method")["score"].mean().idxmax()
-        # create group count with the best methods
-        group_counts = model_df[model_df["method"].isin([best_rag, best_no_rag])].groupby(
-            ["kind", "score"]).size().unstack(fill_value=0)
 
-        if group_counts.shape != (2, 2):
+        group_counts = (
+            model_df[model_df["method"].isin([best_rag, best_no_rag])]
+            .groupby(["kind", "score"])
+            .size()
+            .unstack(fill_value=0)
+        )
+
+        if group_counts.shape[0] != 2 or group_counts.shape[1] < 2:
             print(f"Skipping {model} – insufficient data.")
             continue
 
         try:
             chi2, pval, _, _ = chi2_contingency(group_counts.values)
+            n = group_counts.values.sum()
+            k = min(group_counts.shape)
+            cramer_v = np.sqrt(chi2 / (n * (k - 1)))
         except Exception:
             pval = float("nan")
+            cramer_v = float("nan")
 
-        prop = group_counts.div(group_counts.sum(axis=1), axis=0)
+        avg_scores = (
+            model_df[model_df["method"].isin([best_rag, best_no_rag])]
+            .groupby("kind")["score"]
+            .mean()
+        )
+
+        # Calcolo degli intervalli di confidenza (95%) per le proporzioni di successo
+        ci_results = {}
+        for kind in ["RAG", "No-RAG"]:
+            successes = group_counts.loc[kind].get(1, 0) if kind in group_counts.index else 0
+            total = group_counts.loc[kind].sum() if kind in group_counts.index else 0
+            if total > 0:
+                low, high = proportion_confint(successes, total, alpha=0.05, method="wilson")
+                ci_results[kind] = f"[{low:.2f}, {high:.2f}]"
+            else:
+                ci_results[kind] = "N/A"
 
         rows.append({
             "Model": model,
-            "RAG success": f"{prop.loc['RAG', 1] * 100:.1f}",
-            "No-RAG success": f"{prop.loc['No-RAG', 1] * 100:.1f}",
+            "G-Eval RAG": f"{avg_scores.get('RAG', float('nan')):.2f} $\\pm$ {model_df[model_df['method'] == best_rag]['score'].std():.2f}",
+            "G-Eval No-RAG": f"{avg_scores.get('No-RAG', float('nan')):.2f} $\\pm$ {model_df[model_df['method'] == best_no_rag]['score'].std():.2f}",
+            "RAG 95\% CI": ci_results["RAG"],
+            "No-RAG 95\% CI": ci_results["No-RAG"],
             "p-value": pval,
+            "Cramér's V": cramer_v,
             "Significant": "\\textcolor{darkgreen}{$\\checkmark$}" if pval < alpha else "\\textcolor{red}{$\\times$}"
         })
 
     result_df = pd.DataFrame(rows)
 
-    # Save LaTeX table
+    # Salva in LaTeX
     latex_df = result_df.copy()
     latex_df["p-value"] = latex_df["p-value"].map(lambda x: f"\\textbf{{{x:.4f}}}" if x < alpha else f"{x:.4f}")
+    latex_df["Cramér's V"] = latex_df["Cramér's V"].map(lambda x: f"{x:.3f}")
     latex_df.to_latex(output_folder / f"chi2_rag_vs_no_rag_{embedder}.tex",
                       index=False,
                       escape=False,
-                      column_format="lcccc")
+                      column_format="lcccccc")
 
     return result_df
 
@@ -185,30 +212,28 @@ def chi_square_test_rag_method_pairs(df: pd.DataFrame, alpha: float = 0.05, outp
         for model in sorted(df["model"].unique()):
             model_df = df[df["model"] == model]
 
-            s1 = model_df[model_df["method"] == m1]["score"]
-            s2 = model_df[model_df["method"] == m2]["score"]
 
-            if s1.empty or s2.empty:
-                continue
+            group_counts = (
+                model_df[model_df["method"].isin([m1, m2])]
+                .groupby(["method", "score"])
+                .size()
+                .unstack(fill_value=0)
+            )
 
-            c1 = s1.value_counts().reindex([0, 1], fill_value=0)
-            c2 = s2.value_counts().reindex([0, 1], fill_value=0)
-            contingency = [c1.tolist(), c2.tolist()]
+            # Remove all 0s lines
+            group_counts = group_counts[(group_counts.T != 0).any()]
 
             try:
-                _, pval, _, _ = chi2_contingency(contingency)
+                _, pval, _, _ = chi2_contingency(group_counts)
             except Exception:
                 pval = float("nan")
-
-            rate1 = c1[1] / (c1.sum()) * 100 if c1.sum() > 0 else 0.0
-            rate2 = c2[1] / (c2.sum()) * 100 if c2.sum() > 0 else 0.0
 
             rows.append({
                 "Model": model,
                 "Method 1": m1,
                 "Method 2": m2,
-                "Success 1": f"{rate1:.1f}",
-                "Success 2": f"{rate2:.1f}",
+                "Success 1": f"{model_df[model_df['method'] == m1]['score'].mean():.1f} \\pm {model_df[model_df['method'] == m1]['score'].std():.1f}",
+                "Success 2": f"{model_df[model_df['method'] == m2]['score'].mean():.1f} \\pm {model_df[model_df['method'] == m2]['score'].std():.1f}",
                 "p-value": pval,
                 "Sig.": "\\textcolor{darkgreen}{$\\checkmark$}" if pval < alpha else "\\textcolor{red}{$\\times$}"
             })

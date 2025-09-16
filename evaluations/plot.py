@@ -184,6 +184,8 @@ def plot_g_eval_distributions(df: pd.DataFrame, models_per_row: int = 4, embedde
         ax.set_ylim(0, row_max * 1.1)
         ax.set_xticks(range(len(labels)))
         ax.set_xticklabels(labels, rotation=45, ha='right')
+        # force the y axis to start at 0 and end at 5
+        ax.set_ylim(0, 5)
 
     # Set the title for the entire figure
     # g.fig.suptitle(f"G-Eval distributions by model using {embedder.capitalize()} embeddings", fontsize=24, y=1.02)
